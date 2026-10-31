@@ -633,7 +633,7 @@ PAGINAS.publicar = async main => {
         <button class="principal grande" id="p-ok" ${nada || r.erros.length ? "disabled" : ""}>Publicar agora</button>
         <span class="espaco"></span>${nada ? "" : `<button class="perigo pequeno" id="p-desc">Descartar as mudanças</button>`}</div></div>
     <div class="cartao"><h3>Conferir o canal no ar</h3><p class="apagado">Abre a grade publicada na internet e vê se seus programas e anúncios estão lá.</p>
-      <button id="p-vivo">Conferir agora</button> <a class="botao" href="https://koljatv.github.io/" target="_blank">Abrir o site do canal</a><div id="p-vivo-r"></div></div>
+      <button id="p-vivo">Conferir agora</button> <a class="botao" href="https://tv.kolja.com.br/" target="_blank">Abrir o site do canal</a><div id="p-vivo-r"></div></div>
     <div class="cartao"><h3>Configurar (só uma vez)</h3>
       <p>Chave do GitHub: ${r.chave === "chaveiro" ? `<span class="pilula ok">guardada no Chaveiro do Mac</span>` : r.chave === "gh" ? `<span class="pilula ok">usando o login do GitHub deste Mac</span>` : `<span class="pilula ruim">falta</span>`}
         <button class="pequeno" id="p-testar">Testar a chave</button></p>

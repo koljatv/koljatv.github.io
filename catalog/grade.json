@@ -1,6 +1,6 @@
 {
  "note": "KÖLJA TV: the day's blocks and our own pieces. Titles live in titles.json. tools/build.py turns these into public/grade/schedule.json + now.json. Our pieces (media/ours/) are GitHub Release assets (tag in ours_base), not in git.",
- "site": "https://koljatv.github.io/",
+ "site": "https://tv.kolja.com.br/",
  "ours_base": "https://github.com/koljatv/koljatv.github.io/releases/download/ours-v1/",
  "tz": "America/Sao_Paulo",
  "days": 3,

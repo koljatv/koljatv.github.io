@@ -1,7 +1,7 @@
-# KÖLJA TV (koljatv.github.io)
+# KÖLJA TV (tv.kolja.com.br)
 
 The site and the programme schedule (grade) of **KÖLJA TV**, channel 1 of the Retrotv app. Meant to live as the
-public repo `koljatv/koljatv.github.io` (organisation `koljatv`), so it's served at https://koljatv.github.io/.
+public repo `koljatv/koljatv.github.io` (organisation `koljatv`), so it's served at https://tv.kolja.com.br/ (custom domain; https://koljatv.github.io/ redirects there).
 The app only shows what this repo publishes; everything that decides what's on the air lives here, so a dead link
 or a title that has to go is fixed by editing a JSON file, never by a new APK. Public: display material and code
 only, never secrets, keys or personal data.
@@ -59,7 +59,7 @@ logged in). Whoever works here (Niko, or one of us through the chat) publishes l
    a personal e-mail.
 2. `git pull --rebase` first: the workflow commits `grade: <rev>` to `main` on its own whenever the schedule changes.
 3. `git push`. A push touching `catalog/`, `tools/`, `public/index.html` or the workflow rebuilds and redeploys in
-   a minute or two (`gh run list -R koljatv/koljatv.github.io`); then check `https://koljatv.github.io/grade/now.json`.
+   a minute or two (`gh run list -R koljatv/koljatv.github.io`); then check `https://tv.kolja.com.br/grade/now.json`.
 4. New or changed pieces in `media/ours/`: `tools/release_ours.sh --clobber` (new names also go in `grade.json` ›
    `ours`).
 

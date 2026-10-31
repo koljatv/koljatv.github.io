@@ -399,7 +399,7 @@ def sync():
 
 # ---------------- checking the live channel ----------------
 
-def live(site="https://koljatv.github.io/"):
+def live(site="https://tv.kolja.com.br/"):
     """What the channel has on the internet right now, and whether our programmes are in it."""
     try:
         req = urllib.request.Request(site + "grade/schedule.json?t=%d" % time.time(), headers={"User-Agent": UA, "Cache-Control": "no-cache"})
