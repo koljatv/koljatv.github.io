@@ -54,7 +54,7 @@
     const t0 = Date.now(), r = await fetch(url, { cache: 'no-store' }), t1 = Date.now();
     if (!r.ok) throw new Error(url + ' ' + r.status);
     const d = Date.parse(r.headers.get('date') || '');
-    if (d) { offs.push(d + (+r.headers.get('age') || 0) * 1000 + 500 - (t0 + t1) / 2); if (offs.length > 7) offs.shift(); }
+    if (d) { offs.push(d + 500 - (t0 + t1) / 2); if (offs.length > 7) offs.shift(); } // the CDN stamps Date when it answers
     return r.json();
   }
   function setClock() {
