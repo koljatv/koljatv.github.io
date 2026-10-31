@@ -168,7 +168,7 @@
       try { v.currentTime = w; } catch (e) {}
     };
     v.oncanplay = () => { sl.ready = true; };
-    v.onerror = () => { if (sl.role === 'cue') { dead.set(pl.url, Date.now()); release(sl); } else fail(sl); };
+    v.onerror = () => { if (sl.role === 'cue') { dead.set(pl.url, Date.now()); release(sl); } else fail(sl, true); };
     v.loop = pl.loop; v.muted = true;
     v.src = pl.url;
     try { v.load(); } catch (e) {}
@@ -220,9 +220,14 @@
     if (Math.abs(sl.v.currentTime - want(sl)) > 1.5 && !sl.pl.ours) try { sl.v.currentTime = want(sl); } catch (e) {}
     levels(); ui();
   }
-  function fail(sl) {
+  function fail(sl, error) {
     if (!sl.pl || (sl.role !== 'next' && sl.role !== 'air')) return;
     const pl = sl.pl;
+    if (error && sl.role === 'next' && !pl.retried && !pl.trouble) { // hosts sometimes refuse one request: once more, a second later
+      pl.retried = true; release(sl);
+      setTimeout(() => { if (cur && cur.target && keyOf(pl.it) === keyOf(cur.target) && !slots.some(s => s.role === 'next' || (s.role === 'air' && s.pl.key === pl.key))) onAir(pl); }, 1000);
+      return;
+    }
     if (!pl.trouble) dead.set(pl.url, Date.now());
     const wasAir = sl.role === 'air';
     release(sl);
