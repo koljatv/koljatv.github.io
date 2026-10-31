@@ -1,0 +1,71 @@
+name: grade
+
+# Every 20 minutes: check the copies of what airs soon, route round dead links, rebuild the schedule,
+# commit grade/schedule2.json (with commercial breaks) and grade/schedule.json (without, for Retrotv 0.3.0) when they changed, and publish public/ (the site + grade/schedule.json + grade/now.json)
+# on GitHub Pages. Our idents and trailers are Release assets (tag ours-v1), not part of the site.
+on:
+  schedule:
+    - cron: "7,27,47 * * * *"
+  push:
+    branches: [main]
+    paths: ["catalog/**", "tools/**", "public/index.html", ".github/workflows/grade.yml"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: grade
+  cancel-in-progress: false
+
+jobs:
+  grade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Link health is kept between runs in the Actions cache, not in git (it changes every run).
+      - uses: actions/cache/restore@v4
+        with:
+          path: state
+          key: health-${{ github.run_id }}
+          restore-keys: health-
+
+      - name: Check links and build
+        run: |
+          python3 tools/build.py          # make sure the schedule reaches today before checking it
+          python3 tools/check.py --hours 8 --extra 60
+          python3 tools/build.py
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: state
+          key: health-${{ github.run_id }}
+
+      - name: Commit the schedule when it changed
+        run: |
+          git config user.name "koljatv-grade bot"
+          git config user.email "koljatv-grade@users.noreply.github.com"
+          git add public/grade/schedule.json public/grade/schedule2.json
+          if ! git diff --cached --quiet; then
+            git commit -m "grade: $(python3 -c 'import json;print(json.load(open("public/grade/schedule2.json"))["rev"])')"
+            git push
+          fi
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - id: deploy
+        uses: actions/deploy-pages@v4

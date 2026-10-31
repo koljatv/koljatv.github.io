@@ -1,0 +1,389 @@
+{
+ "note": "KÖLJA TV: the day's blocks and our own pieces. Titles live in titles.json. tools/build.py turns these into public/grade/schedule.json + now.json. Our pieces (media/ours/) are GitHub Release assets (tag in ours_base), not in git.",
+ "site": "https://koljatv.github.io/",
+ "ours_base": "https://github.com/koljatv/koljatv.github.io/releases/download/ours-v1/",
+ "tz": "America/Sao_Paulo",
+ "days": 3,
+ "blocks": {
+  "terror": {
+   "pt": "SESSÃO TERROR",
+   "en": "HORROR NIGHT"
+  },
+  "muda": {
+   "pt": "COMÉDIA MUDA",
+   "en": "SILENT COMEDY"
+  },
+  "toons": {
+   "pt": "DESENHOS CLÁSSICOS",
+   "en": "CLASSIC CARTOONS"
+  },
+  "ficcao": {
+   "pt": "FICÇÃO CIENTÍFICA",
+   "en": "SCIENCE FICTION"
+  },
+  "noir": {
+   "pt": "NOIR",
+   "en": "NOIR"
+  },
+  "cult": {
+   "pt": "MADRUGADA CULT",
+   "en": "LATE-NIGHT CULT"
+  },
+  "comedia": {
+   "pt": "COMÉDIA CLÁSSICA",
+   "en": "CLASSIC COMEDY"
+  },
+  "series": {
+   "pt": "SÉRIES CLÁSSICAS",
+   "en": "CLASSIC TV"
+  },
+  "classicos": {
+   "pt": "GRANDES CLÁSSICOS",
+   "en": "GREAT CLASSICS"
+  },
+  "aventura": {
+   "pt": "AVENTURA",
+   "en": "ADVENTURE"
+  },
+  "faroeste": {
+   "pt": "FAROESTE",
+   "en": "WESTERNS"
+  },
+  "seriados": {
+   "pt": "SERIADOS DE MATINÊ",
+   "en": "MATINEE SERIALS"
+  },
+  "docs": {
+   "pt": "DOCUMENTÁRIOS",
+   "en": "DOCUMENTARIES"
+  },
+  "kungfu": {
+   "pt": "KUNG FU DE SÁBADO",
+   "en": "SATURDAY KUNG FU"
+  }
+ },
+ "day": [
+  {
+   "at": "00:00",
+   "block": "terror"
+  },
+  {
+   "at": "02:00",
+   "block": "ficcao|cult|docs|ficcao|docs"
+  },
+  {
+   "at": "04:00",
+   "block": "series"
+  },
+  {
+   "at": "05:30",
+   "block": "muda"
+  },
+  {
+   "at": "07:00",
+   "block": "toons"
+  },
+  {
+   "at": "07:55",
+   "block": "series"
+  },
+  {
+   "at": "09:30",
+   "block": "comedia"
+  },
+  {
+   "at": "12:30",
+   "block": "classicos"
+  },
+  {
+   "at": "16:50",
+   "block": "seriados"
+  },
+  {
+   "at": "17:55",
+   "block": "series"
+  },
+  {
+   "at": "19:25",
+   "block": "faroeste|aventura"
+  },
+  {
+   "at": "22:00",
+   "block": "noir"
+  }
+ ],
+ "special_note": "special: a whole day of its own for a date (MM-DD); a slot's optional 'pin' lists titles that open it, in order. 10-31 = Halloween: SESSÃO TERROR from 19:00 to midnight with the classics.",
+ "special": {
+  "10-31": [
+   {
+    "at": "00:00",
+    "block": "cult"
+   },
+   {
+    "at": "03:00",
+    "block": "ficcao"
+   },
+   {
+    "at": "05:30",
+    "block": "series"
+   },
+   {
+    "at": "07:00",
+    "block": "toons"
+   },
+   {
+    "at": "09:00",
+    "block": "muda"
+   },
+   {
+    "at": "12:00",
+    "block": "series"
+   },
+   {
+    "at": "13:00",
+    "block": "comedia"
+   },
+   {
+    "at": "15:00",
+    "block": "toons"
+   },
+   {
+    "at": "17:00",
+    "block": "ficcao"
+   },
+   {
+    "at": "19:00",
+    "block": "terror",
+    "pin": [
+     "frankenstein-1910",
+     "nosferatu-1922",
+     "notld-1968",
+     "carnival-souls-1962",
+     "skeleton-dance-1929",
+     "haunting-go-1949"
+    ]
+   }
+  ]
+ },
+ "week_note": "A weekday of its own (keys mon..sun), used unless the date has a special line-up. Saturday: KUNG FU DE SÁBADO at 15:00 (2026-10-31), carved out of the afternoon's GRANDES CLÁSSICOS; small shelf for now, so other blocks' shorts fill the rest of the slot.",
+ "week": {
+  "sat": [
+   {
+    "at": "00:00",
+    "block": "terror"
+   },
+   {
+    "at": "02:00",
+    "block": "ficcao|cult|docs|ficcao|docs"
+   },
+   {
+    "at": "04:00",
+    "block": "series"
+   },
+   {
+    "at": "05:30",
+    "block": "muda"
+   },
+   {
+    "at": "07:00",
+    "block": "toons"
+   },
+   {
+    "at": "07:55",
+    "block": "series"
+   },
+   {
+    "at": "09:30",
+    "block": "comedia"
+   },
+   {
+    "at": "12:30",
+    "block": "classicos"
+   },
+   {
+    "at": "15:00",
+    "block": "kungfu"
+   },
+   {
+    "at": "16:50",
+    "block": "seriados"
+   },
+   {
+    "at": "17:55",
+    "block": "series"
+   },
+   {
+    "at": "19:25",
+    "block": "faroeste|aventura"
+   },
+   {
+    "at": "22:00",
+    "block": "noir"
+   }
+  ]
+ },
+ "ours": [
+  {
+   "id": "apresenta",
+   "kind": "presents",
+   "dur": 3.6,
+   "title": "KÖLJA TV apresenta",
+   "file": "apresenta.mp4"
+  },
+  {
+   "id": "ident_barras",
+   "kind": "ident",
+   "dur": 5.8,
+   "title": "KÖLJA TV · barras",
+   "file": "ident_barras.mp4"
+  },
+  {
+   "id": "ident_tubo",
+   "kind": "ident",
+   "dur": 5.0,
+   "title": "KÖLJA TV · canal 1",
+   "file": "ident_tubo.mp4"
+  },
+  {
+   "id": "vinheta_terror",
+   "kind": "vignette",
+   "block": "terror",
+   "dur": 7.0,
+   "title": "Sessão Terror",
+   "file": "vinheta_terror.mp4"
+  },
+  {
+   "id": "vinheta_muda",
+   "kind": "vignette",
+   "block": "muda",
+   "dur": 7.0,
+   "title": "Comédia Muda",
+   "file": "vinheta_muda.mp4"
+  },
+  {
+   "id": "vinheta_desenhos",
+   "kind": "vignette",
+   "block": "toons",
+   "dur": 6.4,
+   "title": "Desenhos Clássicos",
+   "file": "vinheta_desenhos.mp4"
+  },
+  {
+   "id": "vinheta_ficcao",
+   "kind": "vignette",
+   "block": "ficcao",
+   "dur": 7.0,
+   "title": "Ficção Científica",
+   "file": "vinheta_ficcao.mp4"
+  },
+  {
+   "id": "vinheta_noir",
+   "kind": "vignette",
+   "block": "noir",
+   "dur": 7.0,
+   "title": "Noir",
+   "file": "vinheta_noir.mp4"
+  },
+  {
+   "id": "vinheta_cult",
+   "kind": "vignette",
+   "block": "cult",
+   "dur": 7.0,
+   "title": "Madrugada Cult",
+   "file": "vinheta_cult.mp4"
+  },
+  {
+   "id": "vinheta_series",
+   "kind": "vignette",
+   "block": "series",
+   "dur": 7.0,
+   "title": "Séries Clássicas",
+   "file": "vinheta_series.mp4"
+  },
+  {
+   "id": "vinheta_comedia",
+   "kind": "vignette",
+   "block": "comedia",
+   "file": "vinheta_comedia.mp4",
+   "dur": 7.0,
+   "title": "Comédia Clássica"
+  },
+  {
+   "id": "vinheta_classicos",
+   "kind": "vignette",
+   "block": "classicos",
+   "dur": 7.0,
+   "title": "Grandes Clássicos",
+   "file": "vinheta_classicos.mp4"
+  },
+  {
+   "id": "vinheta_aventura",
+   "kind": "vignette",
+   "block": "aventura",
+   "dur": 7.0,
+   "title": "Aventura",
+   "file": "vinheta_aventura.mp4"
+  },
+  {
+   "id": "vinheta_faroeste",
+   "kind": "vignette",
+   "block": "faroeste",
+   "dur": 7.0,
+   "title": "Faroeste",
+   "file": "vinheta_faroeste.mp4"
+  },
+  {
+   "id": "vinheta_seriados",
+   "kind": "vignette",
+   "block": "seriados",
+   "dur": 7.0,
+   "title": "Seriados de Matinê",
+   "file": "vinheta_seriados.mp4"
+  },
+  {
+   "id": "vinheta_docs",
+   "kind": "vignette",
+   "block": "docs",
+   "dur": 7.0,
+   "title": "Documentários",
+   "file": "vinheta_docs.mp4"
+  },
+  {
+   "id": "cartao",
+   "kind": "card",
+   "dur": 30.0,
+   "loop": true,
+   "title": "A programação continua já",
+   "file": "cartao.mp4"
+  },
+  {
+   "id": "intervalo",
+   "kind": "bumper",
+   "dur": 6.0,
+   "title": "KÖLJA TV · intervalo",
+   "file": "intervalo.mp4"
+  },
+  {
+   "id": "voltamos",
+   "kind": "bumper",
+   "dur": 4.48,
+   "title": "KÖLJA TV · voltamos",
+   "file": "voltamos.mp4"
+  }
+ ],
+ "day_note": "Sized to the shelves: a block's hours on the shelf / its hours a day = days before its first rerun (tools/rotation.py). 'a|b|c' alternates blocks day by day, for blocks whose longest title needs a long slot but whose shelf is small.",
+ "epoch": "2026-10-31",
+ "epoch_note": "tools/build.py winds each block's tape from this date, day by day; leave it, or every date's line-up moves.",
+ "breaks_note": "breaks: features (films of 40 minutes or more) go to a break about every 25 minutes, at the places tools/breaks.py found (catalog/breaks.json). Since 31 Oct 2026 (Niko) a break is only the INTERVALO card and VOLTAMOS (~10 s): no trailers, no promos, no sponsor slot. Future spots (the Estúdio's anúncios, with Niko's own voice-over) need room: \"hold\" = seconds of the station card in each break, which the spots replace. tools/segments.py also takes \"slot\", \"promos\", \"trailers\": true, \"idents\": true. Shorts, cartoons and episodes play straight. \"on\": false puts every feature back in one piece.",
+ "breaks": {
+  "on": true,
+  "kinds": [
+   "film"
+  ],
+  "open": "intervalo",
+  "close": "voltamos",
+  "hold": 0
+ },
+ "commercial_note": "commercial_mode (for when the channel carries paid ads): only titles cleared for it go on the air (build.py cleared: a title's rights). Off for now.",
+ "commercial_mode": false
+}

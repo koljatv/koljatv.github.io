@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Manual da Emissora · Estúdio KÖLJA TV</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 18mm; }
+  @page :first { margin: 0; }
+  body { font: 11.5pt/1.5 -apple-system, "Helvetica Neue", sans-serif; color: #1d1712; }
+  h1, h2, h3 { font-family: "Futura", "Avenir Next", sans-serif; letter-spacing: .02em; }
+  h1 { font-size: 30pt; margin: 0; text-transform: uppercase; }
+  h2 { font-size: 17pt; text-transform: uppercase; border-bottom: 3px solid #ffb000; padding-bottom: 4px; margin: 0 0 10px; page-break-after: avoid; }
+  h3 { font-size: 13pt; margin: 18px 0 6px; page-break-after: avoid; }
+  section { page-break-before: always; }
+  .capa { height: 296mm; display: flex; flex-direction: column; justify-content: center; background: #120e0a; color: #f6ecd6; margin: 0; padding: 0 24mm; box-sizing: border-box; }
+  body { margin: 0; }
+  .capa .logo { font: 800 54pt "Futura", sans-serif; letter-spacing: .05em; }
+  .capa .logo span { background: #ffb000; color: #140f08; border-radius: 10px; padding: 0 14px; font-size: 38pt; vertical-align: 8px; margin-left: 10px; }
+  .capa h1 { color: #ffb000; font-size: 26pt; margin-top: 18px; }
+  .capa p { font-size: 14pt; color: #d9ccb0; max-width: 140mm; }
+  ol.passo { padding-left: 0; list-style: none; counter-reset: n; }
+  ol.passo > li { counter-increment: n; position: relative; padding: 3px 0 3px 34px; margin: 4px 0; }
+  ol.passo > li::before { content: counter(n); position: absolute; left: 0; top: 2px; width: 23px; height: 23px; border-radius: 50%; background: #ffb000; font-weight: 800; text-align: center; line-height: 23px; font-size: 10.5pt; }
+  img { width: 100%; border: 1px solid #c9bda5; border-radius: 6px; margin: 6px 0 4px; page-break-inside: avoid; }
+  img.meia { width: 72%; display: block; margin-left: auto; margin-right: auto; }
+  figure { margin: 8px 0 14px; page-break-inside: avoid; }
+  figcaption { font-size: 9.5pt; color: #6b5d48; text-align: center; }
+  .dica { background: #fff4d6; border-left: 5px solid #ffb000; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .cuidado { background: #ffe5e0; border-left: 5px solid #d8473a; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  b.bt { background: #ffb000; padding: 0 6px; border-radius: 4px; white-space: nowrap; }
+  b.bt2 { border: 1px solid #8a7a60; padding: 0 6px; border-radius: 4px; white-space: nowrap; }
+  table { border-collapse: collapse; width: 100%; font-size: 10.5pt; }
+  td, th { border-bottom: 1px solid #ddd2bd; padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: #f4ecdc; }
+  .indice li { margin: 3px 0; }
+  code { font: 10pt "SF Mono", Menlo, monospace; background: #f4ecdc; padding: 0 4px; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="capa">
+  <div class="logo">KÖLJA<span>TV</span></div>
+  <h1>Manual da Emissora</h1>
+  <p>Como tocar o canal sozinho, com o Estúdio KÖLJA TV: programas próprios, grade, filmes, anúncios, links quebrados, publicar e desfazer.</p>
+  <p style="font-size:11pt;margin-top:40px">Estúdio KÖLJA TV · versão {{VERSAO}} · {{DATA}}</p>
+</div>
+
+<section>
+<h2>Começo rápido</h2>
+<p>O Estúdio é um programa que roda no seu Mac e abre no navegador. Ele não usa inteligência artificial nem precisa de ninguém além de você. Tudo funciona sem internet, menos <b>Publicar</b>, <b>Saúde</b> e procurar cópias de filmes.</p>
+<ol class="passo">
+  <li><b>Abrir:</b> dois cliques no ícone <b>Estúdio KÖLJA TV</b> na Mesa. O navegador abre sozinho.</li>
+  <li><b>Programa novo:</b> <b class="bt2">Programas</b> › <b class="bt">+ Novo programa</b> › nome, dias e hora › <b class="bt">Salvar</b>. A abertura e o encerramento se fazem sozinhos.</li>
+  <li><b>Episódio:</b> arraste o arquivo de vídeo para o quadro tracejado do programa. Espere a barra chegar ao fim.</li>
+  <li><b>Conferir:</b> <b class="bt2">Grade</b> › escolha o dia › seu programa aparece no horário (fundo âmbar).</li>
+  <li><b>Publicar:</b> <b class="bt2">Publicar</b> › <b class="bt">Publicar agora</b>. Em 1 a 3 minutos está no ar, no site e nos aparelhos.</li>
+  <li><b>Deu errado?</b> <b class="bt2">Desfazer</b> › <b class="bt2">Voltar para esta</b>, na publicação anterior.</li>
+</ol>
+<div class="dica">Regra de ouro: <b>nada vai para o ar sem o botão Publicar.</b> Pode mexer à vontade; o número vermelho ao lado de "Publicar" no menu mostra quantas mudanças estão esperando.</div>
+
+<h3>Neste manual</h3>
+<ol class="indice">
+  <li>Abrir o Estúdio (e o que fazer se não abrir)</li>
+  <li>Primeira vez: a chave do GitHub</li>
+  <li>Programas próprios: criar, enviar episódio, vinhetas</li>
+  <li>Grade: ver a semana, tirar, inserir, mover, blocos do dia</li>
+  <li>Filmes: procurar, tirar do ar, incluir, cópias, intervalos</li>
+  <li>Anúncios: cadastrar, inserções, relatório</li>
+  <li>Saúde: links quebrados</li>
+  <li>Publicar e conferir no ar</li>
+  <li>Desfazer</li>
+  <li>Problemas comuns</li>
+  <li>Onde fica cada coisa</li>
+</ol>
+</section>
+
+<section>
+<h2>1. Abrir o Estúdio</h2>
+<ol class="passo">
+  <li>Dê dois cliques em <b>Estúdio KÖLJA TV</b> na Mesa (Desktop).</li>
+  <li>O navegador abre na página do Estúdio (endereço <code>http://127.0.0.1:8799</code>). Pode guardar esse endereço nos favoritos.</li>
+  <li>Se o Estúdio já estava aberto, o ícone só mostra a página de novo.</li>
+</ol>
+<figure><img src="img/01-inicio.jpg"><figcaption>Início: o que está no ar agora, o que vem a seguir e atalhos para as tarefas.</figcaption></figure>
+<p>Na tela <b>Início</b> você vê o que o canal está passando agora (com as mudanças que você ainda não publicou), quantas mudanças esperam o botão Publicar, a última publicação e se as ferramentas estão em ordem (<i>conversor</i>, <i>vinhetas</i>, <i>chave GitHub</i>: verde é ok).</p>
+<h3>Se não abrir</h3>
+<ol class="passo">
+  <li>Abra a pasta do canal (<code>Documentos › KoljaTV-Estudio</code>), entre em <code>estudio</code> e dê dois cliques em <b>Estúdio KÖLJA TV.command</b>.</li>
+  <li>Se o ícone sumiu da Mesa: dois cliques em <code>estudio › instalar.command</code>. Ele recria o ícone (e prepara o desenhista das vinhetas, se faltar).</li>
+  <li>Se o macOS disser que não pode abrir: clique com o botão direito no ícone › <b>Abrir</b> › <b>Abrir</b>.</li>
+</ol>
+<div class="dica">Ao abrir com internet, o Estúdio busca sozinho a versão mais nova do canal no GitHub. Sem internet ele abre do mesmo jeito, com o que já tem.</div>
+</section>
+
+<section>
+<h2>2. Primeira vez: a chave do GitHub</h2>
+<p>Para publicar, o Estúdio precisa de uma chave do GitHub (um "token"). Você cola uma vez; ela fica guardada no <b>Chaveiro do Mac</b>, nunca em arquivo.</p>
+<ol class="passo">
+  <li>No navegador, entre na sua conta do GitHub e abra <code>github.com/settings/personal-access-tokens/new</code>.</li>
+  <li><b>Token name:</b> Estúdio KÖLJA TV. <b>Expiration:</b> 1 ano. <b>Resource owner:</b> koljatv.</li>
+  <li><b>Repository access:</b> <i>Only select repositories</i> › escolha <b>koljatv.github.io</b>.</li>
+  <li><b>Permissions › Repository permissions › Contents:</b> <i>Read and write</i>.</li>
+  <li>Clique em <b>Generate token</b> e copie o código (começa com <code>github_pat_</code>).</li>
+  <li>No Estúdio: <b class="bt2">Publicar</b> › <i>Configurar</i> › <i>Colar uma chave nova do GitHub</i> › cole › <b class="bt">Guardar</b>. Deve aparecer "Chave do GitHub ok".</li>
+</ol>
+<div class="dica">Se a chave vencer (depois de 1 ano), o Estúdio avisa na hora de publicar: "A chave do GitHub não vale mais". É só repetir estes passos.</div>
+<p>Enquanto não houver chave guardada, o Estúdio usa o login do GitHub deste Mac, se houver (aparece "usando o login do GitHub deste Mac").</p>
+</section>
+
+<section>
+<h2>3. Programas próprios</h2>
+<h3>Criar um programa</h3>
+<ol class="passo">
+  <li><b class="bt2">Programas</b> › <b class="bt">+ Novo programa</b>.</li>
+  <li><b>Nome</b> e <b>descrição</b> (a descrição aparece no guia da TV).</li>
+  <li><b>Horários fixos:</b> clique nos dias (ficam âmbar) e escolha a hora. Para outro horário (ex.: reprise no sábado), <b class="bt2">+ outro horário</b>.</li>
+  <li><b>Episódios:</b> "o novo substitui o anterior" (vai ao ar sempre o mais novo) ou "lista" (passa um por vez, em ordem, e recomeça).</li>
+  <li>Escolha a <b>cor das vinhetas</b> e, se quiser, a data de começo e de fim.</li>
+  <li><b class="bt">Salvar</b>. A abertura ("KÖLJA TV apresenta" + o nome) e o encerramento (nome + dia e hora) são desenhados sozinhos em alguns segundos.</li>
+</ol>
+<figure><img src="img/03-novo-programa.jpg" class="meia"><figcaption>Novo programa: nome, dias, hora, modo dos episódios e cor.</figcaption></figure>
+<div class="cuidado">O episódio precisa terminar antes da meia-noite, e dois programas não podem se cruzar no mesmo dia. O Estúdio avisa em vermelho quando isso acontece.</div>
+</section>
+
+<section>
+<h3>Enviar um episódio</h3>
+<ol class="passo">
+  <li>No quadro do programa, escreva o <b>título do episódio</b> (opcional).</li>
+  <li>Arraste o arquivo de vídeo para o <b>quadro tracejado</b> (ou clique nele e escolha o arquivo). Serve MP4, MOV, MKV, AVI...</li>
+  <li>Embaixo, à direita, aparece a barra: primeiro "Recebendo", depois "Convertendo". O Estúdio deixa o vídeo no formato do canal (480p, som no mesmo volume dos filmes). Um episódio de 30 minutos leva alguns minutos.</li>
+  <li>Quando aparecer "Episódio pronto", ele está na lista com a etiqueta <i>falta publicar</i>. Clique em <b class="bt2">Ver</b> para assistir.</li>
+  <li>Vá em <b class="bt2">Publicar</b> quando quiser que vá ao ar.</li>
+</ol>
+<figure><img src="img/05-programa-pronto.jpg"><figcaption>O programa com seu episódio e as vinhetas.</figcaption></figure>
+<p><b>Renomear</b> troca o título; <b>Apagar</b> tira o episódio (se já foi publicado, ele continua guardado no GitHub, para o Desfazer). No modo lista, <b>↑ ↓</b> mudam a ordem.</p>
+<h3>Vinhetas</h3>
+<p>Mudou o nome, o horário ou a cor? O Estúdio refaz as vinhetas sozinho ao salvar. Se aparecer "as vinhetas precisam ser refeitas", clique em <b class="bt2">Refazer vinhetas</b>.</p>
+</section>
+
+<section>
+<h2>4. Grade</h2>
+<p>A grade é a programação do canal, minuto a minuto. Ela se monta sozinha a partir dos <b>blocos do dia</b> (Sessão Terror, Desenhos...) e dos títulos de cada bloco; os seus programas entram por cima, no horário deles.</p>
+<ol class="passo">
+  <li><b class="bt2">Grade</b>. Use <b class="bt2">‹ semana anterior</b>, <b class="bt2">próxima semana ›</b> e <b class="bt2">Hoje</b>.</li>
+  <li>Clique no dia (SEG, TER...). A lista mostra o que passa, com hora, bloco e duração. Seus programas têm fundo âmbar.</li>
+</ol>
+<figure><img src="img/06-grade-segunda.jpg"><figcaption>A grade de um dia.</figcaption></figure>
+<h3>Ver o que passa num horário</h3>
+<p>No quadro <i>Ver o que passa</i>, escolha data e hora › <b class="bt2">Ver</b>. Mostra o título, o trecho exato no vídeo e o que vem depois.</p>
+<figure><img src="img/10-ver-o-que-passa.jpg" class="meia"><figcaption>Ver o que passa: segunda, 20:01, o Cine Kölja no ar.</figcaption></figure>
+</section>
+
+<section>
+<h3>Tirar um título de um dia</h3>
+<ol class="passo">
+  <li>Clique no item › <b class="bt2">Tirar deste dia</b>.</li>
+  <li>Outro título do mesmo bloco entra no lugar. O que você tirou não some: passa no dia seguinte.</li>
+</ol>
+<figure><img src="img/09-item-menu.jpg" class="meia"><figcaption>Clicando num item: assistir, mover ou tirar.</figcaption></figure>
+<h3>Inserir um título num dia e hora</h3>
+<ol class="passo">
+  <li><b class="bt">+ Inserir título</b>, escolha a data e a hora.</li>
+  <li>Digite parte do nome e clique no título. Também dá para pôr um <b>episódio extra</b> de um programa seu.</li>
+</ol>
+<figure><img src="img/07-inserir.jpg" class="meia"><figcaption>Inserindo Nosferatu numa terça às 15:00.</figcaption></figure>
+<h3>Mover</h3>
+<p>Arraste o item: solte em cima de outro dia (nas abas) para ir para o mesmo horário daquele dia, ou em cima de outro item para ir para o horário dele. Ou clique no item › <b class="bt2">Mover para outro horário</b>.</p>
+<h3>Mudanças desta grade</h3>
+<p>Tudo o que você tirou, inseriu ou moveu fica listado em <i>Mudanças desta grade</i>. <b class="bt2">desfazer</b> ao lado de cada uma volta ao normal.</p>
+</section>
+
+<section>
+<h3>Blocos do dia</h3>
+<p><b class="bt2">Blocos do dia</b> mostra a divisão de todo dia: a partir de que hora entra cada bloco. O número entre parênteses é quantos títulos o bloco tem. "Alterna com" troca de bloco dia sim, dia não.</p>
+<figure><img src="img/11-blocos.jpg" class="meia"><figcaption>Blocos do dia.</figcaption></figure>
+<div class="dica">O primeiro bloco precisa começar às 00:00. Datas especiais (como o Halloween) têm um dia só delas e não mudam aqui.</div>
+<h3>Gerar a grade de novo</h3>
+<p>A grade é refeita sozinha a cada mudança. <b class="bt2">Gerar a grade de novo</b> só confere que está tudo certo e diz quantos itens, programas e anúncios a semana tem. No ar, o próprio canal refaz a grade a cada 20 minutos.</p>
+</section>
+
+<section>
+<h2>5. Filmes</h2>
+<p>O acervo: filmes, desenhos, curtas e séries, todos em domínio público, tocados direto do Internet Archive.</p>
+<figure><img src="img/12-filmes.jpg"><figcaption>Procure pelo nome, filtre por bloco ou por "no ar / fora do ar".</figcaption></figure>
+<p>Clique num título para abrir a ficha:</p>
+<ul>
+  <li><b class="bt2">Tirar do ar</b>: o título sai da grade (o registro fica; <b>Pôr de volta no ar</b> desfaz).</li>
+  <li><b class="bt2">Inserir na grade...</b>: leva para a Grade com o título já procurado.</li>
+  <li><b>Cópias</b>: o canal toca a primeira; se falhar, a seguinte. <b class="bt2">usar primeiro</b>, <b class="bt2">remover</b>, <b class="bt2">Incluir cópia</b> (cole o endereço), <b class="bt2">Procurar cópias novas</b> (busca no Internet Archive).</li>
+</ul>
+<figure><img src="img/13-ficha-filme.jpg" class="meia"><figcaption>A ficha de um filme: cópias e intervalos.</figcaption></figure>
+</section>
+
+<section>
+<h3>Intervalos comerciais de um filme</h3>
+<p>Filmes de 40 minutos ou mais param para o intervalo mais ou menos a cada 25 minutos. O lugar de cada parada já foi achado automaticamente; você pode ajustar:</p>
+<ol class="passo">
+  <li>Na ficha, toque o filme no player e pare onde deve entrar o intervalo (de preferência num escurecimento ou troca de cena).</li>
+  <li><b class="bt">Marcar intervalo aqui</b>. Para tirar um, <b class="bt2">tirar</b> ao lado dele; <b class="bt2">ir</b> pula para aquele ponto.</li>
+  <li><b class="bt2">Salvar intervalos</b>. <b class="bt2">Sem intervalos</b> faz o filme passar direto. <b class="bt2">Detectar automaticamente</b> refaz a busca (precisa de internet, leva alguns minutos).</li>
+</ol>
+<h3>Incluir um título</h3>
+<div class="cuidado"><b>Só entra no canal o que é domínio público.</b> Filme americano publicado antes de 1931 é domínio público nos EUA; depois disso, depende de registro e renovação (a regra completa está em <code>docs/PD.md</code> na pasta do canal). Para passar com anúncio pago, também precisa ser domínio público no Brasil (filmes lançados até 1955). <b>Na dúvida, não inclua.</b></div>
+<ol class="passo">
+  <li><b class="bt">+ Incluir título</b>.</li>
+  <li>Título, ano, país, bloco e tipo.</li>
+  <li>Endereço do vídeo: no Internet Archive, abra o item, clique em "DOWNLOAD OPTIONS" › MPEG4 com o botão direito › "Copiar endereço do link". Cole aqui (começa com <code>https://archive.org/download/</code>).</li>
+  <li>Duração (ou deixe vazio para o Estúdio medir pela internet), sinopse de uma linha e <b>por que é domínio público</b>.</li>
+  <li>Marque "Confirmo que conferi" › <b class="bt">Incluir</b>.</li>
+</ol>
+<figure><img src="img/14-incluir-filme.jpg" class="meia"><figcaption>Incluir título.</figcaption></figure>
+</section>
+
+<section>
+<h2>6. Anúncios</h2>
+<p>O anúncio entra nos intervalos dos filmes, no lugar das nossas chamadas; o intervalo continua do mesmo tamanho, então a grade não muda de horário.</p>
+<ol class="passo">
+  <li><b class="bt2">Anúncios</b> › <b class="bt">+ Novo anúncio</b>.</li>
+  <li>Nome do anúncio, anunciante, datas de começo e fim, e o valor por inserção (serve para o relatório).</li>
+  <li><b>Inserções:</b> "por dia, em qualquer bloco" (ex.: 5 por dia) ou "por dia, em blocos escolhidos" (ex.: 2 na Sessão Terror, 1 no Noir).</li>
+  <li><b class="bt">Salvar</b>. Depois, no cartão do anúncio, <b class="bt2">Enviar vídeo</b> (até 2 minutos; o Estúdio converte).</li>
+  <li>Publicar.</li>
+</ol>
+<figure><img src="img/15-novo-anuncio.jpg" class="meia"><figcaption>Novo anúncio.</figcaption></figure>
+<div class="dica">As inserções se espalham pelo dia, nos intervalos dos filmes. Desenhos, curtas e episódios não têm intervalo, então um bloco sem filmes longos não recebe anúncio.</div>
+</section>
+
+<section>
+<h3>Relatório do anúncio</h3>
+<p><b class="bt2">Relatório</b> mostra, dia a dia, quantas inserções foram pedidas, quantas a grade tem e em quais blocos, mais o total e o valor. Se faltar intervalo para cumprir o pedido, ele avisa em amarelo e marca o dia em vermelho. <b class="bt2">Imprimir</b> gera papel ou PDF para o anunciante.</p>
+<figure><img src="img/17-relatorio.jpg"><figcaption>Relatório de um mês de campanha.</figcaption></figure>
+<div class="dica">Para vender, ofereça "por dia, em qualquer bloco" ou em blocos com filmes longos (Sessão Terror, Grandes Clássicos, Comédia Clássica, Noir). Confira o relatório antes de fechar a quantidade.</div>
+</section>
+
+<section>
+<h2>7. Saúde: links quebrados</h2>
+<p>Os filmes vêm do Internet Archive, e às vezes um link para de funcionar. O canal no ar já pula sozinho o que está quebrado (e o robô do canal testa os próximos a cada 20 minutos), mas aqui você troca a cópia de vez.</p>
+<ol class="passo">
+  <li><b class="bt2">Saúde</b> › <b class="bt">Testar os próximos 2 dias</b> (uns 2 minutos) ou <b class="bt2">Testar o acervo inteiro</b> (mais demorado).</li>
+  <li>Cada título com problema aparece num cartão. Use:
+    <ul><li><b class="bt">Trocar: usar a cópia boa e remover as quebradas</b> (um clique resolve);</li>
+    <li><b class="bt2">Procurar cópia nova</b> quando nenhuma cópia funciona;</li>
+    <li><b class="bt2">Tirar do ar</b> se não houver cópia.</li></ul></li>
+  <li>Publicar.</li>
+</ol>
+<figure><img src="img/18-saude.jpg"><figcaption>Saúde depois de um teste sem problemas.</figcaption></figure>
+</section>
+
+<section>
+<h2>8. Publicar</h2>
+<ol class="passo">
+  <li><b class="bt2">Publicar</b>. A lista "O que vai" mostra cada mudança e cada vídeo que vai subir.</li>
+  <li>Se aparecer algo em vermelho, resolva antes (o texto diz o quê). Amarelo é só aviso.</li>
+  <li>Quer conferir sem enviar nada? <b class="bt2">Ensaio</b>.</li>
+  <li><b class="bt">Publicar agora</b>. Os vídeos sobem (pode levar alguns minutos para episódios longos) e a grade é publicada.</li>
+  <li>Em 1 a 3 minutos o canal se atualiza: site, guia e os aparelhos com Retrotv.</li>
+  <li><b class="bt2">Conferir agora</b> abre a grade publicada e mostra se cada programa e anúncio já está lá.</li>
+</ol>
+<figure><img src="img/19-publicar.jpg"><figcaption>Publicar: o que vai, ensaio, publicar, conferir e configurar.</figcaption></figure>
+<p><b>Onde guardar os episódios:</b> GitHub (padrão) ou Internet Archive (público e permanente; precisa das chaves de <code>archive.org/account/s3.php</code>). Anúncios e vinhetas sempre vão para o GitHub.</p>
+<p><b class="bt2">Descartar as mudanças</b> joga fora tudo o que ainda não foi publicado (os vídeos enviados continuam no Mac).</p>
+</section>
+
+<section>
+<h2>9. Desfazer</h2>
+<p>Cada publicação fica guardada. Se algo saiu errado:</p>
+<ol class="passo">
+  <li><b class="bt2">Desfazer</b>. A primeira da lista é a que está no ar agora.</li>
+  <li>Na publicação para a qual quer voltar, <b class="bt2">Voltar para esta</b> › confirme.</li>
+  <li>A grade daquela publicação é publicada de novo. Em 1 a 3 minutos está no ar.</li>
+</ol>
+<figure><img src="img/22-desfazer.jpg"><figcaption>Desfazer: a lista das publicações.</figcaption></figure>
+<div class="dica">Desfazer também é uma publicação: se voltou demais, é só voltar de novo para a mais nova. Se houver mudanças não publicadas, o Estúdio pede para publicar ou descartar antes.</div>
+</section>
+
+<section>
+<h2>10. Problemas comuns</h2>
+<table>
+<tr><th style="width:38%">O que aparece</th><th>O que fazer</th></tr>
+<tr><td>"Sem internet" / "Não consegui falar com o GitHub"</td><td>Nada foi publicado. Continue editando; publique quando a internet voltar.</td></tr>
+<tr><td>"A chave do GitHub não vale mais"</td><td>Faça uma chave nova (capítulo 2) e cole em Publicar › Configurar.</td></tr>
+<tr><td>"Alguém mudou os mesmos arquivos no GitHub ao mesmo tempo"</td><td>Nada foi publicado e suas mudanças continuam aqui. Feche e abra o Estúdio (ele busca a versão nova) e publique de novo. Se repetir, publique de novo mais tarde.</td></tr>
+<tr><td>Meu programa não aparece na grade</td><td>Confira em Programas: tem episódio? Está "No ar"? Tem aviso vermelho (horário batendo com outro, ou passando da meia-noite)? A data de começo já chegou? Na internet, só aparece depois de Publicar.</td></tr>
+<tr><td>"A conversão falhou"</td><td>O arquivo pode estar incompleto. Abra no QuickTime para ver se toca; se tocar, exporte de novo (Arquivo › Exportar › 1080p) e envie esse.</td></tr>
+<tr><td>"Pouco espaço no disco"</td><td>Libere espaço no Mac. O Estúdio precisa de pouco mais que o dobro do tamanho do vídeo enquanto converte.</td></tr>
+<tr><td>"Falta o desenhista das vinhetas"</td><td>Dois cliques em <code>estudio › instalar.command</code> (precisa de internet só nessa hora).</td></tr>
+<tr><td>"O Estúdio parou" / a página não responde</td><td>Dois cliques no ícone da Mesa de novo e recarregue a página.</td></tr>
+<tr><td>Anúncio com inserções faltando</td><td>Escolha blocos com filmes longos, ou "qualquer bloco", ou diminua as inserções por dia (veja o Relatório).</td></tr>
+<tr><td>Um filme travou no meio no ar</td><td>O canal mostra "Problemas técnicos · já voltamos" e segue sozinho. Depois, em Saúde, teste e troque a cópia.</td></tr>
+</table>
+</section>
+
+<section>
+<h2>11. Onde fica cada coisa</h2>
+<table>
+<tr><th style="width:38%">O quê</th><th>Onde</th></tr>
+<tr><td>A pasta do canal (cópia do repositório)</td><td><code>Documentos › KoljaTV-Estudio</code></td></tr>
+<tr><td>O Estúdio (programa)</td><td><code>KoljaTV-Estudio › estudio</code> (o ícone da Mesa abre este)</td></tr>
+<tr><td>Vídeos dos programas e anúncios (no Mac)</td><td><code>KoljaTV-Estudio › media › programas</code> e <code>media › anuncios</code></td></tr>
+<tr><td>Programas, anúncios e mudanças da grade</td><td><code>catalog/programas.json</code>, <code>catalog/anuncios.json</code>, <code>catalog/grade_manual.json</code></td></tr>
+<tr><td>Filmes e blocos</td><td><code>catalog/titles.json</code>, <code>catalog/grade.json</code></td></tr>
+<tr><td>Vídeos publicados</td><td>GitHub, release <b>estudio-midia</b> de koljatv/koljatv.github.io (não apague: a grade aponta para lá)</td></tr>
+<tr><td>Chaves (GitHub, Internet Archive)</td><td>Chaveiro do Mac (app "Acesso às Chaves"), item "Estudio KOLJA TV"</td></tr>
+<tr><td>Registro do Estúdio (para pedir ajuda)</td><td><code>~/Library/Logs/Estudio KOLJA TV.log</code></td></tr>
+<tr><td>O canal no ar</td><td><code>https://koljatv.github.io/</code> · grade em <code>/grade/schedule.json</code></td></tr>
+</table>
+<div class="dica">Faça cópia de segurança da pasta <code>media</code> de vez em quando (num HD externo, por exemplo): os originais convertidos dos seus programas ficam ali.</div>
+</section>
+</body>
+</html>

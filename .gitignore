@@ -1,0 +1,8 @@
+state/
+public/grade/now.json
+catalog/found.json
+media/
+__pycache__/
+.DS_Store
+DECISION-*.md
+catalog/found_episodes.json

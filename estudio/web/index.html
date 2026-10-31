@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estúdio KÖLJA TV</title>
+<link rel="stylesheet" href="/web/estudio.css">
+<script>window.TOKEN = "{{TOKEN}}"; window.VERSAO = "{{VERSAO}}";</script>
+</head>
+<body>
+<aside id="menu">
+  <div class="marca"><span class="kolja">KÖLJA</span><span class="tv">TV</span><small>ESTÚDIO</small></div>
+  <nav>
+    <a href="#inicio" data-p="inicio"><i>◉</i>Início</a>
+    <a href="#programas" data-p="programas"><i>▶</i>Programas</a>
+    <a href="#grade" data-p="grade"><i>▦</i>Grade</a>
+    <a href="#filmes" data-p="filmes"><i>🎞</i>Filmes</a>
+    <a href="#anuncios" data-p="anuncios"><i>$</i>Anúncios</a>
+    <a href="#saude" data-p="saude"><i>✚</i>Saúde</a>
+    <a href="#publicar" data-p="publicar"><i>↑</i>Publicar <b id="badge" hidden></b></a>
+    <a href="#desfazer" data-p="desfazer"><i>↶</i>Desfazer</a>
+    <a href="#ajuda" data-p="ajuda"><i>?</i>Ajuda</a>
+  </nav>
+  <div class="rodape">versão <span id="versao"></span><br><span id="teste-aviso"></span></div>
+</aside>
+<main id="pagina"></main>
+<div id="jobs"></div>
+<div id="toast"></div>
+<div id="modal" hidden><div class="caixa"><button class="fechar" onclick="fecharModal()">✕</button><div id="modal-corpo"></div></div></div>
+<script src="/web/estudio.js"></script>
+</body>
+</html>
