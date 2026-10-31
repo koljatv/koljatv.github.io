@@ -39,7 +39,7 @@ covers 3 days). Our pieces are fetched once and kept on the phone. When a film f
    the next few that does fit may air early, and its turn is then passed over). Series and serials keep their
    episode order and take turns, like a matinee running several serials. Shorts of the other blocks fill what's
    left of a slot, from a tape of their own, never twice a day. `python3 tools/rotation.py` says how many days go
-   by before the first rerun, block by block (31 Oct 2026: 21 days, 749 titles, 512 hours). It puts the healthy copies of
+   by before the first rerun, block by block (31 Oct 2026, with the dayparts: 10 days, 1,148 titles, 558 hours; the cartoons, 7½ hours a day, 9). It puts the healthy copies of
    each title first and, where none of a title's copies answers, puts a playable title of the same block that fits
    the slot (the longest first) in its place, with the station card for the remainder.
 3. When `grade/schedule2.json` or `grade/schedule.json` changed, they're committed (`grade: <rev>`); `public/` is then deployed to Pages.
@@ -77,6 +77,18 @@ pause of the soundtrack (away from dialogue), else the strongest cut. Every copy
 result is kept in `catalog/breaks.json`, keyed by URL (a copy not measured yet gets the measured copy's places
 scaled to its length; a title with none measured plays straight). Run it after adding titles; it only does what's
 new (`--redo --only ID` to measure a title again, `--copies 1` for first copies only).
+
+The cartoon block has short breaks of its own instead: after every third programme, INTERVALO and VOLTAMOS (cards
+only, about ten seconds), never in a slot's last four minutes (`catalog/grade.json` › `block_breaks`; they go in the
+schedule as ordinary pieces of ours, so every app version plays them).
+
+## The day
+
+Since 31 October 2026 the day has parts (Niko): cartoons from 06:00 to 13:30; the matinee in the afternoon (silent
+comedy, serials, then comedy or westerns on alternate days, Kung Fu de Sábado at 15:00 on Saturdays) until 19:00;
+the great films in prime time (great classics or adventure from 19:00, noir from 22:00); and the madrugada (horror,
+science fiction / cult / documentaries, classic TV). `catalog/grade.json` › `dayparts` names them and the schedule
+carries them (`dayparts`), so the site's guide heads the day with them; the apps ignore them.
 
 `build.py` lays a feature out as its running time plus its breaks, then `tools/segments.py` cuts it into parts.
 A break is **our own pieces only**. Since 31 October 2026 (Niko's call) it is just the INTERVALO card and VOLTAMOS,

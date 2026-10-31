@@ -83,7 +83,14 @@ class Grade:
              "presents": lambda: self.presents.append(p), "trailer": lambda: self.trailers.append(p),
              "card": lambda: setattr(self, "card", p)}.get(p.kind, lambda: None)()
         self.health = health
+        by = {o["id"]: Prog(o["id"], o["kind"], o["dur"], o.get("block")) for o in cfg["ours"]}
+        # a block of shorts with a short break of its own every few programmes (DESENHOS: INTERVALO + VOLTAMOS)
+        self.pauses = {b: (int(v.get("every", 3)), [by[i] for i in (v.get("open"), v.get("close")) if i in by])
+                       for b, v in (cfg.get("block_breaks") or {}).items() if v.get("every")}
+        self._slot = None  # [block, slot end, programmes aired in this slot]
         self.titles, self.shelves, self.fillers = {}, {}, []
+        stay = set(cfg.get("stay_home", []))  # blocks whose shorts don't fill other blocks' slots (the cartoons stay in the morning)
+        self.guests, self.hosts = [], set(cfg.get("stay_home_guests", []))  # ...except, last, the slots of these blocks (the matinee)
         self.commercial = bool(cfg.get("commercial_mode"))
         self.today = dt.date.today()
         brk = segments.config(cfg)
@@ -103,11 +110,13 @@ class Grade:
                     p.span = p.dur + sum(x.dur for l in lines for x in l)
             self.titles[p.id] = p
             self.shelves.setdefault(p.block, []).append(p)
-            if p.dur <= 25 * MIN and p.kind != "tv" and p.id not in self.splits: self.fillers.append(p)  # never an episode out of its order
+            if p.dur <= 25 * MIN and p.kind != "tv" and p.id not in self.splits:  # never an episode out of its order
+                (self.guests if p.block in stay else self.fillers).append(p)  # a "stay_home" block's shorts only close the guests' slots
         for b, l in self.shelves.items():  # families take turns (no 4 Supermen in a row), episodes in order
             l.sort(key=lambda p: p.id)
             l[:] = interleave(l)
         self.fillers = interleave(self.fillers)
+        self.guests = interleave(self.guests)
         self.raw = {t["id"]: t for t in titles}
         self.brk = brk
         self.own = proprios.Own(self, extra, Prog, local)  # our programmes, a date's edits, the ads (Estúdio KÖLJA TV)
@@ -137,7 +146,7 @@ class Grade:
     def build(self, d):
         """Day d, with the tapes wound forward from the epoch (a few milliseconds a day)."""
         start = min(d, self.epoch)
-        if self._at is None or self._at[0] > d or self._at[0] < start: self._at = (start, {}, [len(self.fillers) // 2])
+        if self._at is None or self._at[0] > d or self._at[0] < start: self._at = (start, {}, [len(self.fillers) // 2, len(self.guests) // 2])
         while self._at[0] < d: self._day(self._at[0])
         return self._day(d)
 
@@ -178,6 +187,13 @@ class Grade:
             x = self.idents[gap % len(self.idents)]; out.append([t, t + x.dur, x, block]); t += x.dur
         if self.trailers and gap % 2:
             x = self.trailers[(gap // 2) % len(self.trailers)]; out.append([t, t + x.dur, x, block]); t += x.dur
+        sl = self._slot
+        if sl and sl[0] == block and block in self.pauses:
+            sl[2] += 1
+            every, pcs = self.pauses[block]
+            n = sum(x.dur for x in pcs)
+            if pcs and sl[2] % every == 0 and t + n <= sl[1] - 4 * MIN:  # not right before the slot ends
+                for x in pcs: out.append([t, t + x.dur, x, block]); t += x.dur
         return t
 
     LOOK = 8  # how far down its tape a block may look for a title that fits the end of a slot
@@ -188,6 +204,7 @@ class Grade:
         as aired ahead and passed over when the tape gets to it, so nothing is skipped or shown twice in a lap.
         The next title that doesn't fit opens the block's next slot. Fillers from their own tape close the slot."""
         t = frm
+        self._slot = [block, to, 0]
         v = self.vignettes.get(block)
         if v and t + v.dur <= to: out.append([t, t + v.dur, v, block]); t += v.dur
         room = to - t
@@ -232,7 +249,16 @@ class Grade:
             if p.block == block or p.id in today or p.id in self._ban or t + self.intro(gaps).dur + p.span + self.outro(gaps) > to: continue
             t = self.air(out, t, p, block, gaps); gaps += 1; today.add(p.id)
             fpos[0] = (j + k + 1) % nf
+        ng = len(self.guests) if block in self.hosts else 0  # then the morning's cartoons, on their own tape, for the matinee
+        j = fpos[1] % ng if ng else 0
+        for k in range(ng):
+            if to - t < 4 * MIN: break
+            p = self.guests[(j + k) % ng]
+            if p.block == block or p.id in today or p.id in self._ban or t + self.intro(gaps).dur + p.span + self.outro(gaps) > to: continue
+            t = self.air(out, t, p, block, gaps); gaps += 1; today.add(p.id)
+            fpos[1] = (j + k + 1) % ng
         if t < to and self.card: out.append([t, to, self.card, block])
+        self._slot = None
 
     def items(self, d):
         """Day d as it goes on the air: laid out, stand-ins for dead titles, features cut by their breaks, the spots."""
@@ -312,6 +338,7 @@ def schedule(g, items, cfg, titles, base, fmt):
                                    for s in sources(t, g)]}
     tl.update({k: v for k, v in g.own.titles.items() if k in used})  # our programmes' episodes on the air
     body = {"blocks": cfg["blocks"] | g.own.blocks, "ours": ours, "titles": tl,
+            **({"dayparts": cfg["dayparts"]} if cfg.get("dayparts") else {}),
             "items": [[i[0], i[1], i[2].id, i[3]] + (i[4:] if fmt >= 2 else []) for i in items]}
     rev = hashlib.sha1(json.dumps(body, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:12]
     note = "KÖLJA TV. Times are milliseconds since 1970 (UTC). items: [start, end, id, block]; id is a key of titles or ours."

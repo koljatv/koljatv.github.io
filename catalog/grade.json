@@ -76,36 +76,24 @@
    "block": "series"
   },
   {
-   "at": "05:30",
-   "block": "muda"
-  },
-  {
-   "at": "07:00",
+   "at": "06:00",
    "block": "toons"
   },
   {
-   "at": "07:55",
-   "block": "series"
+   "at": "13:30",
+   "block": "muda"
   },
   {
-   "at": "09:30",
-   "block": "comedia"
-  },
-  {
-   "at": "12:30",
-   "block": "classicos"
-  },
-  {
-   "at": "16:50",
+   "at": "15:00",
    "block": "seriados"
   },
   {
-   "at": "17:55",
-   "block": "series"
+   "at": "16:00",
+   "block": "comedia|faroeste"
   },
   {
-   "at": "19:25",
-   "block": "faroeste|aventura"
+   "at": "19:00",
+   "block": "classicos|aventura|classicos"
   },
   {
    "at": "22:00",
@@ -165,7 +153,7 @@
    }
   ]
  },
- "week_note": "A weekday of its own (keys mon..sun), used unless the date has a special line-up. Saturday: KUNG FU DE SÁBADO at 15:00 (2026-10-31), carved out of the afternoon's GRANDES CLÁSSICOS; small shelf for now, so other blocks' shorts fill the rest of the slot.",
+ "week_note": "A weekday of its own (keys mon..sun), used unless the date has a special line-up. Saturday: KUNG FU DE SÁBADO at 15:00 in the matinee, 15:00-17:00 in place of the serials, then comedy or westerns to 19:00; small shelf for now, so other blocks' shorts fill the rest of the slot.",
  "week": {
   "sat": [
    {
@@ -181,40 +169,24 @@
     "block": "series"
    },
    {
-    "at": "05:30",
-    "block": "muda"
-   },
-   {
-    "at": "07:00",
+    "at": "06:00",
     "block": "toons"
    },
    {
-    "at": "07:55",
-    "block": "series"
-   },
-   {
-    "at": "09:30",
-    "block": "comedia"
-   },
-   {
-    "at": "12:30",
-    "block": "classicos"
+    "at": "13:30",
+    "block": "muda"
    },
    {
     "at": "15:00",
     "block": "kungfu"
    },
    {
-    "at": "16:50",
-    "block": "seriados"
+    "at": "17:00",
+    "block": "comedia|faroeste"
    },
    {
-    "at": "17:55",
-    "block": "series"
-   },
-   {
-    "at": "19:25",
-    "block": "faroeste|aventura"
+    "at": "19:00",
+    "block": "classicos|aventura|classicos"
    },
    {
     "at": "22:00",
@@ -371,7 +343,7 @@
    "file": "voltamos.mp4"
   }
  ],
- "day_note": "Sized to the shelves: a block's hours on the shelf / its hours a day = days before its first rerun (tools/rotation.py). 'a|b|c' alternates blocks day by day, for blocks whose longest title needs a long slot but whose shelf is small.",
+ "day_note": "Dayparts (Niko, 31 Oct 2026): cartoons from 06:00 to 13:30; the afternoon is the matinee (silent comedy, serials, then comedy and westerns on alternate days) until 19:00; prime time from 19:00 is the great classics and adventure, then noir at 22:00; the madrugada is horror, science fiction / cult / documentaries and classic TV. Sized to the shelves: a block's hours on the shelf / its hours a day = days before its first rerun (tools/rotation.py). 'a|b|c' alternates blocks day by day; a slot must be longer than its block's longest title, or that title never airs.",
  "epoch": "2026-10-31",
  "epoch_note": "tools/build.py winds each block's tape from this date, day by day; leave it, or every date's line-up moves.",
  "breaks_note": "breaks: features (films of 40 minutes or more) go to a break about every 25 minutes, at the places tools/breaks.py found (catalog/breaks.json). Since 31 Oct 2026 (Niko) a break is only the INTERVALO card and VOLTAMOS (~10 s): no trailers, no promos, no sponsor slot. Future spots (the Estúdio's anúncios, with Niko's own voice-over) need room: \"hold\" = seconds of the station card in each break, which the spots replace. tools/segments.py also takes \"slot\", \"promos\", \"trailers\": true, \"idents\": true. Shorts, cartoons and episodes play straight. \"on\": false puts every feature back in one piece.",
@@ -385,5 +357,52 @@
   "hold": 0
  },
  "commercial_note": "commercial_mode (for when the channel carries paid ads): only titles cleared for it go on the air (build.py cleared: a title's rights). Off for now.",
- "commercial_mode": false
+ "commercial_mode": false,
+ "block_breaks": {
+  "toons": {
+   "every": 3,
+   "open": "intervalo",
+   "close": "voltamos"
+  }
+ },
+ "block_breaks_note": "A block of shorts with a short break of its own: after every 'every' programmes, INTERVALO and VOLTAMOS (cards only, ~10 s), never in the last 4 minutes of a slot.",
+ "dayparts": [
+  {
+   "at": "00:00",
+   "pt": "MADRUGADA",
+   "en": "LATE NIGHT"
+  },
+  {
+   "at": "06:00",
+   "pt": "MANHÃ · DESENHOS",
+   "en": "MORNING · CARTOONS"
+  },
+  {
+   "at": "13:30",
+   "pt": "TARDE · MATINÊ",
+   "en": "AFTERNOON · MATINEE"
+  },
+  {
+   "at": "19:00",
+   "pt": "NOITE · OS GRANDES FILMES",
+   "en": "PRIME TIME · THE GREAT FILMS"
+  }
+ ],
+ "dayparts_note": "The day's parts as the site's guide heads them (local time); schedule.json carries them as 'dayparts'. The apps ignore them.",
+ "stay_home": [
+  "toons"
+ ],
+ "stay_home_note": "Blocks whose shorts don't fill the end of other blocks' slots: the cartoons stay in the morning, except that, after the other blocks' shorts, they may close a slot of the blocks in stay_home_guests (the matinee and the madrugada, as before). Prime time (classicos, aventura, noir) never gets them.",
+ "stay_home_guests": [
+  "muda",
+  "seriados",
+  "comedia",
+  "faroeste",
+  "kungfu",
+  "terror",
+  "ficcao",
+  "cult",
+  "docs",
+  "series"
+ ]
 }

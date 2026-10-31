@@ -108,6 +108,9 @@ html { background: #0e0c0a; }
 .ktv-guide { list-style: none; margin: 0; padding: 0; }
 .ktv-guide li { display: grid; grid-template-columns: 64px 1fr; gap: 14px; padding: 9px 0; border-bottom: 1px solid #2e2720; }
 .ktv-guide li.sec { display: block; color: #ffb000; font: 700 13px/1 "DIN Condensed", "Arial Narrow", sans-serif; letter-spacing: .22em; border: 0; padding: 22px 0 6px; }
+.ktv-guide li.part { display: block; color: #f3e9d6; font: 700 18px/1 "DIN Condensed", "Arial Narrow", sans-serif; letter-spacing: .2em; border: 0; border-top: 2px solid #ffb000; padding: 30px 0 2px; margin-top: 18px; }
+.ktv-guide li.part:first-child { margin-top: 0; }
+.ktv-guide li.part + li.sec { padding-top: 10px; }
 .ktv-guide li.past { opacity: .45; }
 .ktv-guide li.on { color: #ffb000; }
 .ktv-guide li.on time::after { content: "AO VIVO"; display: block; margin-top: 3px; font-size: 10px; letter-spacing: .14em; color: #fff; background: #a51212; width: max-content; padding: 1px 5px; }

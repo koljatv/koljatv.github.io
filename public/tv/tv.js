@@ -491,9 +491,13 @@
       });
     }
     guideEl.textContent = '';
-    let block = null;
+    let block = null, part = null;
+    const parts = (S.dayparts || []).map(x => [+x.at.slice(0, 2) * 60 + +x.at.slice(3), x.pt]).sort((x, y) => x[0] - y[0]);
+    const partOf = ms => { const [h, m] = hm(ms).split(':').map(Number); let n = null; for (const x of parts) if (h * 60 + m >= x[0]) n = x[1]; return n; };
     for (const p of list) {
       if (dayKey(p.s) !== day) continue;
+      const pt = parts.length ? partOf(p.s) : null;
+      if (pt && pt !== part) { part = pt; block = null; const li = document.createElement('li'); li.className = 'part'; li.textContent = pt; guideEl.append(li); }
       if (p.block !== block) { block = p.block; const li = document.createElement('li'); li.className = 'sec'; li.textContent = '— ' + (blockName(block) || block); guideEl.append(li); }
       const li = document.createElement('li'), e = showEnd(p);
       li.className = p.s <= t && t < e ? 'on' : e <= t ? 'past' : '';
