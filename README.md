@@ -13,6 +13,7 @@ only, never secrets, keys or personal data.
 | `/` | `public/index.html`: what's on now, the next 24 hours, about. Reads the two files below. |
 | `/grade/schedule2.json` | the next 3 days, item by item: `[start, end, id, block(, part)]` (ms since 1970, UTC), every title on the air with its copies in order (and, for features, where each copy breaks), our pieces, the blocks' names. `rev` names this build. Format 2, with the commercial breaks: what Retrotv 0.3.1+ plays. |
 | `/grade/schedule.json` | the same shelves laid out without breaks, format 1 (`[start, end, id, block]`), for Retrotv 0.3.0 sets. |
+| `/legendas/` | our own subtitles: `<id>.pt-BR.vtt` and `<id>.en.vtt` (WebVTT), and `index.json`, which lists the subtitled titles, their languages, a revision tag and, per copy (a hash of its address), how that copy's clock lines up with the subtitles. See "Subtitles" below. |
 | `/grade/now.json` | what's on now (with the offset into it), the next 8 items, the stand-ins in force, and the current `rev`. Rebuilt every run, not kept in git. |
 
 Our own vignettes, idents, "apresenta", station card and break bumpers are **Release assets** (tag
@@ -89,6 +90,31 @@ return (0.3.2: about a minute before the break, since a ten-second break is too 
 
 `catalog/grade.json`: `breaks.on: false` puts every feature back in one piece. `commercial_mode` (off; for when
 the breaks carry paid ads) puts on the air only the titles cleared for that use (`rights`).
+
+## Subtitles (legendas)
+
+KÖLJA TV makes its own subtitles: Portuguese (pt-BR) for everything we subtitle, and English for the talkies.
+Silent films get Portuguese for their intertitles, letters and newspapers, shown for as long as the card is on
+screen; cartoons only where the speech or a song matters. The files live in `public/legendas/` and are published
+with the site.
+
+`legendas/index.json`:
+
+```json
+{"v": 1, "langs": {"pt-BR": "Português", "en": "English"},
+ "titles": {"<id>": {"langs": ["pt-BR", "en"], "r": "<revision>",
+                     "copies": {"<fnv1a-32 of the copy's url>": {"s": 1.0, "map": [[0, 0.0], [1830.2, 4.4]]}}}}}
+```
+
+The subtitles are timed on one copy of the title. Every other copy is lined up with it: the subtitle time is
+`(t - offset) / s` for the copy's file time `t`, the offset stepping at the copy times listed in `map` (a copy may
+run at another speed, start earlier, or miss a reel). A copy that isn't listed plays without subtitles rather than
+out of sync. The players (the site's `tv/tv.js` and Retrotv 0.3.3+) read the index, fetch a title's `.vtt` when it
+goes on the air (by `r`, so a fixed file is fetched again), and draw the line on the glass. Default Portuguese; the
+viewer picks PT / EN / OFF (site: the CC button under the set or the C key; Retrotv: MENU › LEGENDAS).
+
+To fix a line: edit the `.vtt` (keep the timing format), commit and push; the index's `r` for that title should
+change too (any new value), so phones that kept the old file fetch it again.
 
 ## Estúdio KÖLJA TV (running the channel by hand, no AI needed)
 

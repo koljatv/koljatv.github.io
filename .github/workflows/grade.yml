@@ -8,7 +8,7 @@ on:
     - cron: "7,27,47 * * * *"
   push:
     branches: [main]
-    paths: ["catalog/**", "tools/**", "public/index.html", "public/ao-vivo/**", "public/tv/**", ".github/workflows/grade.yml"]
+    paths: ["catalog/**", "tools/**", "public/index.html", "public/ao-vivo/**", "public/tv/**", "public/legendas/**", ".github/workflows/grade.yml"]
   workflow_dispatch: {}
 
 permissions:

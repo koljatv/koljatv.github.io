@@ -25,6 +25,7 @@
       <div class="ktv-o ktv-next hide"><b>A SEGUIR</b><span></span></div>
       <div class="ktv-o ktv-msg hide"></div>
       <button class="ktv-o ktv-tap hide" type="button">TOQUE PARA ATIVAR O SOM</button>
+      <div class="ktv-sub hide" aria-live="off"></div>
       <div class="ktv-crt"></div><div class="ktv-shine"></div>
       <div class="ktv-power" role="button" tabindex="0" aria-label="Ligar a TV e assistir ao vivo">
         <div class="knob"></div><strong>ASSISTIR <b>AO VIVO</b></strong><span>clique para ligar a TV · com som</span>
@@ -35,6 +36,7 @@
       <button type="button" data-k="power" aria-label="Ligar ou desligar"><svg viewBox="0 0 24 24"><path d="M11 2h2v10h-2zM6.3 5.3l1.4 1.4A7 7 0 1 0 16.3 6.7l1.4-1.4A9 9 0 1 1 6.3 5.3z"/></svg><span class="lbl">LIGAR</span></button>
       <button type="button" data-k="mute" aria-label="Som"><svg viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3z"/><path class="w" d="M15.5 8.5a5 5 0 0 1 0 7l1.4 1.4a7 7 0 0 0 0-9.8zM18.4 5.6a9 9 0 0 1 0 12.8l1.4 1.4a11 11 0 0 0 0-15.6z"/><path class="x" d="M15 9.4 16.4 8l2.1 2.1L20.6 8 22 9.4l-2.1 2.1 2.1 2.1-1.4 1.4-2.1-2.1-2.1 2.1-1.4-1.4 2.1-2.1z" style="display:none"/></svg></button>
       <input type="range" min="0" max="1" step="0.05" aria-label="Volume">
+      <button type="button" data-k="cc" aria-label="Legendas"><svg viewBox="0 0 24 24"><path d="M3 5h18v14H3zm2 2v10h14V7zm2 3h4v1.5H8.5v1H11V14H7zm6 0h4v1.5h-2.5v1H17V14h-4z"/></svg><span class="cc">PT</span></button>
       <span class="sp"></span>
       <span class="clock"></span>
       <button type="button" data-k="full" aria-label="Tela cheia"><svg viewBox="0 0 24 24"><path d="M3 3h7v2H5v5H3zm11 0h7v7h-2V5h-5zM3 14h2v5h5v2H3zm16 0h2v7h-7v-2h5z"/></svg><span class="lbl">TELA CHEIA</span></button>
@@ -42,7 +44,7 @@
   const q = s => host.querySelector(s);
   const screen = q('.ktv-screen'), canvas = q('.ktv-static'), glass = q('.ktv-glass'), powerEl = q('.ktv-power');
   const cardEl = q('.ktv-card'), liveEl = q('.ktv-live'), bugEl = q('.ktv-bug'), nextEl = q('.ktv-next'), msgEl = q('.ktv-msg'), tapEl = q('.ktv-tap');
-  const volEl = q('input[type=range]'), clockEl = q('.clock');
+  const volEl = q('input[type=range]'), clockEl = q('.clock'), subEl = q('.ktv-sub'), ccEl = q('[data-k=cc]');
   const info = document.getElementById('ktv-info'), guideEl = document.getElementById('ktv-guide'), daysEl = document.getElementById('ktv-days');
   const show = (el, on) => el.classList.toggle('hide', !on);
 
@@ -335,9 +337,66 @@
     if (v.playbackRate !== r) v.playbackRate = r;
   }, 1000);
   // A feature's part stops on its last picture before the break; the clock does the rest.
+  // ---------- legendas: our own subtitles, per title and language ----------
+  // legendas/index.json lists the subtitled titles and, for each copy (by a hash of its address), how its clock lines up
+  // with the copy we subtitled: ref = (t - offset) / s, the offset stepping at the copy times listed. A copy that isn't
+  // listed plays without subtitles rather than out of sync.
+  const SUBS = ['pt-BR', 'en', ''], SUB_NAME = { 'pt-BR': 'PT', en: 'EN', '': 'OFF' };
+  let subLang = localStorage.getItem('ktv.sub'); if (subLang === null || !SUBS.includes(subLang)) subLang = 'pt-BR';
+  let LG = null, subShown = null;
+  const vtts = new Map();
+  const fnv = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return ('0000000' + h.toString(16)).slice(-8); };
+  async function loadSubs() {
+    const r = await fetch(BASE + 'legendas/index.json?m=' + Math.floor(Date.now() / MIN), { cache: 'no-store' });
+    if (r.ok) LG = await r.json();
+  }
+  const vttTime = x => { const p = x.trim().split(':').map(Number); return p.length === 3 ? p[0] * 3600 + p[1] * 60 + p[2] : p[0] * 60 + p[1]; };
+  function parseVTT(t) {
+    const out = [];
+    for (const b of t.replace(/\r/g, '').split(/\n\n+/)) {
+      const ls = b.split('\n'), k = ls.findIndex(l => l.includes('-->'));
+      if (k < 0) continue;
+      const [a, z] = ls[k].split('-->');
+      out.push([vttTime(a), vttTime(z.trim().split(' ')[0]), ls.slice(k + 1).map(esc).join('<br>')]);
+    }
+    return out;
+  }
+  function cueAt(cs, t) {
+    let lo = 0, hi = cs.length - 1, k = -1;
+    while (lo <= hi) { const m = (lo + hi) >> 1; if (cs[m][0] <= t) { k = m; lo = m + 1; } else hi = m - 1; }
+    return k >= 0 && t < cs[k][1] ? cs[k][2] : '';
+  }
+  function subs(a) {
+    let html = '';
+    const it = a && a.pl && !a.pl.ours && a.pl.it, e = power && subLang && LG && it && it.p && LG.titles[it.id];
+    const c = e && e.langs.includes(subLang) && e.copies[fnv(a.pl.url)];
+    if (c) {
+      const key = it.id + '.' + subLang, cs = vtts.get(key);
+      if (cs === undefined || (cs.failed && Date.now() - cs.failed > 60e3)) {
+        vtts.set(key, { loading: 1 });
+        fetch(BASE + 'legendas/' + key + '.vtt?r=' + (e.r || '')).then(r => { if (!r.ok) throw r.status; return r.text(); })
+          .then(t => vtts.set(key, parseVTT(t))).catch(() => vtts.set(key, { failed: Date.now() }));
+      } else if (Array.isArray(cs)) {
+        const t = a.v.currentTime;
+        let off = c.map[0][1];
+        for (const [tc, o] of c.map) { if (t >= tc) off = o; else break; }
+        html = cueAt(cs, (t - off) / (c.s || 1));
+      }
+    }
+    if (html !== subShown) { subShown = html; subEl.innerHTML = html; show(subEl, !!html); }
+  }
+  function setSub(l) {
+    subLang = l; localStorage.setItem('ktv.sub', l);
+    ccEl.querySelector('.cc').textContent = SUB_NAME[l];
+    ccEl.classList.toggle('off', !l);
+    ccEl.setAttribute('aria-label', 'Legendas: ' + (l ? SUB_NAME[l] : 'desligadas'));
+    subShown = null;
+  }
+
   (function watch() {
     const a = air();
     if (a && a.pl.stop >= 0 && !a.v.paused && a.v.currentTime * 1000 >= a.pl.stop - 20) a.v.pause();
+    subs(a);
     requestAnimationFrame(watch);
   })();
 
@@ -395,7 +454,7 @@
       else if (nx && (it.o || (!toBreak(it) && pr && showEnd(pr) - t < 60e3))) { head = 'A SEGUIR'; line = hm(nx.s) + ' · ' + nx.p.title; }
     }
     nextEl.querySelector('b').textContent = head; nextEl.querySelector('span').textContent = line;
-    show(nextEl, !!head);
+    show(nextEl, !!head); host.classList.toggle('ktv-nx', !!head);
     if (info) {
       let html;
       const pr = progAt(t), nx = progAfter(pr ? showEnd(pr) : t), p = pr || nx;
@@ -496,6 +555,7 @@
   q('[data-k=power]').onclick = () => power ? powerOff() : powerOn();
   q('[data-k=mute]').onclick = () => { if (tapNeeded) unmuteTap(); else setMute(!muted); };
   q('[data-k=full]').onclick = full;
+  ccEl.onclick = () => setSub(SUBS[(SUBS.indexOf(subLang) + 1) % SUBS.length]);
   volEl.value = vol;
   volEl.oninput = () => { vol = +volEl.value; localStorage.setItem('ktv.vol', vol); if (muted && vol > 0) setMute(false); else levels(); };
   document.addEventListener('keydown', e => {
@@ -503,11 +563,14 @@
     const k = e.key.toLowerCase();
     if (k === 'f' && power) full();
     else if (k === 'm') setMute(!muted);
+    else if (k === 'c' || k === 'l') ccEl.click();
     else if (k === 'escape' && host.classList.contains('full')) host.classList.remove('full');
   });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
-  setMute(muted);
+  setMute(muted); setSub(subLang);
 
+  loadSubs().catch(() => {});
+  setInterval(() => loadSubs().catch(() => {}), 10 * MIN);
   load().then(() => { ui(); drawGuide(); }).catch(() => { if (info) info.innerHTML = '<div class="ttl">Já voltamos</div>'; });
   setInterval(tick, 500);
   setInterval(() => { if (!power) ui(); }, 1000);

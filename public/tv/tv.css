@@ -120,3 +120,15 @@ html { background: #0e0c0a; }
   .ktv-ctl input[type=range] { width: 90px; }
   .ktv-ctl .lbl, .ktv-ctl .clock { display: none; }
 }
+
+/* our subtitles, on the glass */
+.ktv-sub { position: absolute; left: 6%; right: 6%; bottom: 7.5%; text-align: center; pointer-events: none; transition: bottom .3s;
+  font: 600 2.75cqw/1.28 "Helvetica Neue", Arial, "Liberation Sans", sans-serif; color: #fbf6e8; letter-spacing: .01em;
+  text-shadow: 0 0 2px #000, 0 0 4px #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
+.ktv-sub.hide { display: none; }
+.ktv-sub { -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.ktv-set.ktv-nx .ktv-sub { bottom: 17%; }
+.ktv-set.full .ktv-sub { font-size: min(2.6cqw, 4.4vh); bottom: 6%; }
+.ktv-ctl button.off .cc { opacity: .55; }
+.ktv-ctl button .cc { min-width: 2.2em; text-align: left; }
+@media (max-width: 600px) { .ktv-sub { font-size: 3.6cqw; bottom: 6%; } }
