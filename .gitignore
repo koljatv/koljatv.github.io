@@ -6,3 +6,4 @@ __pycache__/
 .DS_Store
 DECISION-*.md
 catalog/found_episodes.json
+public/tv/ours/

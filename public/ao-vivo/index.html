@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KÖLJA TV · ao vivo</title>
+<meta name="description" content="Assista à KÖLJA TV ao vivo: clássicos cult 24 horas, no canal 1.">
+<meta name="theme-color" content="#0e0c0a">
+<link rel="stylesheet" href="../tv/tv.css">
+<style>
+  :root { --amber: #ffb000; --cream: #f6ecd6; --ink: #0e0c0a; --line: #2e2720; --dim: #9c907c; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: radial-gradient(ellipse at 50% -10%, #2a2018 0%, var(--ink) 60%) fixed; color: var(--cream);
+         font: 16px/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 24px 20px 64px; }
+  header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; flex-wrap: wrap; }
+  .logo { font: 800 30px/1 "DIN Condensed", "Arial Narrow", "Roboto Condensed", sans-serif; letter-spacing: .16em; color: var(--cream); text-decoration: none; }
+  .logo b { background: var(--amber); color: var(--ink); padding: 2px 6px 0; margin-left: 6px; letter-spacing: .05em; }
+  .ch { color: var(--dim); letter-spacing: .2em; font-size: 13px; text-transform: uppercase; }
+  header nav { margin-left: auto; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; }
+  h2 { font: 700 15px/1 "DIN Condensed", "Arial Narrow", sans-serif; letter-spacing: .24em; color: var(--dim); margin: 44px 0 10px; text-transform: uppercase; }
+  .guidebox { max-width: 1100px; margin: 0 auto; }
+  a { color: var(--amber); }
+  @media (max-width: 600px) { .wrap { padding: 14px 10px 48px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><a class="logo" href="../">KÖLJA<b>TV</b></a><div class="ch">canal 1 · ao vivo</div><nav><a href="../">programação</a></nav></header>
+  <div id="ktv" data-base="../"></div>
+  <section class="ktv-info" id="ktv-info" aria-live="polite"></section>
+  <section class="guidebox">
+    <h2>Programação · horário de Brasília</h2>
+    <div class="ktv-days" id="ktv-days"></div>
+    <ul class="ktv-guide" id="ktv-guide"></ul>
+  </section>
+</div>
+<script src="../tv/tv.js"></script>
+</body>
+</html>

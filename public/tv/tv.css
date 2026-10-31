@@ -1,0 +1,122 @@
+/* KÖLJA TV ao vivo: the set (wood cabinet, cream bezel, glass), its OSD, the controls and the week guide. */
+.ktv-set { --amber: #ffb000; --cream: #f6ecd6; position: relative; container-type: inline-size; width: 100%; margin: 0 auto;
+  max-width: min(1100px, calc((100vh - 170px) * 1.36)); min-width: min(100%, 520px); } /* the whole set fits on the screen */
+.ktv-cab { position: relative; aspect-ratio: 1.36; padding: 3.2% 3.2% 9% 3.2%; border-radius: 3.2% / 4%; background:
+    repeating-linear-gradient(92deg, rgba(0,0,0,.10) 0 2px, transparent 2px 9px),
+    repeating-linear-gradient(88deg, rgba(255,220,170,.05) 0 1px, transparent 1px 13px),
+    linear-gradient(180deg, #7a4a26, #5b3317 55%, #3f220e);
+  box-shadow: 0 30px 80px rgba(0,0,0,.7), inset 0 2px 0 rgba(255,220,180,.25), inset 0 -6px 14px rgba(0,0,0,.5); }
+.ktv-bezel { position: relative; width: 100%; height: 100%; border-radius: 2.6% / 3.4%; padding: 2.4%;
+  background: linear-gradient(180deg, #efe4cc, #cdb995); box-shadow: inset 0 2px 6px rgba(0,0,0,.35); }
+.ktv-glass { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 6% / 8%; background: #050605;
+  box-shadow: inset 0 0 40px rgba(0,0,0,.9); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ktv-brand { position: absolute; left: 4.5%; bottom: 2.7%; font: 700 2.6cqw/1 "Helvetica Neue", Arial, sans-serif; letter-spacing: .28em;
+  color: #e8d5ae; text-shadow: 0 1px 0 rgba(0,0,0,.6); }
+.ktv-model { position: absolute; right: 4.5%; bottom: 3.2%; font: 700 1.25cqw/1 "Helvetica Neue", Arial, sans-serif; letter-spacing: .16em;
+  color: #c9ab7a; display: flex; align-items: center; gap: .9em; }
+.ktv-lamp { width: 1.1cqw; height: 1.1cqw; min-width: 6px; min-height: 6px; border-radius: 50%; background: #3a1c0c; box-shadow: inset 0 1px 2px rgba(0,0,0,.6); }
+.ktv-set.on .ktv-lamp { background: radial-gradient(circle at 40% 35%, #ffd8a0, #ff7a1a 60%, #a33a00); box-shadow: 0 0 10px #ff8a2a; }
+
+.ktv-screen { position: absolute; inset: 0; transform-origin: 50% 50%; }
+.ktv-screen video, .ktv-static { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ktv-screen video { object-fit: contain; background: #000; opacity: 0; }
+.ktv-screen video.air { opacity: 1; }
+.ktv-static { image-rendering: pixelated; opacity: 0; transition: opacity .25s; }
+.ktv-static.on { opacity: 1; transition: none; }
+.ktv-screen.warm { animation: ktv-warm 1.5s ease-out; }
+@keyframes ktv-warm { 0% { transform: scale(1, .006); filter: brightness(4); } 20% { transform: none; filter: brightness(.18); } 100% { transform: none; filter: brightness(1); } }
+.ktv-screen.off { animation: ktv-off .55s ease-in forwards; }
+@keyframes ktv-off { 0% { transform: none; } 45% { transform: scale(1, .006); filter: brightness(4); } 80% { transform: scale(.012, .006); filter: brightness(6); } 100% { transform: scale(0, 0); } }
+.ktv-crt { position: absolute; inset: 0; pointer-events: none; background:
+    radial-gradient(ellipse at 50% 50%, transparent 58%, rgba(0,0,0,.55) 100%),
+    repeating-linear-gradient(180deg, rgba(0,0,0,.20) 0 1px, transparent 1px 3px); }
+.ktv-shine { position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,.09) 0%, rgba(255,255,255,.02) 28%, transparent 40%); }
+
+/* on the glass: AO VIVO, the station bug, the "A SEGUIR" strip, our cards */
+.ktv-o { position: absolute; pointer-events: none; font-family: "Futura", "Avenir Next Condensed", "DIN Condensed", "Arial Narrow", sans-serif;
+  font-weight: 800; transition: opacity .4s; }
+.ktv-o.hide { opacity: 0; }
+.ktv-live { left: 5%; top: 6%; font-size: 1.9cqw; letter-spacing: .14em; color: #fff; background: rgba(170,18,18,.88); padding: .25em .6em .2em;
+  display: flex; align-items: center; gap: .45em; border-radius: .15em; }
+.ktv-live i { width: .6em; height: .6em; border-radius: 50%; background: #fff; animation: ktv-blink 1.6s steps(1) infinite; }
+@keyframes ktv-blink { 50% { opacity: .15; } }
+.ktv-bug { right: 5%; top: 6%; font-size: 2cqw; color: rgba(246,236,214,.62); letter-spacing: .06em; }
+.ktv-bug b { margin-left: .3em; padding: 0 .3em; border-radius: .2em; background: rgba(255,176,0,.62); color: #14100a; }
+.ktv-next { left: 5%; bottom: 7%; max-width: 90%; font-size: 2.1cqw; display: flex; }
+.ktv-next b { background: rgba(255,176,0,.92); color: #14100a; padding: .3em .7em; letter-spacing: .08em; white-space: nowrap; }
+.ktv-next span { background: rgba(16,20,24,.86); color: var(--cream); padding: .3em .9em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ktv-card { inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 8%;
+  background: radial-gradient(ellipse at center, #1c2a30 0%, #0a0e10 70%); color: var(--cream); font-size: 3.8cqw; letter-spacing: .12em; }
+.ktv-card::before { content: "KÖLJA TV"; position: absolute; top: 30%; left: 0; right: 0; color: var(--amber); font-size: .7em; letter-spacing: .3em; }
+.ktv-msg { left: 0; right: 0; top: 46%; text-align: center; font: 700 3.4cqw "Courier New", Courier, monospace; color: #6dff7a;
+  text-shadow: 0 0 6px rgba(80,255,110,.8), 2px 2px 0 rgba(0,0,0,.8); }
+.ktv-tap { left: 50%; bottom: 7%; transform: translateX(-50%); pointer-events: auto; cursor: pointer; font-size: 2.2cqw; letter-spacing: .1em;
+  background: rgba(16,20,24,.9); color: var(--cream); border: 1px solid rgba(255,176,0,.7); border-radius: 99px; padding: .5em 1.1em; }
+
+/* the power overlay (browsers only allow sound after a click) */
+.ktv-power { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4cqw;
+  background: radial-gradient(ellipse at center, rgba(20,26,28,.55), rgba(0,0,0,.85)); color: var(--cream); text-align: center;
+  font-family: "Futura", "Avenir Next Condensed", "DIN Condensed", "Arial Narrow", sans-serif; }
+.ktv-power .knob { width: 9cqw; height: 9cqw; min-width: 54px; min-height: 54px; border-radius: 50%; border: .45cqw solid #a99c86; position: relative;
+  background: radial-gradient(circle at 35% 30%, #4e3b25, #160f08 70%); box-shadow: 0 6px 18px rgba(0,0,0,.6); }
+.ktv-power .knob::after { content: ""; position: absolute; left: 50%; top: 12%; width: 12%; height: 32%; margin-left: -6%; border-radius: 4px; background: #f2e3c2; }
+.ktv-power strong { font-size: 3.6cqw; letter-spacing: .16em; font-weight: 800; }
+.ktv-power strong b { color: #14100a; background: var(--amber); padding: 0 .3em; }
+.ktv-power span { font-size: 1.8cqw; letter-spacing: .12em; color: #cbbd9f; text-transform: uppercase; }
+.ktv-power:hover .knob { transform: rotate(18deg); transition: transform .2s; }
+
+/* controls under the set */
+.ktv-ctl { display: flex; align-items: center; gap: 10px; margin: 14px auto 0; max-width: 1100px; flex-wrap: wrap; }
+.ktv-ctl button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; min-width: 40px; padding: 0 12px;
+  border-radius: 999px; border: 1px solid #4a3c2c; background: #1d1711; color: #efe1c3; font: 700 13px/1 -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  letter-spacing: .1em; cursor: pointer; }
+.ktv-ctl button:hover { border-color: #ffb000; }
+.ktv-ctl button svg { width: 18px; height: 18px; fill: currentColor; }
+.ktv-ctl input[type=range] { width: 120px; accent-color: #ffb000; }
+.ktv-ctl .sp { flex: 1; }
+.ktv-ctl .clock { color: #9c907c; font: 600 13px/1 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; letter-spacing: .08em; font-variant-numeric: tabular-nums; }
+
+/* full screen: the glass alone */
+.ktv-set.full { position: fixed; inset: 0; z-index: 50; max-width: none; background: #000; }
+.ktv-set.full .ktv-cab { width: 100%; height: 100%; aspect-ratio: auto; padding: 0; border-radius: 0; background: #000; box-shadow: none; }
+.ktv-set.full .ktv-bezel { padding: 0; border-radius: 0; background: #000; box-shadow: none; }
+.ktv-set.full .ktv-glass { border-radius: 0; cursor: default; }
+.ktv-set.full .ktv-brand, .ktv-set.full .ktv-model { display: none; }
+.ktv-set.full .ktv-o { font-size: min(2cqw, 3.2vh); }
+.ktv-set.full .ktv-ctl { position: absolute; left: 16px; right: 16px; bottom: 14px; margin: 0; max-width: none; transition: opacity .4s; }
+.ktv-set.full.idle .ktv-ctl { opacity: 0; }
+.ktv-set.full.idle .ktv-glass { cursor: none; }
+
+/* what's on, under the set */
+.ktv-info { max-width: 1100px; margin: 22px auto 0; }
+html { background: #0e0c0a; }
+.ktv-info .blk { color: #ffb000; font: 700 14px/1 "DIN Condensed", "Arial Narrow", sans-serif; letter-spacing: .22em; }
+.ktv-info .ttl { font: 800 clamp(26px, 5vw, 44px)/1.05 "DIN Condensed", "Arial Narrow", "Roboto Condensed", sans-serif; margin: 10px 0 6px; }
+.ktv-info .meta { color: #9c907c; font-size: 14px; }
+.ktv-info .syn { margin: 10px 0 0; max-width: 66ch; color: #d9cdb6; }
+.ktv-info .bar { height: 4px; background: #2a231c; border-radius: 2px; margin-top: 16px; overflow: hidden; }
+.ktv-info .bar i { display: block; height: 100%; background: #ffb000; width: 0; }
+.ktv-info .nx { margin-top: 14px; font-size: 14px; color: #9c907c; }
+.ktv-info .nx b { color: #0e0c0a; background: #ffb000; padding: 1px 6px; margin-right: 8px; font-size: 12px; letter-spacing: .1em; }
+
+/* the week's guide */
+.ktv-days { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 4px; }
+.ktv-days button { border: 1px solid #3a3026; background: transparent; color: #cbbd9f; border-radius: 999px; padding: 8px 14px; cursor: pointer;
+  font: 700 12px/1 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.ktv-days button.sel { background: #ffb000; border-color: #ffb000; color: #14100a; }
+.ktv-guide { list-style: none; margin: 0; padding: 0; }
+.ktv-guide li { display: grid; grid-template-columns: 64px 1fr; gap: 14px; padding: 9px 0; border-bottom: 1px solid #2e2720; }
+.ktv-guide li.sec { display: block; color: #ffb000; font: 700 13px/1 "DIN Condensed", "Arial Narrow", sans-serif; letter-spacing: .22em; border: 0; padding: 22px 0 6px; }
+.ktv-guide li.past { opacity: .45; }
+.ktv-guide li.on { color: #ffb000; }
+.ktv-guide li.on time::after { content: "AO VIVO"; display: block; margin-top: 3px; font-size: 10px; letter-spacing: .14em; color: #fff; background: #a51212; width: max-content; padding: 1px 5px; }
+.ktv-guide time { font-variant-numeric: tabular-nums; color: #9c907c; }
+.ktv-guide li.on time { color: #ffb000; }
+.ktv-guide small { color: #9c907c; margin-left: 6px; }
+
+@media (max-width: 600px) {
+  .ktv-cab { padding: 3% 3% 10% 3%; }
+  .ktv-ctl input[type=range] { width: 90px; }
+  .ktv-ctl .lbl, .ktv-ctl .clock { display: none; }
+}

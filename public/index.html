@@ -4,134 +4,51 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KÖLJA TV · canal 1</title>
-<meta name="description" content="KÖLJA TV: clássicos cult 24 horas, no canal 1 do Retrotv.">
+<meta name="description" content="KÖLJA TV ao vivo: clássicos cult 24 horas. Assista no site ou no canal 1 do Retrotv.">
+<meta name="theme-color" content="#0e0c0a">
+<link rel="stylesheet" href="tv/tv.css">
 <style>
   :root { --amber: #ffb000; --cream: #f6ecd6; --ink: #0e0c0a; --panel: #1a1612; --line: #2e2720; --dim: #9c907c; }
   * { box-sizing: border-box; }
   body { margin: 0; background: radial-gradient(ellipse at 50% -10%, #2a2018 0%, var(--ink) 60%) fixed; color: var(--cream);
          font: 16px/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
   .wrap { max-width: 880px; margin: 0 auto; padding: 32px 20px 64px; }
-  header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px; }
+  header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
   .logo { font: 800 34px/1 "DIN Condensed", "Arial Narrow", "Roboto Condensed", sans-serif; letter-spacing: .16em; }
   .logo b { background: var(--amber); color: var(--ink); padding: 2px 6px 0; margin-left: 6px; letter-spacing: .05em; }
   .ch { color: var(--dim); letter-spacing: .2em; font-size: 13px; text-transform: uppercase; }
-  .glass { position: relative; border-radius: 26px; padding: 28px 30px; background: linear-gradient(160deg, #221c16, #120f0c);
-           border: 1px solid var(--line); box-shadow: inset 0 0 80px rgba(0,0,0,.6), 0 20px 60px rgba(0,0,0,.45); overflow: hidden; }
-  .glass::after { content: ""; position: absolute; inset: 0; pointer-events: none;
-                  background: repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 3px); }
-  .block { color: var(--amber); font: 700 14px/1 "DIN Condensed", "Arial Narrow", sans-serif; letter-spacing: .22em; }
-  .now { font: 800 clamp(30px, 6vw, 52px)/1.05 "DIN Condensed", "Arial Narrow", "Roboto Condensed", sans-serif; margin: 12px 0 8px; letter-spacing: .02em; }
-  .meta { color: var(--dim); font-size: 14px; }
-  .syn { margin: 14px 0 0; max-width: 60ch; }
-  .bar { height: 4px; background: #2a231c; border-radius: 2px; margin-top: 20px; overflow: hidden; }
-  .bar i { display: block; height: 100%; background: var(--amber); width: 0; }
-  .next { margin-top: 18px; font-size: 14px; color: var(--dim); }
-  .next b { color: var(--ink); background: var(--amber); padding: 1px 6px; margin-right: 8px; font-size: 12px; letter-spacing: .1em; }
   h2 { font: 700 15px/1 "DIN Condensed", "Arial Narrow", sans-serif; letter-spacing: .24em; color: var(--dim); margin: 44px 0 10px; text-transform: uppercase; }
-  .guide { list-style: none; margin: 0; padding: 0; }
-  .guide li { display: grid; grid-template-columns: 64px 1fr; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--line); }
-  .guide li.sec { display: block; color: var(--amber); font: 700 13px/1 "DIN Condensed", "Arial Narrow", sans-serif; letter-spacing: .22em; border: 0; padding: 22px 0 6px; }
-  .guide li.on { color: var(--amber); }
-  .guide time { font-variant-numeric: tabular-nums; color: var(--dim); }
-  .guide li.on time { color: var(--amber); }
-  .guide small { color: var(--dim); margin-left: 6px; }
   .about p { color: #d9cdb6; max-width: 66ch; }
   .muted { color: var(--dim); font-size: 13px; }
   a { color: var(--amber); }
+  header nav { margin-left: auto; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; }
+  .wrap { max-width: 1140px; }
+  .guidebox, .about { max-width: 1100px; margin: 0 auto; }
+  @media (max-width: 600px) { .wrap { padding: 16px 10px 48px; } header { margin-bottom: 18px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header><div class="logo">KÖLJA<b>TV</b></div><div class="ch">canal 1 · 24 horas</div></header>
+  <header><div class="logo">KÖLJA<b>TV</b></div><div class="ch">canal 1 · 24 horas</div><nav><a href="ao-vivo/">só a TV</a></nav></header>
 
-  <section class="glass" aria-live="polite">
-    <div class="block" id="block">NO AR</div>
-    <div class="now" id="now">Sintonizando…</div>
-    <div class="meta" id="meta"></div>
-    <p class="syn" id="syn"></p>
-    <div class="bar"><i id="bar"></i></div>
-    <div class="next" id="next"></div>
+  <div id="ktv" data-base=""></div>
+  <section class="ktv-info" id="ktv-info" aria-live="polite"></section>
+
+  <section class="guidebox">
+    <h2>Programação · horário de Brasília</h2>
+    <div class="ktv-days" id="ktv-days"></div>
+    <ul class="ktv-guide" id="ktv-guide"></ul>
   </section>
-
-  <h2>Programação · horário de Brasília</h2>
-  <ul class="guide" id="guide"></ul>
 
   <section class="about">
     <h2>Sobre</h2>
-    <p>KÖLJA TV é o canal 1 do Retrotv, a TV de bolso da KÖLJA. Passa clássicos cult o dia inteiro, em blocos:
+    <p>KÖLJA TV é o canal 1 do Retrotv, a TV de bolso da KÖLJA, e passa aqui no site também. São clássicos cult o dia inteiro, em blocos:
       Sessão Terror, Comédia Muda, Desenhos Clássicos, Ficção Científica, Noir, Comédia Clássica, Séries Clássicas
-      e a Madrugada Cult. Como numa TV de verdade, todo mundo vê a mesma coisa na mesma hora.</p>
+      e a Madrugada Cult. Como numa TV de verdade, todo mundo vê a mesma coisa na mesma hora: ligou, entrou no que está passando.</p>
     <p>A programação é da KÖLJA TV, e as vinhetas são todas nossas.</p>
     <p class="muted">A grade se atualiza sozinha a cada 20 minutos.</p>
   </section>
 </div>
-<script>
-(() => {
-  const TZ = 'America/Sao_Paulo';
-  const hm = ms => new Date(ms).toLocaleTimeString('pt-BR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
-  const day = ms => new Date(ms).toLocaleDateString('pt-BR', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' });
-  const $ = id => document.getElementById(id);
-  let s = null;
-
-  async function load() {
-    const n = await (await fetch('grade/now.json?m=' + Math.floor(Date.now() / 60000))).json();
-    const rev = n.rev2 || n.rev, file = n.schedule2 || n.schedule; // schedule2: with the commercial breaks
-    if (!s || s.rev !== rev) s = await (await fetch('grade/' + file + '?r=' + rev)).json();
-    draw();
-  }
-
-  const isProg = id => s && s.titles[id];
-
-  // A feature with commercial breaks comes as parts (5th field 0, 1...) with break pieces (-1) between them:
-  // the guide shows it as one programme, from its first part to the end of its last.
-  function programmes(items) {
-    const out = [];
-    for (const i of items) {
-      if (!isProg(i[2])) continue;
-      const last = out[out.length - 1];
-      if (i.length > 4 && i[4] > 0 && last && last[2] === i[2]) last[1] = i[1];
-      else out.push([i[0], i[1], i[2], i[3]]);
-    }
-    return out;
-  }
-
-  function draw() {
-    if (!s) return;
-    const t = Date.now(), items = programmes(s.items);
-    const raw = s.items.find(i => i[0] <= t && t < i[1]);
-    const inBreak = raw && raw.length > 4 && raw[4] === -1;
-    let k = items.findIndex(i => i[0] <= t && t < i[1]);
-    if (k < 0) k = items.findIndex(i => i[0] > t) - 1; // our own pieces are seconds long: show the programme before them
-    if (k < 0) { $('now').textContent = 'Já voltamos'; return; }
-    const cur = k, it = items[cur], p = s.titles[it[2]];
-    $('block').textContent = (s.blocks[it[3]] || {}).pt || 'NO AR';
-    if (p) {
-      $('now').textContent = p.title;
-      $('meta').textContent = [p.year, p.country, hm(it[0]) + ' – ' + hm(it[1]), inBreak ? 'INTERVALO' : ''].filter(Boolean).join(' · ');
-      $('syn').textContent = p.synopsis || '';
-      $('bar').style.width = Math.min(100, (t - it[0]) / (it[1] - it[0]) * 100) + '%';
-    }
-    const nx = items[cur + 1];
-    $('next').innerHTML = nx ? '<b>A SEGUIR</b>' + hm(nx[0]) + ' · ' + esc(s.titles[nx[2]].title) : '';
-    const ul = $('guide'); ul.textContent = '';
-    let block = null, d = null;
-    for (const i of items) {
-      if (i[1] <= t || i[0] > t + 24 * 3600e3 || !isProg(i[2])) continue;
-      const dd = day(i[0]);
-      if (dd !== d) { d = dd; if (ul.children.length) { const li = document.createElement('li'); li.className = 'sec'; li.textContent = dd.toUpperCase(); ul.append(li); } block = null; }
-      if (i[3] !== block) { block = i[3]; const li = document.createElement('li'); li.className = 'sec'; li.textContent = '— ' + ((s.blocks[block] || {}).pt || block); ul.append(li); }
-      const q = s.titles[i[2]], li = document.createElement('li');
-      if (i[0] <= t && t < i[1]) li.className = 'on';
-      li.innerHTML = '<time>' + hm(i[0]) + '</time><span>' + esc(q.title) + (q.year ? '<small>' + q.year + '</small>' : '') + '</span>';
-      ul.append(li);
-    }
-  }
-
-  const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  load().catch(() => { $('now').textContent = 'Já voltamos'; });
-  setInterval(draw, 15000);
-  setInterval(() => load().catch(() => {}), 10 * 60000);
-})();
-</script>
+<script src="tv/tv.js"></script>
 </body>
 </html>
