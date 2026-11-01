@@ -14,6 +14,7 @@ only, never secrets, keys or personal data.
 | `/grade/schedule2.json` | the next 3 days, item by item: `[start, end, id, block(, part)]` (ms since 1970, UTC), every title on the air with its copies in order (and, for features, where each copy breaks), our pieces, the blocks' names. `rev` names this build. Format 2, with the commercial breaks: what Retrotv 0.3.1+ plays. |
 | `/grade/schedule.json` | the same shelves laid out without breaks, format 1 (`[start, end, id, block]`), for Retrotv 0.3.0 sets. |
 | `/legendas/` | our own subtitles: `<id>.pt-BR.vtt` and `<id>.en.vtt` (WebVTT), and `index.json`, which lists the subtitled titles, their languages, a revision tag and, per copy (a hash of its address), how that copy's clock lines up with the subtitles. See "Subtitles" below. |
+| `/tv/reserva.json` | the site player's *programação alternativa*: shorts whose copies answer fast and are faststart (index at the front), by block. When a programme's picture is missing for 12 s the player puts one on (this block's, else cartoons; our own pieces from `tv/ours/` as the last resort) while it keeps trying the programme, and goes back to the clock once it plays (at once if the short has just begun or has over 4 min left, else at its end). Rebuilt by hand: `python3 tools/reserva.py`. |
 | `/grade/now.json` | what's on now (with the offset into it), the next 8 items, the stand-ins in force, and the current `rev`. Rebuilt every run, not kept in git. |
 
 Our own vignettes, idents, "apresenta", station card and break bumpers are **Release assets** (tag

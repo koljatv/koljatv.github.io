@@ -153,3 +153,6 @@ html { background: #0e0c0a; }
 .ktv-ctl button.off .cc { opacity: .55; }
 .ktv-ctl button .cc { min-width: 2.2em; text-align: left; }
 @media (max-width: 600px) { .ktv-sub { font-size: 3.6cqw; bottom: 6%; } }
+
+/* programação alternativa: a short covers a programme that won't start; the schedule's marks wait under it */
+.ktv-alt:not(.ktv-altw) .ktv-load, .ktv-alt .ktv-card { display: none !important; }

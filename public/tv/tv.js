@@ -4,7 +4,10 @@
 // our idents run between programmes. The next item is loaded ahead in a hidden player so the cut is clean.
 // The copies of a film race (archive.org servers vary from fast to a crawl): the first to play goes on the air,
 // over the programme's still and a "Carregando…" mark. If every copy fails, the round starts again, never a dead
-// end; our "PROBLEMAS TÉCNICOS" card covers the wait only after a real failure and half a minute.
+// end. And the screen never waits on a programme that won't come: after a few seconds without its picture,
+// PROGRAMAÇÃO ALTERNATIVA puts on a short from the same part of the day (tv/reserva.json: copies that start fast;
+// our own pieces as the last resort) while the copies keep trying behind it; once one plays, the channel goes back
+// to the clock at the next natural point. Our "PROBLEMAS TÉCNICOS" card only when nothing at all will play.
 (() => {
   'use strict';
   const host = document.getElementById('ktv');
@@ -158,6 +161,18 @@
     screen.insertBefore(v, stillEl);
     return { v, pl: null, role: '', ready: false, timer: 0, stall: 0, pre: false, t0: 0, rs: 0, rsAt: 0, wait: 0, patience: RESTART_MS, waiting: false };
   });
+  // Programação alternativa: two more players above the still, for the shorts that cover a programme that won't start.
+  // FILL_PREP without its picture and a short gets ready on its first frame (another joins after FILL_TRY, then our
+  // own pieces); it goes on at FILL_AFTER. Back to the clock at once if the short has only just begun or has long to
+  // go, else at its end.
+  const FILL_PREP = 5000, FILL_AFTER = 12000, FILL_STALL = 8000, FILL_TRY = 6000, FILL_CUT = 20e3, FILL_HOLD = 4 * MIN, FILL_REST = 30e3, FILL_LABEL = 10e3;
+  const F = { on: null, list: null, used: new Set(), tries: 0, gaveUp: 0, oi: 0, back: false,
+    v: [0, 1].map(() => {
+      const v = document.createElement('video');
+      v.setAttribute('playsinline', ''); v.playsInline = true; v.preload = 'auto'; v.muted = true;
+      screen.append(v); // over the still and the schedule's players
+      return v;
+    }) };
   const air = () => slots.find(s => s.role === 'air');
   const same = (s, it) => !!(s.pl && it && !s.pl.trouble && keyOf(s.pl.it) === keyOf(it)); // a copy of this item (not our card)
   const racing = it => slots.filter(s => s.role === 'next' && same(s, it));
@@ -195,10 +210,11 @@
     try { v.load(); } catch (e) {}
   }
   function levels() {
+    for (const f of F.v) { f.volume = vol; f.muted = f !== F.on || !sound || muted || tapNeeded; }
     for (const s of slots) {
       const on = s.role === 'air' || s.role === 'next';
       s.v.volume = vol;
-      if (!on || !sound || muted) s.v.muted = true;
+      if (!on || !sound || muted || F.on) s.v.muted = true;
       else if (s.v.muted && !tapNeeded) s.v.muted = false;
     }
   }
@@ -342,13 +358,13 @@
     c0.rt = setTimeout(() => {
       if (cur !== c0 || c0.mode !== 'retry') return;
       const t = now(), it = c0.it;
-      if (c0.target && c0.target.alt) c0.target = it;
-      else if (k % 2 === 0 && it.p && it.e - t > 120e3) { const alt = standIn(it.block, it.e - t, c0.used); if (alt) { c0.used.add(alt.id); c0.target = alt; } }
+      if (c0.target && c0.target.alt) c0.target = it; // the programme itself again (the alternative covers the wait)
       c0.tried = new Set(); c0.mode = 'play';
       advance();
     }, BACKOFF[Math.min(k - 1, BACKOFF.length - 1)]);
   }
   window.addEventListener('online', () => { // back on the internet: the next round now
+    F.gaveUp = 0; F.tries = 0;
     if (power && cur && cur.mode === 'retry') { clearTimeout(cur.rt); cur.tried = new Set(); cur.mode = 'play'; advance(); }
   });
   // Our card: only once a copy really failed and the picture has been gone for half a minute; till then the
@@ -356,6 +372,7 @@
   function trouble() {
     if (!power || !cur || !cur.target || !cur.bad || !cur.lost || Date.now() - cur.lost < CARD_AFTER) return;
     if (cur.mode !== 'play' && cur.mode !== 'retry') return;
+    if (F.on || F.v.some(f => f.pk) || (cur.target.p && !F.gaveUp)) return; // the alternative plays, is on its way or hasn't had its go
     const a = air();
     if (a && (a.pl.trouble || (same(a, cur.target) && !a.waiting))) return;
     if (slots.some(s => s.pl && s.pl.trouble) || !cardEl.classList.contains('hide')) return;
@@ -394,7 +411,7 @@
       if (s.role === 'next') { if (t - s.t0 > GIVEUP_MS) fail(s); else if (t - s.rsAt > s.patience) reconnect(s); }
       else if (s.waiting && t - s.wait > STALL_FAIL_MS) fail(s); // stuck on the air: the copies racing take over, or our card
     }
-    trouble(); loading();
+    fillTick(); trouble(); loading();
   }, 1000);
   function fill() {
     cur.mode = 'fill';
@@ -415,6 +432,114 @@
     if (cur) { cur.mode = 'card'; cur.retry = now() + 30e3; }
     for (const s of slots) if (s.role === 'air' || s.role === 'next') release(s);
     cardEl.textContent = text; show(cardEl, true); setStill(false); loading();
+  }
+
+  // ---------- programação alternativa ----------
+  fetch(BASE + 'tv/reserva.json').then(r => r.ok ? r.json() : null).then(j => { if (j && j.items && j.items.length) F.list = j.items; }).catch(() => {});
+  const onTarget = () => { const a = air(); return !!a && !a.waiting && !a.pl.trouble && same(a, cur.target); };
+  function fillWanted(after = FILL_AFTER) { // a programme is due and its picture has been missing for a while
+    if (!power || !S || !cur || !cur.target || !cur.target.p || (cur.mode !== 'play' && cur.mode !== 'retry')) return false;
+    return !onTarget() && !!cur.lost && Date.now() - cur.lost >= after;
+  }
+  const PREFER = { madrugada: ['toons'], manha: ['toons'], tarde: ['seriados', 'comedia', 'muda', 'toons'], noite: ['toons'] };
+  function partOfDay() {
+    const [h, m] = hm(now()).split(':').map(Number), x = h * 60 + m;
+    return x < 360 ? 'madrugada' : x < 810 ? 'manha' : x < 1140 ? 'tarde' : 'noite';
+  }
+  function fillPick() { // a short from this block, else this part of the day's, one we haven't shown lately
+    const pool = F.list || Object.entries(S.titles).filter(([, p]) => p.dur >= 60 && p.dur <= 900)
+      .map(([id, p]) => ({ id, title: p.title, block: p.block, dur: p.dur, copies: (p.sources || []).map(c => c.url) }));
+    const pref = [cur.it.block, ...PREFER[partOfDay()]], busy = new Set(F.v.map(f => f.pk && f.pk.id));
+    let best = [], score = 1e9;
+    for (const e of pool) {
+      if (F.used.has(e.id) || busy.has(e.id) || e.id === cur.target.id) continue;
+      const u = e.copies.find(c => !isDead(c));
+      if (!u) continue;
+      const k = pref.indexOf(e.block), sc = k < 0 ? 99 : k;
+      if (sc < score) { score = sc; best = []; }
+      if (sc === score) best.push({ id: e.id, title: e.title, dur: e.dur, url: u });
+    }
+    if (!best.length) { if (F.used.size) { F.used.clear(); return fillPick(); } return null; }
+    return best[Math.floor(Math.random() * best.length)];
+  }
+  function oursPick() { // the last resort: our own pieces, from this site first
+    const o = S.ours, ids = Object.keys(o).filter(k => o[k].kind === 'ad')
+      .concat(Object.keys(o).filter(k => o[k].kind === 'vignette' && o[k].block === cur.it.block), ['ident_tubo', 'ident_barras'])
+      .filter(k => o[k]);
+    if (!ids.length) return null;
+    const id = ids[F.oi++ % ids.length];
+    return { id, title: o[id].title, dur: o[id].dur, url: BASE + 'tv/ours/' + id + '.mp4', alt: o[id].url, ours: true };
+  }
+  function dropF(f) {
+    f.onplaying = f.onended = f.onerror = f.onwaiting = f.ontimeupdate = null; f.waitAt = 0;
+    f.pause(); f.classList.remove('air'); f.muted = true;
+    if (f.getAttribute('src')) { f.removeAttribute('src'); try { f.load(); } catch (e) {} }
+    f.pk = null; f.live = false; f.ready = false; f.chk = null; f.crawl = false;
+    if (F.on === f) { F.on = null; F.back = false; host.classList.remove('ktv-alt', 'ktv-altw'); }
+  }
+  function tryF(f, pk) {
+    dropF(f);
+    f.pk = pk; f.t0 = Date.now(); F.tries++;
+    f.onplaying = () => { // on the glass if it's time, else it waits on its first frame
+      if (f.pk !== pk || f.live) return;
+      if (fillWanted()) fillLive(f); else { f.ready = true; f.pause(); }
+    };
+    f.onerror = () => {
+      if (f.pk !== pk) return;
+      if (!pk.ours) dead.set(pk.url, Date.now());
+      const was = f.live; dropF(f);
+      if (!was && pk.alt) tryF(f, Object.assign({}, pk, { url: pk.alt, alt: null })); // our piece from its release copy
+      else if (was) fillGone(); else fillTick();
+    };
+    f.onended = () => { if (f.pk === pk) { dropF(f); fillGone(); } };
+    f.onwaiting = () => { if (f.pk === pk && f.live && !f.waitAt) f.waitAt = Date.now(); };
+    f.ontimeupdate = () => { if (f.waitAt && !f.paused && f.readyState >= 3) { f.waitAt = 0; host.classList.remove('ktv-altw'); } };
+    f.src = pk.url; try { f.load(); } catch (e) {}
+    f.volume = vol; f.muted = true; // silent till it's on the glass (levels)
+    const p = f.play(); if (p) p.catch(() => {});
+  }
+  function fillLive(f) {
+    for (const g of F.v) if (g !== f) dropF(g);
+    for (const s of slots) if (s.pl && s.pl.trouble) release(s); // our card isn't needed
+    show(cardEl, false);
+    f.live = true; f.liveAt = Date.now(); f.classList.add('air'); F.on = f; F.back = false;
+    F.used.add(f.pk.id); F.tries = 0; F.gaveUp = 0;
+    host.classList.add('ktv-alt');
+    levels(); ui();
+  }
+  function fillGone() { // the short ended (or broke): back to the clock, or the next one with our loading mark between
+    F.back = false; host.classList.remove('ktv-alt'); levels(); loading();
+    if (fillWanted()) fillTick(); else ui();
+  }
+  function fillTick() {
+    const t = Date.now(), f = F.on;
+    if (f) {
+      if (f.waitAt && t - f.waitAt > 2000) host.classList.add('ktv-altw'); // the short stopped to load: our mark over it
+      if (document.hidden) f.chk = null; // a phone may hold a video in a tab out of sight: no verdict then
+      else if (!f.chk || t - f.chk[0] >= 15e3) { f.crawl = !!f.chk && f.currentTime - f.chk[1] < 6; f.chk = [t, f.currentTime]; } // a short that crawls on
+      if ((f.waitAt && t - f.waitAt > FILL_STALL) || f.crawl) { // and doesn't come back: another (ours, if a short already stalled)
+        if (!f.pk.ours) dead.set(f.pk.url, Date.now());
+        dropF(f); F.tries = 2; fillGone(); return;
+      }
+      if (fillWanted()) { F.back = false; return; }
+      const left = (f.duration || f.pk.dur) - f.currentTime, ready = !cur || !cur.target || !cur.target.p || onTarget();
+      if (ready && (t - f.liveAt < FILL_CUT || left > FILL_HOLD / 1000)) { dropF(f); fillGone(); } // straight back
+      else F.back = ready; // the programme is ready: back at the short's end (one still loading gets its few seconds)
+      return;
+    }
+    const trying = F.v.filter(g => g.pk);
+    if (!fillWanted(FILL_PREP)) { for (const g of trying) dropF(g); F.tries = 0; F.gaveUp = 0; return; }
+    const ready = trying.find(g => g.ready);
+    if (ready) { if (fillWanted()) { const p = ready.play(); if (p) p.catch(() => {}); } return; }
+    for (const g of trying) if (t - g.t0 > FILL_TRY * 3) dropF(g); // never played
+    if (F.gaveUp) { if (t - F.gaveUp < FILL_REST) return; F.gaveUp = 0; F.tries = 0; }
+    const now2 = F.v.filter(g => g.pk), last = now2.reduce((m, g) => Math.max(m, g.t0), 0);
+    if (now2.length && t - last < FILL_TRY) return;
+    if (F.tries >= 6) { if (!now2.length) { F.gaveUp = t; trouble(); } return; } // nothing will play: our card, and again in a while
+    const pk = (F.tries < 2 && fillPick()) || oursPick();
+    if (!pk) { if (!now2.length) { F.gaveUp = t; trouble(); } return; }
+    const g = F.v.find(x => !x.pk) || now2.sort((a, b) => a.t0 - b.t0)[0]; // two at a time: the oldest try makes room
+    tryF(g, pk);
   }
 
   function tick() {
@@ -559,7 +684,7 @@
   (function watch() {
     const a = air();
     if (a && a.pl.stop >= 0 && !a.v.paused && a.v.currentTime * 1000 >= a.pl.stop - 20) a.v.pause();
-    subs(a);
+    subs(F.on ? null : a);
     requestAnimationFrame(watch);
   })();
 
@@ -592,10 +717,14 @@
     if (!S) return;
     const i = find(t), it = i >= 0 ? items[i] : null, a = air();
     show(liveEl, power);
-    show(bugEl, power && cur && (cur.mode === 'quiet' || (!!a && !a.pl.ours && cur.mode !== 'card')));
+    show(bugEl, power && cur && (!!F.on || cur.mode === 'quiet' || (!!a && !a.pl.ours && cur.mode !== 'card')));
     // "A SEGUIR" on the glass: during our pieces and a programme's last minute; "VOLTAMOS COM" in a break
     let head = '', line = '';
-    if (power && it && cur && cur.mode !== 'card') {
+    if (power && F.on) { // the alternative: its name at first, the programme when it's next
+      const pr = progAt(t) || progAfter(t);
+      if (F.back && pr) { head = 'A SEGUIR'; line = pr.p.title; }
+      else if (Date.now() - F.on.liveAt < FILL_LABEL) { head = 'PROGRAMAÇÃO ALTERNATIVA'; line = F.on.pk.title; }
+    } else if (power && it && cur && cur.mode !== 'card') {
       const pr = progAt(t), nx = progAfter(pr ? showEnd(pr) : t);
       if (it.brk && it.first) { if (!(it.o && it.o.kind === 'ad')) { head = 'VOLTAMOS COM'; line = it.first.p.title; } } // a spot keeps its own picture clear
       else if (nx && (it.o || (!toBreak(it) && pr && showEnd(pr) - t < 60e3))) { head = 'A SEGUIR'; line = hm(nx.s) + ' · ' + nx.p.title; }
@@ -613,6 +742,7 @@
       html = `<div class="blk${pr ? '' : ' soon'}">${esc(pr ? 'NO AR' : 'A SEGUIR')} · ${esc(blockName(p.p.block || p.block))}</div><h1 class="ttl"><a href="${BASE}programa/?id=${encodeURIComponent(p.id)}">${esc(p.p.title)}</a></h1>
         <div class="meta">${esc(meta)}${leg}</div>${p.p.synopsis ? `<p class="syn">${esc(p.p.synopsis)}</p>` : ''}
         <div class="bar"><i style="width:${pr ? Math.min(100, (t - p.s) / (end - p.s) * 100) : 0}%"></i></div>
+        ${F.on ? `<div class="nx alt"><b>PROGRAMAÇÃO ALTERNATIVA</b>${esc(F.on.pk.title)} · em seguida, de volta à grade</div>` : ''}
         ${nn ? `<div class="nx"><b>A SEGUIR</b>${hm(nn.s)} · ${esc(nn.p.title)}</div>` : ''}`; }
       if (html !== infoHtml) info.innerHTML = infoHtml = html;
     }
@@ -661,10 +791,10 @@
     host.classList.add('on'); powerEl.style.display = 'none';
     q('[data-k=power] .lbl').textContent = 'DESLIGAR';
     // Browsers let a page play sound only from a click: start every player here so each may play later on its own.
-    for (const s of slots) if (!s.role) {
-      s.v.muted = false; s.v.src = TROUBLE.url;
-      const p = s.v.play(); if (p) p.catch(() => {});
-      s.v.pause(); s.v.muted = true; s.v.removeAttribute('src'); try { s.v.load(); } catch (e) {}
+    for (const v of slots.filter(s => !s.role).map(s => s.v).concat(F.v.filter(f => !f.pk))) {
+      v.muted = false; v.src = TROUBLE.url;
+      const p = v.play(); if (p) p.catch(() => {});
+      v.pause(); v.muted = true; v.removeAttribute('src'); try { v.load(); } catch (e) {}
     }
     screen.classList.remove('off');
     setStill(true);
@@ -674,6 +804,8 @@
   function powerOff() {
     power = false; cur = null;
     for (const s of slots) release(s);
+    for (const f of F.v) dropF(f);
+    F.tries = 0; F.gaveUp = 0;
     host.classList.remove('on'); powerEl.style.display = '';
     q('[data-k=power] .lbl').textContent = 'LIGAR';
     void screen.offsetWidth; screen.classList.add('off');
