@@ -7,6 +7,7 @@
   const PAGE = document.body.dataset.page || '';
   const TZ = 'America/Sao_Paulo', MIN = 60e3;
   const $ = (s, el = document) => el.querySelector(s);
+  const put = (el, html) => { if (el.__h !== html) { el.__h = html; el.innerHTML = html; } }; // redraw only what changed: no blinking pictures
   const esc = x => String(x == null ? '' : x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const hm = ms => new Date(ms).toLocaleTimeString('pt-BR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
   const dayKey = ms => new Date(ms).toLocaleDateString('en-CA', { timeZone: TZ });
@@ -104,15 +105,15 @@
     const c = cur(); if (!c) { el.hidden = true; return; }
     const nx = after(c.e, 1)[0];
     el.hidden = false;
-    $('a', el).innerHTML = `<span class="lbl"><span class="dot"></span>No ar</span><span class="t">${hm(c.s)}</span>
-      <span class="n"><b>${esc(c.t.title)}</b>${nx ? '<span class="nx"> &nbsp;·&nbsp; a seguir ' + hm(nx.s) + ' ' + esc(nx.t.title) + '</span>' : ''}</span><span class="go">Assistir →</span>`;
+    put($('a', el), `<span class="lbl"><span class="dot"></span>No ar</span><span class="t">${hm(c.s)}</span>
+      <span class="n"><b>${esc(c.t.title)}</b>${nx ? '<span class="nx"> &nbsp;·&nbsp; a seguir ' + hm(nx.s) + ' ' + esc(nx.t.title) + '</span>' : ''}</span><span class="go">Assistir →</span>`);
   }
 
   function upnext() {
     const el = $('#upnext'); if (!el) return;
     const c = cur(), list = after(c ? c.e : clock(), 4);
-    el.innerHTML = list.length ? '<h2>A seguir</h2>' + list.map(p => `<a href="${link(p.id)}"><time>${hm(p.s)}</time>
-      <span><span class="tt">${esc(p.t.title)}</span> ${legBadge(p.id)}<span class="sub">${esc([nice(blockName(p.t.block)), KIND[p.t.kind], p.t.year].filter(Boolean).join(' · '))}</span></span></a>`).join('') : '';
+    put(el, list.length ? '<h2>A seguir</h2>' + list.map(p => `<a href="${link(p.id)}"><time>${hm(p.s)}</time>
+      <span><span class="tt">${esc(p.t.title)}</span> ${legBadge(p.id)}<span class="sub">${esc([nice(blockName(p.t.block)), KIND[p.t.kind], p.t.year].filter(Boolean).join(' · '))}</span></span></a>`).join('') : '');
   }
 
   function poster() { // the programme's still on the screen until the viewer presses play
@@ -126,7 +127,7 @@
     const el = $('#parts'); if (!el) return;
     const t = clock(), today = dayKey(t), ps = parts(); if (!ps.length) return;
     const nowK = partIndex(ps, t);
-    el.innerHTML = ps.map((p, k) => {
+    put(el, ps.map((p, k) => {
       const list = P.filter(x => dayKey(x.s) === today && partIndex(ps, x.s) === k && !(k === 0 && mins(x.s) > 23 * 60));
       if (!list.length) return '';
       const end = ps[k + 1] ? ps[k + 1].hhmm : '24:00';
@@ -138,7 +139,7 @@
         ${img ? `<img src="${img}" alt="" loading="lazy" decoding="async">` : '<div class="art fallback b-toons"></div>'}${k === nowK ? '<span class="badge live nowtag">AGORA</span>' : ''}
         <div class="in"><div class="hrs">${p.hhmm} – ${end}</div><h3>${esc(name)}</h3><div class="what">${esc(blocks)}</div>
         <div class="pick">${pick.t.kind === 'cartoon' ? `${list.length} desenhos hoje` : `<b>${esc(pick.t.title)}</b> às ${hm(pick.s)}`}</div></div></a>`;
-    }).join('');
+    }).join(''));
   }
 
   function card(p, today, opts = {}) {
@@ -161,10 +162,10 @@
     const key = p.id + p.s + hasLeg(p.id); if (el.dataset.k === key) return; el.dataset.k = key;
     const on = p.s <= t;
     $('#tonighth').textContent = on ? 'Agora na KÖLJA TV' : day === today ? 'Hoje à noite' : 'Amanhã à noite';
-    el.innerHTML = `<a class="tonight" href="${link(p.id)}">${art(p.id, p.block)}<div class="in">
+    put(el, `<a class="tonight" href="${link(p.id)}">${art(p.id, p.block)}<div class="in">
       <div class="when"><small>${esc(nice(blockName(p.block)))}</small>${on ? '<span class="badge live" style="font-size:16px;height:28px;padding:0 10px">AO VIVO</span>' : hm(p.s)}</div>
       <h3>${esc(p.t.title)}</h3><div class="meta">${esc([p.t.year, country(p.t.country), dur((p.e - p.s) / 1000)].filter(Boolean).join(' · '))} ${legBadge(p.id)}</div>
-      ${p.t.synopsis ? `<p>${esc(p.t.synopsis)}</p>` : ''}<span class="btn ghost" style="align-self:start">Ver o filme</span></div></a>`;
+      ${p.t.synopsis ? `<p>${esc(p.t.synopsis)}</p>` : ''}<span class="btn ghost" style="align-self:start">Ver o filme</span></div></a>`);
   }
 
   function films() {
@@ -174,7 +175,7 @@
     if (list.length < 6) list = P.filter(p => p.e > t && p.t.kind === 'film').slice(0, 8);
     const seen = new Set(); list = list.filter(p => !seen.has(p.id) && seen.add(p.id)).slice(0, 10);
     const tn = $('#tonight .tonight'), skip = tn ? tn.getAttribute('href') : '';
-    el.innerHTML = list.filter(p => link(p.id) !== skip).map(p => card(p, today)).join('');
+    put(el, list.filter(p => link(p.id) !== skip).map(p => card(p, today)).join(''));
   }
 
   function legRail() {
@@ -183,7 +184,7 @@
     const t = clock(), today = dayKey(t), seen = new Set();
     const list = P.filter(p => p.e > t && hasLeg(p.id) && !seen.has(p.id) && seen.add(p.id)).slice(0, 8);
     if (box) box.hidden = !list.length;
-    el.innerHTML = list.map(p => card(p, today, { syn: false })).join('');
+    put(el, list.map(p => card(p, today, { syn: false })).join(''));
   }
 
   function novela() {
@@ -215,10 +216,10 @@
     const days = [...new Set(P.map(p => dayKey(p.s)))].filter(d => d >= today);
     if (!days.includes(st.day)) st.day = days[0] || today;
     const dEl = $('#days'), fEl = $('#faixas');
-    dEl.innerHTML = days.map(d => `<button class="chip" type="button" data-d="${d}" aria-pressed="${d === st.day}">${esc(dayLabel(d, today))}<small>${dayShort(d)}</small></button>`).join('');
-    fEl.innerHTML = `<button class="chip" type="button" data-f="-1" aria-pressed="${st.part < 0}">Dia todo</button>` +
+    put(dEl, days.map(d => `<button class="chip" type="button" data-d="${d}" aria-pressed="${d === st.day}">${esc(dayLabel(d, today))}<small>${dayShort(d)}</small></button>`).join(''));
+    put(fEl, `<button class="chip" type="button" data-f="-1" aria-pressed="${st.part < 0}">Dia todo</button>` +
       ps.map((p, k) => `<button class="chip" type="button" data-f="${k}" aria-pressed="${st.part === k}">${esc(partName(p).name)}<small>${p.hhmm}</small></button>`).join('') +
-      `<span class="sep"></span><button class="chip amber" type="button" data-leg aria-pressed="${st.leg}">LEG · com legenda</button>`;
+      `<span class="sep"></span><button class="chip amber" type="button" data-leg aria-pressed="${st.leg}">LEG · com legenda</button>`);
     const list = P.filter(p => dayKey(p.s) === st.day && (st.part < 0 || partIndex(ps, p.s) === st.part) && (!st.leg || hasLeg(p.id)));
     let html = '', k = -1;
     for (let i = 0; i < list.length; i++) {
@@ -231,7 +232,7 @@
       }
       html += row(p, t);
     }
-    el.innerHTML = html || `<p class="empty">${st.leg ? 'Nenhum título com legenda nesta faixa. Tire o filtro LEG para ver a grade toda.' : 'Nada na grade para este horário.'}</p>`;
+    put(el, html || `<p class="empty">${st.leg ? 'Nenhum título com legenda nesta faixa. Tire o filtro LEG para ver a grade toda.' : 'Nada na grade para este horário.'}</p>`);
     if (!st.jumped && st.day === today && st.part < 0) { // like a TV guide: open on what's on now
       st.jumped = true;
       const on = $('.row.on', el);
@@ -276,7 +277,7 @@
       if (p.t.kind === 'cartoon') { const run = [p]; while (list[i + 1] && list[i + 1].t.kind === 'cartoon') run.push(list[++i]); html += run.length > 2 ? toonRun(run, t) : run.map(x => row(x, t)).join(''); continue; }
       html += row(p, t);
     }
-    el.innerHTML = html;
+    put(el, html);
   }
 
   // ---------- title page ----------
@@ -325,7 +326,7 @@
     const merged = runs.filter(r => r.n > 1 || r.kinds.has('film'));
     const KW = { film: 'filmes', short: 'curtas', tv: 'episódios de séries' };
     const say = r => r.block === 'toons' ? 'Desenhos um atrás do outro, com intervalo a cada três' : cap(['film', 'tv', 'short'].filter(k => r.kinds.has(k)).map(k => KW[k]).join(' e ').replace(/ e (?=.* e )/, ', '));
-    el.innerHTML = merged.map(r => `<li><time>${hm(r.s)}</time><div><b>${esc(nice(blockName(r.block)))}</b><span>${esc(say(r))}</span></div></li>`).join('');
+    put(el, merged.map(r => `<li><time>${hm(r.s)}</time><div><b>${esc(nice(blockName(r.block)))}</b><span>${esc(say(r))}</span></div></li>`).join(''));
   }
 
   function draw() {
