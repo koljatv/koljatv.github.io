@@ -18,7 +18,7 @@
   host.classList.add('ktv-set');
   host.innerHTML = `
     <div class="ktv-cab"><div class="ktv-bezel"><div class="ktv-glass">
-      <div class="ktv-screen"><canvas class="ktv-static on" width="240" height="180"></canvas></div>
+      <div class="ktv-screen"><img class="ktv-still on" alt="" decoding="async"></div>
       <div class="ktv-o ktv-card hide"></div>
       <div class="ktv-o ktv-live hide"><i></i>AO VIVO</div>
       <div class="ktv-o ktv-bug hide">KÖLJA<b>TV</b></div>
@@ -42,7 +42,7 @@
       <button type="button" data-k="full" aria-label="Tela cheia"><svg viewBox="0 0 24 24"><path d="M3 3h7v2H5v5H3zm11 0h7v7h-2V5h-5zM3 14h2v5h5v2H3zm16 0h2v7h-7v-2h5z"/></svg><span class="lbl">TELA CHEIA</span></button>
     </div>`;
   const q = s => host.querySelector(s);
-  const screen = q('.ktv-screen'), canvas = q('.ktv-static'), glass = q('.ktv-glass'), powerEl = q('.ktv-power');
+  const screen = q('.ktv-screen'), stillEl = q('.ktv-still'), glass = q('.ktv-glass'), powerEl = q('.ktv-power');
   const cardEl = q('.ktv-card'), liveEl = q('.ktv-live'), bugEl = q('.ktv-bug'), nextEl = q('.ktv-next'), msgEl = q('.ktv-msg'), tapEl = q('.ktv-tap');
   const volEl = q('input[type=range]'), clockEl = q('.clock'), subEl = q('.ktv-sub'), ccEl = q('[data-k=cc]');
   const info = document.getElementById('ktv-info'), guideEl = document.getElementById('ktv-guide'), daysEl = document.getElementById('ktv-days');
@@ -145,8 +145,8 @@
   const slots = [0, 1, 2, 3, 4].map(() => {
     const v = document.createElement('video');
     v.setAttribute('playsinline', ''); v.playsInline = true; v.preload = 'auto'; v.muted = true;
-    screen.insertBefore(v, canvas);
-    return { v, pl: null, role: '', ready: false, timer: 0, stall: 0 };
+    screen.insertBefore(v, stillEl);
+    return { v, pl: null, role: '', ready: false, timer: 0, stall: 0, pre: false };
   });
   const air = () => slots.find(s => s.role === 'air');
   let sound = false, muted = localStorage.getItem('ktv.mute') === '1', vol = +(localStorage.getItem('ktv.vol') || 0.8);
@@ -157,10 +157,10 @@
     v.onloadedmetadata = v.oncanplay = v.onplaying = v.onwaiting = v.onerror = v.onended = null;
     v.pause(); v.classList.remove('air'); v.muted = true; v.playbackRate = 1;
     if (v.getAttribute('src')) { v.removeAttribute('src'); try { v.load(); } catch (e) {} }
-    sl.pl = null; sl.role = ''; sl.ready = false;
+    sl.pl = null; sl.role = ''; sl.ready = false; sl.pre = false;
   }
   function want(sl) { // seconds into the file: where the clock is (on the air) or where the item starts (loading ahead)
-    const pl = sl.pl; let w = (sl.role === 'cue' ? pl.at(pl.it.s) : pl.at(now())) / 1000;
+    const pl = sl.pl; let w = (sl.role === 'cue' && !sl.pre ? pl.at(pl.it.s) : pl.at(now())) / 1000;
     if (pl.loop && sl.v.duration) w %= sl.v.duration;
     return w;
   }
@@ -185,7 +185,6 @@
       if (!on || !sound || muted) s.v.muted = true;
       else if (s.v.muted && !tapNeeded) s.v.muted = false;
     }
-    hiss();
   }
   let tapNeeded = false;
   function start(sl) {
@@ -204,7 +203,12 @@
     if (a && a.pl && a.pl.key === pl.key) { a.pl = pl; return; } // already there (our card while trying the next copy)
     let sl = slots.find(s => s.role === 'cue' && s.pl.key === pl.key);
     for (const s of slots) if (s.role === 'next' && !(s.pl.trouble && !pl.trouble)) release(s); // our card stays up while a copy loads
-    if (sl) { sl.pl = pl; sl.role = 'next'; if (sl.v.readyState >= 1 && Math.abs(sl.v.currentTime - want(sl)) > 0.35) try { sl.v.currentTime = want(sl); } catch (e) {} }
+    let rolling = false;
+    if (sl) {
+      const pre = sl.pre; sl.pl = pl; sl.role = 'next'; sl.pre = false;
+      if (sl.v.readyState >= 1 && Math.abs(sl.v.currentTime - want(sl)) > (pre ? 4 : 0.35)) try { sl.v.currentTime = want(sl); } catch (e) {}
+      else rolling = pre && !sl.v.paused && sl.v.readyState >= 3; // rolled ahead in the dark: on the air right away
+    }
     else { sl = slots.find(s => !s.role) || slots.find(s => s.role === 'cue'); release(sl); prepare(sl, pl, 'next'); }
     if (a && !a.pl.loop) a.v.pause();
     const v = sl.v;
@@ -212,16 +216,17 @@
     v.onplaying = () => { clearTimeout(sl.stall); if (sl.role === 'next') live(sl); };
     v.onwaiting = () => { clearTimeout(sl.stall); if (sl.role === 'air') sl.stall = setTimeout(() => fail(sl), STALL_MS); };
     v.onended = () => { if (sl.role === 'air') ended(sl); };
-    clearTimeout(staticTimer);
-    if (!(a && a.pl.loop)) staticTimer = setTimeout(() => { if (sl.role === 'next') setStatic(true); }, a ? 900 : 0); // our looping card holds
+    clearTimeout(stillTimer);
+    if (!(a && a.pl.loop)) stillTimer = setTimeout(() => { if (sl.role === 'next') setStill(true); }, a ? 900 : 0); // our looping card holds
     start(sl);
+    if (rolling) live(sl);
   }
-  let staticTimer = 0;
+  let stillTimer = 0;
   function live(sl) {
-    clearTimeout(sl.timer); clearTimeout(staticTimer);
+    clearTimeout(sl.timer); clearTimeout(stillTimer);
     for (const s of slots) if (s !== sl && (s.role === 'air' || (s.role === 'next' && s.pl.trouble && !sl.pl.trouble))) release(s);
     sl.role = 'air'; sl.v.classList.add('air');
-    setStatic(false); show(cardEl, false); show(msgEl, false);
+    setStill(false); show(cardEl, false); show(msgEl, false);
     if (Math.abs(sl.v.currentTime - want(sl)) > 1.5 && !sl.pl.ours) try { sl.v.currentTime = want(sl); } catch (e) {}
     levels(); ui();
   }
@@ -236,12 +241,12 @@
     if (!pl.trouble) dead.set(pl.url, Date.now());
     const wasAir = sl.role === 'air';
     release(sl);
-    if (wasAir || !air()) setStatic(true);
+    if (wasAir || !air()) setStill(true);
     if (!cur || !cur.target || (keyOf(pl.it) !== keyOf(cur.target) && !pl.trouble && !pl.fill)) return; // an old attempt
-    if (pl.trouble) { cardEl.textContent = 'PROBLEMAS TÉCNICOS · JÁ VOLTAMOS'; show(cardEl, true); setStatic(false); return; } // even our card won't load: the page's own
+    if (pl.trouble) { cardEl.textContent = 'PROBLEMAS TÉCNICOS · JÁ VOLTAMOS'; show(cardEl, true); setStill(false); return; } // even our card won't load: the page's own
     if (pl.fill) { if (pl.next) onAir(pl.next); else htmlCard('A PROGRAMAÇÃO CONTINUA JÁ'); return; }
     cur.tried.add(pl.k);
-    if (pl.ours) { advance(); return; }  // our piece: its other copy, else static with our bug till the next item
+    if (pl.ours) { advance(); return; }  // our piece: its other copy, else our bug over the still till the next item
     trouble();
   }
   function ended(sl) { // the file ran out before the slot did: the next stand-in, or our station card till the next item
@@ -280,15 +285,15 @@
     here.key = 'fill'; there.key = 'fill2'; here.next = there; // ours on this site, else the release copy
     onAir(here);
   }
-  function quiet() { // one of our short pieces can't be fetched: static with our bug till the next item, like a real gap
+  function quiet() { // one of our short pieces can't be fetched: our bug over the still till the next item
     cur.mode = 'quiet';
     for (const s of slots) if (s.role === 'air' || s.role === 'next') release(s);
-    setStatic(true);
+    setStill(true);
   }
   function htmlCard(text) {
     if (cur) { cur.mode = 'card'; cur.retry = now() + 30e3; }
     for (const s of slots) if (s.role === 'air' || s.role === 'next') release(s);
-    cardEl.textContent = text; show(cardEl, true); setStatic(false);
+    cardEl.textContent = text; show(cardEl, true); setStill(false);
   }
 
   function tick() {
@@ -326,10 +331,43 @@
     }
   }
 
+  // Before the first click: what is on the air now loads (and rolls, muted and unseen, for a while) in a spare
+  // player, so the picture is there the moment the set is switched on. Never with data saver on.
+  const PRE_ROLL_MS = 90e3, t0 = Date.now(), preconnected = new Set();
+  let everOn = false;
+  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  function preconnect(url) {
+    try {
+      const o = new URL(url, location.href).origin;
+      if (o === location.origin || preconnected.has(o)) return;
+      preconnected.add(o);
+      for (const rel of ['preconnect', 'dns-prefetch']) { const l = document.createElement('link'); l.rel = rel; l.href = o; document.head.append(l); }
+    } catch (e) {}
+  }
+  function preroll() {
+    if (power || everOn || !S || saveData) return;
+    const old = slots.find(s => s.pre), rollOk = Date.now() - t0 < PRE_ROLL_MS && !document.hidden;
+    const i = find(now()), c = i >= 0 ? firstCopy(items[i], new Set()) : null;
+    if (c) preconnect(c.pl.url);
+    if (old && c && old.pl.key === c.pl.key) { if (!rollOk && !old.v.paused) old.v.pause(); return; }
+    if (old) release(old);
+    if (!c || !rollOk) return;
+    const sl = slots.find(s => !s.role); if (!sl) return;
+    c.pl.k = c.k; sl.pre = true;
+    prepare(sl, c.pl, 'cue');
+    sl.v.oncanplay = () => {
+      sl.ready = true;
+      if (!sl.pre || power || !sl.v.paused) return;
+      if (Math.abs(sl.v.currentTime - want(sl)) > 4) { try { sl.v.currentTime = want(sl); } catch (e) {} return; } // it took a while: catch up first
+      sl.v.play().catch(() => {});
+    };
+  }
+  document.addEventListener('visibilitychange', () => { const o = slots.find(s => s.pre); if (o && document.hidden) o.v.pause(); });
+
   // By the clock: a film that started late plays a touch faster till it has caught up; far behind, it jumps.
   setInterval(() => {
-    const a = air();
-    if (!a || !power || a.pl.loop || a.pl.ours) return;
+    const a = power ? air() : slots.find(s => s.pre && !s.v.paused); // the pre-rolled one keeps time too
+    if (!a || a.pl.loop || a.pl.ours) return;
     const v = a.v;
     if (v.paused || v.readyState < 3) return;
     const lag = want(a) - v.currentTime;
@@ -403,39 +441,21 @@
     requestAnimationFrame(watch);
   })();
 
-  // ---------- static, drawn here ----------
-  const ctx = canvas.getContext('2d'), img = ctx.createImageData(canvas.width, canvas.height);
-  let roll = 0;
-  (function frame() {
-    if (canvas.classList.contains('on')) {
-      const d = img.data, w = canvas.width;
-      roll = (roll + 3) % canvas.height;
-      for (let k = 0, p = 0; k < d.length; k += 4, p++) {
-        const y = (p / w) | 0, v = Math.min(255, (Math.random() * 215 + (Math.abs(y - roll) < 10 ? 40 : 0)) | 0);
-        d[k] = d[k + 1] = d[k + 2] = v; d[k + 3] = 255;
-      }
-      ctx.putImageData(img, 0, 0);
-    }
-    requestAnimationFrame(frame);
-  })();
-  let actx = null, hissGain = null;
-  function hiss() {
-    if (!sound) return;
-    try {
-      if (!actx) {
-        actx = new (window.AudioContext || window.webkitAudioContext)();
-        const len = actx.sampleRate * 2, buf = actx.createBuffer(1, len, actx.sampleRate), ch = buf.getChannelData(0);
-        for (let k = 0; k < len; k++) ch[k] = Math.random() * 2 - 1;
-        const src = actx.createBufferSource(); src.buffer = buf; src.loop = true;
-        const lp = actx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5200;
-        hissGain = actx.createGain(); hissGain.gain.value = 0;
-        src.connect(lp); lp.connect(hissGain); hissGain.connect(actx.destination); src.start();
-      }
-      const on = power && !muted && canvas.classList.contains('on');
-      hissGain.gain.setTargetAtTime(on ? vol * 0.12 : 0, actx.currentTime, 0.05);
-    } catch (e) {}
+  // ---------- the still: the programme's own picture while its copy loads, never noise ----------
+  let ART = {};
+  fetch(BASE + 'arte/index.json').then(r => r.ok ? r.json() : {}).then(j => { ART = j || {}; setStill(stillEl.classList.contains('on')); }).catch(() => {});
+  function stillUrl() {
+    if (!S) return '';
+    const t = now(), p = progAt(t) || progAfter(t);
+    return p && ART[p.id] ? BASE + 'arte/' + encodeURIComponent(p.id) + '.jpg' : '';
   }
-  function setStatic(on) { canvas.classList.toggle('on', on); hiss(); }
+  function setStill(on) {
+    const u = on ? stillUrl() : '';
+    if (u && stillEl.getAttribute('src') !== u) stillEl.src = u;
+    stillEl.classList.toggle('on', on);
+    stillEl.classList.toggle('none', on && !u); // no picture for this one: black
+  }
+
 
   // ---------- what's on ----------
   const hm = ms => new Date(ms).toLocaleTimeString('pt-BR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
@@ -515,7 +535,7 @@
   // ---------- the knobs ----------
   function powerOn() {
     if (power) return;
-    power = true; sound = true;
+    power = true; sound = true; everOn = true;
     host.classList.add('on'); powerEl.style.display = 'none';
     q('[data-k=power] .lbl').textContent = 'DESLIGAR';
     // Browsers let a page play sound only from a click: start every player here so each may play later on its own.
@@ -524,8 +544,8 @@
       const p = s.v.play(); if (p) p.catch(() => {});
       s.v.pause(); s.v.muted = true; s.v.removeAttribute('src'); try { s.v.load(); } catch (e) {}
     }
-    screen.classList.remove('off'); void screen.offsetWidth; screen.classList.add('warm');
-    setStatic(true);
+    screen.classList.remove('off');
+    setStill(true);
     if (!S) { msgEl.textContent = 'SINTONIZANDO…'; show(msgEl, true); load().then(tick).catch(() => htmlCard('JÁ VOLTAMOS')); }
     else tick();
   }
@@ -534,8 +554,8 @@
     for (const s of slots) release(s);
     host.classList.remove('on'); powerEl.style.display = '';
     q('[data-k=power] .lbl').textContent = 'LIGAR';
-    screen.classList.remove('warm'); void screen.offsetWidth; screen.classList.add('off');
-    show(cardEl, false); show(msgEl, false); show(tapEl, false); setStatic(true); hiss(); ui();
+    void screen.offsetWidth; screen.classList.add('off');
+    show(cardEl, false); show(msgEl, false); show(tapEl, false); setStill(true); ui();
   }
   function setMute(m) {
     muted = m; localStorage.setItem('ktv.mute', m ? '1' : '0');
@@ -581,9 +601,9 @@
 
   loadSubs().catch(() => {});
   setInterval(() => loadSubs().catch(() => {}), 10 * MIN);
-  load().then(() => { ui(); drawGuide(); }).catch(() => { if (info) info.innerHTML = '<div class="ttl">Já voltamos</div>'; });
+  load().then(() => { ui(); drawGuide(); setStill(true); preroll(); }).catch(() => { if (info) info.innerHTML = '<div class="ttl">Já voltamos</div>'; });
   setInterval(tick, 500);
-  setInterval(() => { if (!power) ui(); }, 1000);
+  setInterval(() => { if (!power) { ui(); preroll(); if (!everOn) setStill(true); } }, 1000);
   setInterval(drawGuide, 60e3);
   setInterval(() => load().then(() => power && tick()).catch(() => {}), 5 * MIN);
   setInterval(() => { if (power && cur && cur.key === 'standby') load().then(tick).catch(() => {}); }, 30e3);

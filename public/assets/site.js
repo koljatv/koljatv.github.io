@@ -291,7 +291,7 @@
       const md = document.querySelector('meta[name=description]'); if (md && t.synopsis) md.content = t.synopsis;
       const meta = [t.year, country(t.country), KIND[t.kind], dur(t.dur)].filter(Boolean).map(x => `<span>${esc(String(x))}</span>`).join('');
       const sameBlock = []; const seen = new Set([id]);
-      for (const p of P) if (p.e > now && p.block === t.block && p.t.kind !== 'cartoon' && !seen.has(p.id)) { seen.add(p.id); sameBlock.push(p); if (sameBlock.length >= 4) break; }
+      for (const p of P) if (p.e > now && p.t.block === t.block && p.t.kind !== 'cartoon' && !seen.has(p.id)) { seen.add(p.id); sameBlock.push(p); if (sameBlock.length >= 4) break; }
       el.innerHTML = `
       <section class="title-hero"><div class="bg">${art(id, t.block, '', true)}</div><div class="wrap">
         <div class="kicker">${on ? '<span class="dot"></span>No ar agora · ' : ''}${esc(blockName(t.block))}</div>
@@ -305,8 +305,8 @@
       <section class="band"><div class="wrap two">
         <div><div class="h-sec"><h2>Quando passa</h2></div>${ups.length ? `<ul class="airings">${ups.slice(0, 8).map(p => `<li><div class="d">${esc(dayLabel(dayKey(p.s), today))}, ${hm(p.s)}<small>${dayShort(dayKey(p.s))} · ${esc(blockName(p.block))} · até ${hm(p.e)}</small></div>
           ${p === on ? '<a class="btn" href="' + B + 'ao-vivo/">Ao vivo</a>' : '<span class="lbl" style="color:var(--fg3)">' + esc(nice(blockName(p.block))) + '</span>'}</li>`).join('')}</ul>`
-          : `<p style="color:var(--fg2);font-size:18px;max-width:46ch">Não está na grade dos próximos dias. A programação muda todo dia, então vale voltar aqui para conferir.</p>`}
-        ${hasLeg(id) ? `<p style="color:var(--fg2);margin-top:22px;max-width:52ch"><span class="badge leg">LEG</span>&nbsp; Tem legenda em português e em inglês, feitas por nós. No player, o botão PT troca para EN ou desliga.</p>` : ''}</div>
+          : `<p style="color:var(--fg2);font-size:18px;max-width:46ch">Fora da grade dos próximos dias.</p>`}
+        ${hasLeg(id) ? `<p style="color:var(--fg2);margin-top:22px;max-width:52ch"><span class="badge leg">LEG</span>&nbsp; Legenda em português e em inglês. No player, o botão PT troca para EN ou desliga.</p>` : ''}</div>
         <div><div class="h-sec"><h2>Ficha</h2></div><dl class="facts">
           <div><dt>Título</dt><dd>${esc(t.title)}</dd></div>${t.year ? `<div><dt>Ano</dt><dd>${t.year}</dd></div>` : ''}
           ${t.country ? `<div><dt>País</dt><dd>${esc(country(t.country))}</dd></div>` : ''}<div><dt>Duração</dt><dd>${esc(dur(t.dur))}</dd></div>
@@ -333,5 +333,5 @@
     try { ticker(); upnext(); poster(); dayparts(); tonight(); films(); legRail(); novela(); guide(); todayRest(); titlePage(); dayMap(); }
     catch (e) { console.error(e); }
   }
-  ready().catch(e => { console.error(e); const g = $('#grade') || $('#titulo'); if (g) g.innerHTML = '<p class="empty wrap">A programação não carregou agora. Tente de novo em instantes.</p>'; });
+  ready().catch(e => { console.error(e); const g = $('#grade') || $('#titulo'); if (g) g.innerHTML = '<p class="empty wrap">A programação não carregou. Recarregue a página.</p>'; });
 })();
