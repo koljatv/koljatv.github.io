@@ -27,8 +27,8 @@
       <button class="ktv-o ktv-tap hide" type="button">TOQUE PARA ATIVAR O SOM</button>
       <div class="ktv-sub hide" aria-live="off"></div>
       <div class="ktv-crt"></div><div class="ktv-shine"></div>
-      <div class="ktv-power" role="button" tabindex="0" aria-label="Ligar a TV e assistir ao vivo">
-        <div class="knob"></div><strong>ASSISTIR <b>AO VIVO</b></strong><span>clique para ligar a TV · com som</span>
+      <div class="ktv-power" role="button" tabindex="0" aria-label="Assistir à KÖLJA TV ao vivo">
+        <div class="knob"></div><strong>ASSISTIR <b>AO VIVO</b></strong><span>toque para ligar · com som</span>
       </div>
     </div></div>
     <div class="ktv-brand">KÖLJA</div><div class="ktv-model"><span class="ktv-lamp"></span>TV-14 · CANAL 1</div></div>
@@ -71,8 +71,10 @@
     const n = await getJSON(BASE + 'grade/now.json?m=' + Math.floor(Date.now() / MIN));
     gen = n.generated || 0;
     const r = n.rev2 || n.rev, file = n.schedule2 || n.schedule; // schedule2: with the commercial breaks
-    if (!S || r !== rev) { S = await getJSON(BASE + 'grade/' + file + '?r=' + r); rev = r; parse(); drawGuide(); }
+    let fresh = false;
+    if (!S || r !== rev) { S = await getJSON(BASE + 'grade/' + file + '?r=' + r); rev = r; parse(); drawGuide(); fresh = true; }
     setClock();
+    if (fresh) window.dispatchEvent(new CustomEvent('ktv:grade')); // the site's own pages (now/next, highlights) read it from window.KTV
   }
 
   // items: [start, end, id, block(, part)]. part 0, 1... is a feature's part; -1 is a piece of its break.
@@ -99,6 +101,7 @@
     return -1;
   }
   const progAt = t => progs.find(p => p.s <= t && t < showEnd(p));
+  window.KTV = { get S() { return S; }, get progs() { return progs; }, get LG() { return LG; }, get power() { return power; }, now: () => now(), showEnd };
   const progAfter = t => progs.find(p => p.s >= t);
 
   // ---------- what can play an item ----------
@@ -348,7 +351,7 @@
   const fnv = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return ('0000000' + h.toString(16)).slice(-8); };
   async function loadSubs() {
     const r = await fetch(BASE + 'legendas/index.json?m=' + Math.floor(Date.now() / MIN), { cache: 'no-store' });
-    if (r.ok) LG = await r.json();
+    if (r.ok) { LG = await r.json(); window.dispatchEvent(new CustomEvent('ktv:subs')); }
   }
   const vttTime = x => { const p = x.trim().split(':').map(Number); return p.length === 3 ? p[0] * 3600 + p[1] * 60 + p[2] : p[0] * 60 + p[1]; };
   function parseVTT(t) {
@@ -438,7 +441,9 @@
   const hm = ms => new Date(ms).toLocaleTimeString('pt-BR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
   const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const blockName = b => (S && S.blocks[b] || {}).pt || '';
-  let infoHtml = '';
+  let infoHtml = '', regions = null;
+  try { regions = new Intl.DisplayNames(['pt-BR'], { type: 'region' }); } catch (e) {}
+  const region = c => { try { return c && regions ? regions.of(c) : c; } catch (e) { return c; } };
   function ui() {
     const t = now();
     clockEl.textContent = new Date(t).toLocaleTimeString('pt-BR', { timeZone: TZ }) + ' · BRASÍLIA';
@@ -460,10 +465,11 @@
       const pr = progAt(t), nx = progAfter(pr ? showEnd(pr) : t), p = pr || nx;
       if (!p) html = '<div class="ttl">Já voltamos</div>'; else {
       const end = showEnd(p), brk = it && it.brk && pr;
-      const meta = [p.p.year, p.p.country, hm(p.s) + ' – ' + hm(end), brk ? 'INTERVALO' : pr ? '' : 'COMEÇA ÀS ' + hm(p.s)].filter(Boolean).join(' · ');
+      const meta = [p.p.year, region(p.p.country), hm(p.s) + ' – ' + hm(end), brk ? 'INTERVALO' : pr ? '' : 'COMEÇA ÀS ' + hm(p.s)].filter(Boolean).join(' · ');
       const nn = pr ? nx : progAfter(end);
-      html = `<div class="blk">${esc(blockName(p.block) || 'NO AR')}</div><div class="ttl">${esc(p.p.title)}</div>
-        <div class="meta">${esc(meta)}</div>${p.p.synopsis ? `<p class="syn">${esc(p.p.synopsis)}</p>` : ''}
+      const leg = LG && LG.titles[p.id] ? ' <span class="badge leg" title="Com legenda em português">LEG</span>' : '';
+      html = `<div class="blk${pr ? '' : ' soon'}">${esc(blockName(p.block) || 'NO AR')}</div><div class="ttl"><a href="${BASE}programa/?id=${encodeURIComponent(p.id)}">${esc(p.p.title)}</a></div>
+        <div class="meta">${esc(meta)}${leg}</div>${p.p.synopsis ? `<p class="syn">${esc(p.p.synopsis)}</p>` : ''}
         <div class="bar"><i style="width:${pr ? Math.min(100, (t - p.s) / (end - p.s) * 100) : 0}%"></i></div>
         ${nn ? `<div class="nx"><b>A SEGUIR</b>${hm(nn.s)} · ${esc(nn.p.title)}</div>` : ''}`; }
       if (html !== infoHtml) info.innerHTML = infoHtml = html;

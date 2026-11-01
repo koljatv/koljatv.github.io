@@ -2,61 +2,82 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KÖLJA TV · canal 1</title>
-<meta name="description" content="KÖLJA TV ao vivo: clássicos cult 24 horas. Assista no site ou no canal 1 do Retrotv.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KÖLJA TV · Canal 1 · Ao vivo 24 horas</title>
+<meta name="description" content="KÖLJA TV ao vivo: clássicos do cinema, desenhos, seriados e madrugada de terror, 24 horas por dia. Assista no site ou na Retrotv.">
 <link rel="canonical" href="https://tv.kolja.com.br/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KÖLJA TV">
+<meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://tv.kolja.com.br/">
-<meta property="og:title" content="KÖLJA TV · canal 1">
-<meta property="og:description" content="KÖLJA TV ao vivo: clássicos cult 24 horas. Assista no site ou no canal 1 do Retrotv.">
-<meta name="theme-color" content="#0e0c0a">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%23ffb000%22/%3E%3Ctext x=%228%22 y=%2212%22 font-size=%2210%22 font-weight=%22900%22 text-anchor=%22middle%22 font-family=%22Arial%22%3EK%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="tv/tv.css">
-<style>
-  :root { --amber: #ffb000; --cream: #f6ecd6; --ink: #0e0c0a; --panel: #1a1612; --line: #2e2720; --dim: #9c907c; }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: radial-gradient(ellipse at 50% -10%, #2a2018 0%, var(--ink) 60%) fixed; color: var(--cream);
-         font: 16px/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 20px 64px; }
-  header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
-  .logo { font: 800 34px/1 "DIN Condensed", "Arial Narrow", "Roboto Condensed", sans-serif; letter-spacing: .16em; }
-  .logo b { background: var(--amber); color: var(--ink); padding: 2px 6px 0; margin-left: 6px; letter-spacing: .05em; }
-  .ch { color: var(--dim); letter-spacing: .2em; font-size: 13px; text-transform: uppercase; }
-  h2 { font: 700 15px/1 "DIN Condensed", "Arial Narrow", sans-serif; letter-spacing: .24em; color: var(--dim); margin: 44px 0 10px; text-transform: uppercase; }
-  .about p { color: #d9cdb6; max-width: 66ch; }
-  .muted { color: var(--dim); font-size: 13px; }
-  a { color: var(--amber); }
-  header nav { margin-left: auto; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; }
-  .wrap { max-width: 1140px; }
-  .guidebox, .about { max-width: 1100px; margin: 0 auto; }
-  @media (max-width: 600px) { .wrap { padding: 16px 10px 48px; } header { margin-bottom: 18px; } }
-</style>
+<meta property="og:title" content="KÖLJA TV · Canal 1 · Ao vivo 24 horas">
+<meta property="og:description" content="KÖLJA TV ao vivo: clássicos do cinema, desenhos, seriados e madrugada de terror, 24 horas por dia. Assista no site ou na Retrotv.">
+<meta property="og:image" content="https://tv.kolja.com.br/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b0a09">
+<link rel="icon" href="img/tv.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/jost.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/barlowc-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="tv/tv.css?v=2">
+<link rel="stylesheet" href="assets/site.css?v=2">
 </head>
-<body>
-<div class="wrap">
-  <header><div class="logo">KÖLJA<b>TV</b></div><div class="ch">canal 1 · 24 horas</div><nav><a href="ao-vivo/">só a TV</a></nav></header>
+<body data-base="" data-page="home">
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<header class="top"><div class="wrap">
+  <a class="logo" href="" aria-label="KÖLJA TV, início"><img src="img/logo.svg" alt="KÖLJA TV" width="128" height="54"></a>
+  <nav aria-label="Principal"><a href="" aria-current=page>Início</a><a href="programacao/">Programação</a><a href="emissora/">A emissora</a><a href="anuncie/">Anuncie</a><a href="retrotv/">Retrotv</a></nav>
+  <a class="onair" href="ao-vivo/"><span class="dot"></span>AO VIVO</a>
+  <button class="menu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg></button>
+</div></header>
+<div class="sheet" id="sheet"><a href="">Início</a><a href="programacao/">Programação</a><a href="ao-vivo/">Ao vivo</a><a href="emissora/">A emissora</a><a href="anuncie/">Anuncie</a><a href="retrotv/">Retrotv</a><p>Horário de Brasília. A grade se atualiza sozinha.</p></div>
 
-  <div id="ktv" data-base=""></div>
-  <section class="ktv-info" id="ktv-info" aria-live="polite"></section>
-
-  <section class="guidebox">
-    <h2>Programação · horário de Brasília</h2>
-    <div class="ktv-days" id="ktv-days"></div>
-    <ul class="ktv-guide" id="ktv-guide"></ul>
-  </section>
-
-  <section class="about">
-    <h2>Sobre</h2>
-    <p>KÖLJA TV é o canal 1 do Retrotv, a TV de bolso da KÖLJA, e passa aqui no site também. São clássicos o dia inteiro: de manhã até o começo da tarde,
-      desenhos clássicos; à tarde, a matinê, com comédia muda, seriados, comédia e faroeste; à noite, os grandes filmes,
-      grandes clássicos e aventura, e depois o noir; de madrugada, Sessão Terror, ficção científica, a Madrugada Cult e
-      as séries clássicas. Como numa TV de verdade, todo mundo vê a mesma coisa na mesma hora: ligou, entrou no que está passando.</p>
-    <p>A programação é da KÖLJA TV, e as vinhetas são todas nossas.</p>
-    <p class="muted">A grade se atualiza sozinha a cada 20 minutos.</p>
-  </section>
-</div>
-<script src="tv/tv.js"></script>
+<main id="main">
+<section class="live-hero"><div class="wrap grid">
+  <div class="player"><div id="ktv" data-base=""></div></div>
+  <div class="side">
+    <section class="ktv-info" id="ktv-info" aria-live="polite"></section>
+    <div class="upnext" id="upnext"></div>
+    <div class="acts"><a class="btn" href="programacao/">Programação de hoje</a><a class="btn ghost" href="ao-vivo/">Tela grande</a></div>
+  </div>
+</div></section>
+<section class="band"><div class="wrap">
+  <div class="h-sec"><h2>Hoje na KÖLJA TV</h2><a href="programacao/">Grade completa</a></div>
+  <div class="parts" id="parts"></div>
+</div></section>
+<section class="band"><div class="wrap">
+  <div class="h-sec"><h2>Os filmes de hoje</h2><a href="programacao/">Programação</a></div>
+  <div class="rail r4" id="films"></div>
+</div></section>
+<section class="promo" id="novela" data-until="2026-11-15" hidden><div class="wrap">
+  <div>
+    <div class="kicker">Novela da casa · Prévia do capítulo 1</div>
+    <h2>Segredos da Serra</h2>
+    <p>Noite de tempestade na mansão dos Albuquerque, no alto da serra de Petrópolis. Três da manhã, a geladeira aberta, e comendo o pudim da família está um homem que foi enterrado há cinco anos.</p>
+    <p>A prévia passa nos intervalos dos filmes da noite e da madrugada. Ou dá o play aqui.</p>
+    <div class="fine">Nos intervalos até 15 de novembro</div>
+  </div>
+  <div class="media"><img src="img/novela-escada.jpg" alt="Segredos da Serra: Rodrigo, de roupão vinho, no alto da escada da mansão" loading="lazy"><button type="button" aria-label="Assistir à prévia de Segredos da Serra"><i></i></button></div>
+</div></section>
+<section class="band" id="legbox" hidden><div class="wrap">
+  <div class="h-sec"><h2>Com legenda em português</h2><a href="programacao/?leg=1">Todos com LEG</a></div>
+  <p style="color:var(--fg2);margin:-6px 0 22px;max-width:60ch">As legendas são feitas aqui, em português e em inglês. Na grade, esses filmes aparecem com o selo <span class="badge leg">LEG</span>.</p>
+  <div class="rail r4" id="legrail"></div>
+</div></section>
+<section class="band"><div class="wrap duo">
+  <a class="tease" href="retrotv/"><div><div class="kicker">Retrotv</div><h3>A KÖLJA TV também cabe no bolso</h3><p>O nosso aplicativo de TV para Android, com a KÖLJA TV no canal 1.</p><span class="btn ghost">Conhecer</span></div><img src="img/retrotv.jpg" alt="A Retrotv no celular, passando um filme com legenda" loading="lazy" width="120" height="267"></a>
+  <a class="tease" href="anuncie/"><div><div class="kicker">Anuncie</div><h3>Seu comercial no intervalo dos clássicos</h3><p>Os filmes têm intervalo, como na TV aberta. Conte o que você quer anunciar e a gente combina.</p><span class="btn ghost">Como funciona</span></div></a>
+</div></section>
+</main>
+<footer class="foot"><div class="wrap">
+  <div class="cols">
+    <div class="brand"><img src="img/logo.svg" alt="KÖLJA TV" width="142" height="60"><p>Clássicos do cinema, desenhos, seriados e madrugada de terror. No ar 24 horas, no horário de Brasília.</p></div>
+    <div><h2>Assistir</h2><ul><li><a href="ao-vivo/">Ao vivo</a></li><li><a href="programacao/">Programação</a></li><li><a href="retrotv/">Retrotv</a></li></ul></div>
+    <div><h2>A emissora</h2><ul><li><a href="emissora/">Sobre a KÖLJA TV</a></li><li><a href="anuncie/">Anuncie</a></li><li><a href="mailto:contato@kolja.com.br">Contato</a></li></ul></div>
+    <div><h2>Kölja</h2><ul><li><a href="https://kolja.com.br/">kolja.com.br</a></li><li><a href="https://kolja.com.br/store/">Loja</a></li></ul></div>
+  </div>
+  <div class="fine"><span>© 2026 Kölja</span><span>KÖLJA TV · Canal 1</span></div>
+</div></footer>
+<script src="tv/tv.js?v=2"></script>
+<script src="assets/site.js?v=2"></script>
 </body>
 </html>
