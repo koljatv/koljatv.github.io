@@ -53,6 +53,25 @@
 .ktv-tap { left: 50%; bottom: 7%; transform: translateX(-50%); pointer-events: auto; cursor: pointer; font-size: 2.2cqw; letter-spacing: .1em;
   background: rgba(16,20,24,.9); color: var(--cream); border: 1px solid rgba(255,176,0,.7); border-radius: 99px; padding: .5em 1.1em; }
 
+/* the loading mark: over the programme's still while a copy loads, or over a picture that stopped to load */
+.ktv-load { left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: .7em;
+  padding: .55em 1.15em .55em .65em; border-radius: 999px; background: rgba(12,14,16,.74); border: 1px solid rgba(255,176,0,.32);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: 0 8px 28px rgba(0,0,0,.45);
+  font: 500 clamp(11px, 1.75cqw, 17px)/1 "Jost", -apple-system, "Segoe UI", Roboto, Arial, sans-serif; letter-spacing: .02em;
+  color: var(--cream); white-space: nowrap; transition: opacity .35s .7s; } /* appears only if the wait lasts: no flash on a clean cut */
+.ktv-load.hide { transition-delay: 0s; }
+.ktv-load .ring { position: relative; width: 1.6em; height: 1.6em; flex: none; border-radius: 50%; border: .16em solid rgba(255,176,0,.22);
+  border-top-color: var(--amber); animation: ktv-spin .9s linear infinite; }
+.ktv-load .ring i { position: absolute; inset: .32em; border-radius: 50%; background: var(--amber); opacity: .85; animation: ktv-pulse 1.8s ease-in-out infinite; }
+.ktv-load .mk { font: 700 .82em/1 "Barlow Condensed", "Futura", "Arial Narrow", sans-serif; letter-spacing: .1em; color: rgba(246,236,214,.7); }
+.ktv-load .mk b { margin-left: .25em; padding: .05em .28em; border-radius: .2em; background: var(--amber); color: #14100a; }
+.ktv-load .tx { padding-left: .7em; border-left: 1px solid rgba(246,236,214,.22); }
+.ktv-load.re .ring { animation-duration: 1.4s; }
+@keyframes ktv-spin { to { transform: rotate(360deg); } }
+@keyframes ktv-pulse { 0%, 100% { transform: scale(.55); opacity: .5; } 50% { transform: scale(.9); opacity: .95; } }
+@media (prefers-reduced-motion: reduce) { .ktv-load .ring { animation: none; } }
+@container (max-width: 420px) { .ktv-load .mk { display: none; } .ktv-load .tx { padding-left: 0; border-left: 0; } }
+
 /* the power overlay (browsers only allow sound after a click) */
 .ktv-power { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4cqw;
   background: radial-gradient(ellipse at center, rgba(20,26,28,.55), rgba(0,0,0,.85)); color: var(--cream); text-align: center;

@@ -2,8 +2,9 @@
 // the same time: the page reads the grade (grade/now.json names the current build of grade/schedule2.json) and
 // puts on whatever the clock says, at the right point. A feature's commercial break is our INTERVALO and VOLTAMOS;
 // our idents run between programmes. The next item is loaded ahead in a hidden player so the cut is clean.
-// If a copy fails: our "PROBLEMAS TÉCNICOS" card, then the next copy at the right clock position, or a stand-in
-// from the same block, or our station card for what is left of the slot.
+// The copies of a film race (archive.org servers vary from fast to a crawl): the first to play goes on the air,
+// over the programme's still and a "Carregando…" mark. If every copy fails, the round starts again, never a dead
+// end; our "PROBLEMAS TÉCNICOS" card covers the wait only after a real failure and half a minute.
 (() => {
   'use strict';
   const host = document.getElementById('ktv');
@@ -11,7 +12,14 @@
   const BASE = host.dataset.base || '';
   const TZ = 'America/Sao_Paulo', MIN = 60e3;
   const CUE_PROG = 45e3, CUE_RETURN = 75e3, CUE_BREAK = 3 * MIN, CUE_OURS = 15e3, // how far ahead each kind is loaded
-        START_MS = 20000, OURS_START_MS = 8000, STALL_MS = 20000, DEAD_MS = 10 * MIN;
+        OURS_START_MS = 8000, DEAD_MS = 10 * MIN,
+        // archive.org: a copy's index (1-4 MB, read before the first picture) comes over a connection that may be fast
+        // or crawl at 15 KB/s, a lottery per connection. So copies race: another starts every RACE_MS while none plays
+        // (RACES at most), and a copy that hasn't moved on for a while reconnects (RESTART_MS, more patient each time).
+        // A copy is given up on an error or after GIVEUP_MS; when every copy failed, the round starts again after a
+        // pause (BACKOFF). Our card shows only after a real failure and CARD_AFTER.
+        RACE_MS = 6000, RACES = 3, RESTART_MS = 15000, GIVEUP_MS = 150e3, STALL_RACE_MS = 8000, STALL_FAIL_MS = 45e3, CARD_AFTER = 30e3,
+        BACKOFF = [2000, 6000, 15000, 30000, 60000];
   const TROUBLE = { trouble: true, dur: 12000, url: BASE + 'tv/tecnicos.mp4' };
 
   // ---------- the set ----------
@@ -24,6 +32,7 @@
       <div class="ktv-o ktv-bug hide">KÖLJA<b>TV</b></div>
       <div class="ktv-o ktv-next hide"><b>A SEGUIR</b><span></span></div>
       <div class="ktv-o ktv-msg hide"></div>
+      <div class="ktv-o ktv-load hide" role="status" aria-live="polite"><span class="ring"><i></i></span><span class="mk">KÖLJA<b>TV</b></span><span class="tx">Carregando…</span></div>
       <button class="ktv-o ktv-tap hide" type="button">TOQUE PARA ATIVAR O SOM</button>
       <div class="ktv-sub hide" aria-live="off"></div>
       <div class="ktv-crt"></div><div class="ktv-shine"></div>
@@ -43,6 +52,7 @@
     </div>`;
   const q = s => host.querySelector(s);
   const screen = q('.ktv-screen'), stillEl = q('.ktv-still'), glass = q('.ktv-glass'), powerEl = q('.ktv-power');
+  const loadEl = q('.ktv-load'), loadTx = q('.ktv-load .tx');
   const cardEl = q('.ktv-card'), liveEl = q('.ktv-live'), bugEl = q('.ktv-bug'), nextEl = q('.ktv-next'), msgEl = q('.ktv-msg'), tapEl = q('.ktv-tap');
   const volEl = q('input[type=range]'), clockEl = q('.clock'), subEl = q('.ktv-sub'), ccEl = q('[data-k=cc]');
   const info = document.getElementById('ktv-info'), guideEl = document.getElementById('ktv-guide'), daysEl = document.getElementById('ktv-days');
@@ -141,14 +151,16 @@
     return pick ? { s: now(), e: now() + pick.d, id: pick.id, block, p: pick.p, o: null, part: -1, alt: true } : null;
   }
 
-  // ---------- players: one on the air, one taking over, the rest loading what comes next ----------
+  // ---------- players: one on the air, copies racing to take over, the rest loading what comes next ----------
   const slots = [0, 1, 2, 3, 4].map(() => {
     const v = document.createElement('video');
     v.setAttribute('playsinline', ''); v.playsInline = true; v.preload = 'auto'; v.muted = true;
     screen.insertBefore(v, stillEl);
-    return { v, pl: null, role: '', ready: false, timer: 0, stall: 0, pre: false };
+    return { v, pl: null, role: '', ready: false, timer: 0, stall: 0, pre: false, t0: 0, rs: 0, rsAt: 0, wait: 0, patience: RESTART_MS, waiting: false };
   });
   const air = () => slots.find(s => s.role === 'air');
+  const same = (s, it) => !!(s.pl && it && !s.pl.trouble && keyOf(s.pl.it) === keyOf(it)); // a copy of this item (not our card)
+  const racing = it => slots.filter(s => s.role === 'next' && same(s, it));
   let sound = false, muted = localStorage.getItem('ktv.mute') === '1', vol = +(localStorage.getItem('ktv.vol') || 0.8);
 
   function release(sl) {
@@ -157,7 +169,7 @@
     v.onloadedmetadata = v.oncanplay = v.onplaying = v.onwaiting = v.onerror = v.onended = null;
     v.pause(); v.classList.remove('air'); v.muted = true; v.playbackRate = 1;
     if (v.getAttribute('src')) { v.removeAttribute('src'); try { v.load(); } catch (e) {} }
-    sl.pl = null; sl.role = ''; sl.ready = false; sl.pre = false;
+    sl.pl = null; sl.role = ''; sl.ready = false; sl.pre = false; sl.waiting = false;
   }
   function want(sl) { // seconds into the file: where the clock is (on the air) or where the item starts (loading ahead)
     const pl = sl.pl; let w = (sl.role === 'cue' && !sl.pre ? pl.at(pl.it.s) : pl.at(now())) / 1000;
@@ -166,10 +178,14 @@
   }
   function prepare(sl, pl, role) {
     const v = sl.v;
-    sl.pl = pl; sl.role = role; sl.ready = false;
+    sl.pl = pl; sl.role = role; sl.ready = false; sl.t0 = sl.rsAt = Date.now(); sl.rs = 0; sl.patience = RESTART_MS;
     v.onloadedmetadata = () => {
       const w = want(sl);
-      if (sl.role === 'next' && !pl.loop && !pl.ours && v.duration && w >= v.duration - 1) { release(sl); if (cur && cur.target && keyOf(pl.it) === keyOf(cur.target)) fill(); return; } // this print ends before the slot
+      if (sl.role === 'next' && !pl.loop && !pl.ours && v.duration && w >= v.duration - 1) { // this print ends before the slot
+        release(sl);
+        if (cur && cur.target && keyOf(pl.it) === keyOf(cur.target) && !more() && !racing(pl.it).length) fill();
+        return;
+      }
       try { v.currentTime = w; } catch (e) {}
     };
     v.oncanplay = () => { sl.ready = true; };
@@ -198,56 +214,97 @@
   }
 
   // Put a play on the air: the copy loaded ahead if it's ready, else load it now (the old picture holds meanwhile).
+  // Other copies of the same item may be loading alongside: the first to play goes on the air.
   function onAir(pl) {
     const a = air();
     if (a && a.pl && a.pl.key === pl.key) { a.pl = pl; return; } // already there (our card while trying the next copy)
+    if (slots.some(s => s.role === 'next' && s.pl.key === pl.key)) return; // already on its way
     let sl = slots.find(s => s.role === 'cue' && s.pl.key === pl.key);
-    for (const s of slots) if (s.role === 'next' && !(s.pl.trouble && !pl.trouble)) release(s); // our card stays up while a copy loads
+    for (const s of slots) if (s.role === 'next' && !s.pl.trouble && !same(s, pl.it)) release(s); // our card and this item's other copies stay
     let rolling = false;
     if (sl) {
       const pre = sl.pre; sl.pl = pl; sl.role = 'next'; sl.pre = false;
       if (sl.v.readyState >= 1 && Math.abs(sl.v.currentTime - want(sl)) > (pre ? 4 : 0.35)) try { sl.v.currentTime = want(sl); } catch (e) {}
       else rolling = pre && !sl.v.paused && sl.v.readyState >= 3; // rolled ahead in the dark: on the air right away
+    } else {
+      sl = slots.find(s => !s.role) || slots.find(s => s.role === 'cue');
+      if (!sl) return;
+      release(sl); prepare(sl, pl, 'next');
     }
-    else { sl = slots.find(s => !s.role) || slots.find(s => s.role === 'cue'); release(sl); prepare(sl, pl, 'next'); }
-    if (a && !a.pl.loop) a.v.pause();
+    if (a && !a.pl.loop && !same(a, pl.it)) a.v.pause(); // a stalled copy of the same film keeps trying
     const v = sl.v;
-    sl.timer = setTimeout(() => fail(sl), pl.ours ? OURS_START_MS : START_MS);
-    v.onplaying = () => { clearTimeout(sl.stall); if (sl.role === 'next') live(sl); };
-    v.onwaiting = () => { clearTimeout(sl.stall); if (sl.role === 'air') sl.stall = setTimeout(() => fail(sl), STALL_MS); };
+    if (pl.ours) sl.timer = setTimeout(() => fail(sl), OURS_START_MS);
+    else sl.timer = setTimeout(() => { if (sl.role === 'next') more(); }, RACE_MS); // no picture yet: another copy joins in
+    v.onplaying = () => { clearTimeout(sl.stall); sl.waiting = false; if (sl.role === 'next') live(sl); else if (sl.role === 'air') back(sl); };
+    v.onwaiting = () => {
+      if (sl.role !== 'air' || sl.pl.loop) return;
+      sl.waiting = true; sl.wait = Date.now(); if (cur && !cur.lost) cur.lost = Date.now();
+      clearTimeout(sl.stall);
+      if (!sl.pl.ours) sl.stall = setTimeout(() => { if (sl.role === 'air' && sl.waiting) more(true); }, STALL_RACE_MS); // still stuck: another copy at the clock's point
+      loading();
+    };
     v.onended = () => { if (sl.role === 'air') ended(sl); };
     clearTimeout(stillTimer);
-    if (!(a && a.pl.loop)) stillTimer = setTimeout(() => { if (sl.role === 'next') setStill(true); }, a ? 900 : 0); // our looping card holds
+    if (!(a && (a.pl.loop || same(a, pl.it)))) stillTimer = setTimeout(() => { if (sl.role === 'next') setStill(true); }, a ? 900 : 0); // our looping card holds
     start(sl);
     if (rolling) live(sl);
+    loading();
   }
   let stillTimer = 0;
   function live(sl) {
     clearTimeout(sl.timer); clearTimeout(stillTimer);
-    for (const s of slots) if (s !== sl && (s.role === 'air' || (s.role === 'next' && s.pl.trouble && !sl.pl.trouble))) release(s);
-    sl.role = 'air'; sl.v.classList.add('air');
+    for (const s of slots) if (s !== sl && (s.role === 'air' || (s.role === 'next' && !sl.pl.trouble && (s.pl.trouble || same(s, sl.pl.it))))) release(s); // our card going up leaves the copies racing
+    sl.role = 'air'; sl.v.classList.add('air'); sl.waiting = false;
+    if (cur && !sl.pl.trouble) { cur.lost = 0; cur.bad = 0; cur.cycle = 0; cur.again = 0; }
     setStill(false); show(cardEl, false); show(msgEl, false);
     if (Math.abs(sl.v.currentTime - want(sl)) > 1.5 && !sl.pl.ours) try { sl.v.currentTime = want(sl); } catch (e) {}
-    levels(); ui();
+    levels(); ui(); loading();
   }
+  function back(sl) { // a copy that stopped to load plays again: the ones racing to replace it stop
+    if (sl.pl.trouble || sl.pl.ours) return;
+    if (cur) cur.lost = 0;
+    for (const s of slots) if (s.role === 'next' && same(s, sl.pl.it)) release(s);
+    loading();
+  }
+  // Another copy of what should be on the air starts loading alongside. again: any copy not loading right now
+  // (a picture that stalled), else one not tried this round. False: nothing left to try.
+  function more(again) {
+    if (!cur || !cur.target || cur.mode !== 'play') return false;
+    const tg = cur.target;
+    if (racing(tg).length >= RACES) return true;
+    const skip = again ? new Set(slots.filter(s => same(s, tg)).map(s => s.pl.k)) : cur.tried;
+    const c = firstCopy(tg, skip);
+    if (!c) return false;
+    launch(c);
+    return true;
+  }
+  function launch(c) { cur.tried.add(c.k); c.pl.k = c.k; cur.mode = 'play'; onAir(c.pl); }
   function fail(sl, error) {
     if (!sl.pl || (sl.role !== 'next' && sl.role !== 'air')) return;
     const pl = sl.pl;
     if (error && sl.role === 'next' && !pl.retried && !pl.trouble) { // hosts sometimes refuse one request: once more, a second later
       pl.retried = true; release(sl);
-      setTimeout(() => { if (cur && cur.target && keyOf(pl.it) === keyOf(cur.target) && !slots.some(s => s.role === 'next' || (s.role === 'air' && s.pl.key === pl.key))) onAir(pl); }, 1000);
+      setTimeout(() => {
+        if (!cur || !cur.target || keyOf(pl.it) !== keyOf(cur.target) || cur.mode !== 'play' || slots.some(s => s.pl && s.pl.key === pl.key)) return;
+        const a = air();
+        if (a && same(a, pl.it) && !a.waiting) return;
+        onAir(pl);
+      }, 1000);
       return;
     }
     if (!pl.trouble) dead.set(pl.url, Date.now());
     const wasAir = sl.role === 'air';
     release(sl);
     if (wasAir || !air()) setStill(true);
-    if (!cur || !cur.target || (keyOf(pl.it) !== keyOf(cur.target) && !pl.trouble && !pl.fill)) return; // an old attempt
-    if (pl.trouble) { cardEl.textContent = 'PROBLEMAS TÉCNICOS · JÁ VOLTAMOS'; show(cardEl, true); setStill(false); return; } // even our card won't load: the page's own
+    if (!cur || !cur.target) return;
+    if (pl.trouble) { if (!air()) { cardEl.textContent = 'PROBLEMAS TÉCNICOS · JÁ VOLTAMOS'; show(cardEl, true); setStill(false); } loading(); return; } // even our card won't load: the page's own (the copies keep trying)
     if (pl.fill) { if (pl.next) onAir(pl.next); else htmlCard('A PROGRAMAÇÃO CONTINUA JÁ'); return; }
-    cur.tried.add(pl.k);
+    if (keyOf(pl.it) !== keyOf(cur.target)) return; // an old attempt
     if (pl.ours) { advance(); return; }  // our piece: its other copy, else our bug over the still till the next item
-    trouble();
+    cur.bad = (cur.bad || 0) + 1; if (!cur.lost) cur.lost = Date.now();
+    const a = air();
+    if (more() || racing(cur.target).length || (a && same(a, cur.target))) { trouble(); loading(); return; } // other copies are on their way
+    exhausted();
   }
   function ended(sl) { // the file ran out before the slot did: the next stand-in, or our station card till the next item
     if (!cur || sl.pl.loop || sl.pl.stop >= 0 || sl.pl.ours || now() >= cur.it.e - 2000) return;
@@ -257,25 +314,88 @@
   // ---------- following the grade ----------
   let cur = null, power = false;
   function tune(it) {
-    cur = { key: keyOf(it), it, target: it, tried: new Set(), used: new Set([it.id]), mode: 'play' };
+    cur = { key: keyOf(it), it, target: it, tried: new Set(), used: new Set([it.id]), mode: 'play', lost: Date.now(), bad: 0, cycle: 0, again: 0 };
     show(cardEl, false);
     advance();
   }
   function advance() {
-    const t = now(), tg = cur.target || { alt: true, o: null, id: '' }; // no target: a stand-in ran out
-    const c = cur.target && firstCopy(tg, cur.tried);
-    if (c) { c.pl.k = c.k; cur.mode = 'play'; onAir(c.pl); return; }
-    if (tg.o) { quiet(); return; }
-    if (cur.it.e - t > 60e3) { // no copy answers: stand-ins for what is left of the slot, the longest that fits first
+    const t = now();
+    if (cur.target) {
+      const c = firstCopy(cur.target, cur.tried);
+      if (c) { launch(c); return; }
+      if (cur.target.o) { quiet(); return; }
+      exhausted(); return;
+    }
+    if (cur.it.e - t > 60e3) { // a stand-in ran out: the next one for what is left of the slot, the longest that fits first
       const alt = standIn(cur.it.block, cur.it.e - t, cur.used);
       if (alt) { cur.used.add(alt.id); cur.target = alt; cur.tried = new Set(); advance(); return; }
     }
     fill();
   }
-  function trouble() { // our card on the air while the next copy loads behind it
-    onAir({ url: TROUBLE.url, it: cur.target, key: 'trouble', stop: -1, loop: true, ours: true, trouble: true, at: () => 0 });
-    advance();
+  // Every copy failed this round: a short pause (longer each round) and the round starts again, every other one with
+  // a stand-in from the same block if one fits. Never a dead end: the moment a copy plays, it is on the air.
+  function exhausted() {
+    const c0 = cur, k = c0.cycle = (c0.cycle || 0) + 1;
+    c0.mode = 'retry';
+    trouble(); loading();
+    clearTimeout(c0.rt);
+    c0.rt = setTimeout(() => {
+      if (cur !== c0 || c0.mode !== 'retry') return;
+      const t = now(), it = c0.it;
+      if (c0.target && c0.target.alt) c0.target = it;
+      else if (k % 2 === 0 && it.p && it.e - t > 120e3) { const alt = standIn(it.block, it.e - t, c0.used); if (alt) { c0.used.add(alt.id); c0.target = alt; } }
+      c0.tried = new Set(); c0.mode = 'play';
+      advance();
+    }, BACKOFF[Math.min(k - 1, BACKOFF.length - 1)]);
   }
+  window.addEventListener('online', () => { // back on the internet: the next round now
+    if (power && cur && cur.mode === 'retry') { clearTimeout(cur.rt); cur.tried = new Set(); cur.mode = 'play'; advance(); }
+  });
+  // Our card: only once a copy really failed and the picture has been gone for half a minute; till then the
+  // programme's still with "Reconectando…". The copies keep trying behind it.
+  function trouble() {
+    if (!power || !cur || !cur.target || !cur.bad || !cur.lost || Date.now() - cur.lost < CARD_AFTER) return;
+    if (cur.mode !== 'play' && cur.mode !== 'retry') return;
+    const a = air();
+    if (a && (a.pl.trouble || (same(a, cur.target) && !a.waiting))) return;
+    if (slots.some(s => s.pl && s.pl.trouble) || !cardEl.classList.contains('hide')) return;
+    onAir({ url: TROUBLE.url, it: cur.target, key: 'trouble', stop: -1, loop: true, ours: true, trouble: true, at: () => 0 });
+  }
+  // The loading mark over the still (or over a picture that stopped to load): "Carregando…", or "Reconectando…"
+  // once a copy failed or the picture has been stuck a while.
+  function loading() {
+    let on = false, re = false;
+    if (power && S && cur && cur.target && (cur.mode === 'play' || cur.mode === 'retry')) {
+      const a = air(), playing = a && !a.waiting && !a.pl.trouble && keyOf(a.pl.it) === keyOf(cur.target);
+      on = !playing;
+      re = cur.mode === 'retry' || cur.bad > 0 || cur.again > 0 || (!!a && a.waiting && !!cur.lost && Date.now() - cur.lost > STALL_RACE_MS);
+    }
+    const tx = re ? 'Reconectando…' : 'Carregando…';
+    if (loadTx.textContent !== tx) loadTx.textContent = tx;
+    loadEl.classList.toggle('re', re);
+    show(loadEl, on);
+  }
+  // A copy that hasn't moved on (its readyState) for a while reconnects: a new connection, maybe a fast one.
+  function reconnect(s) {
+    const v = s.v, u = s.pl.url;
+    s.rs = 0; s.rsAt = Date.now(); s.patience = Math.min(60e3, s.patience * 2);
+    if (cur) cur.again = (cur.again || 0) + 1;
+    v.removeAttribute('src'); try { v.load(); } catch (e) {}
+    v.src = u; try { v.load(); } catch (e) {}
+    start(s);
+  }
+  setInterval(() => { // stuck copies reconnect, hopeless ones are given up; the card when it's due; the loading mark
+    if (!power || !cur) return;
+    const t = Date.now();
+    for (const s of slots) {
+      if (!s.pl || s.pl.ours || (s.role !== 'next' && s.role !== 'air')) continue;
+      const rs = s.v.readyState;
+      if (rs > s.rs) { s.rs = rs; s.rsAt = t; }
+      if (s.role === 'next') { if (t - s.t0 > GIVEUP_MS) fail(s); else if (t - s.rsAt > s.patience) reconnect(s); }
+      else if (s.waiting && t - s.wait > STALL_FAIL_MS) fail(s); // stuck on the air: the copies racing take over, or our card
+    }
+    trouble(); loading();
+  }, 1000);
   function fill() {
     cur.mode = 'fill';
     const o = S.ours.cartao;
@@ -284,16 +404,17 @@
     const [here, there] = copies(it).map(c => Object.assign(plan(it, c), { fill: true }));
     here.key = 'fill'; there.key = 'fill2'; here.next = there; // ours on this site, else the release copy
     onAir(here);
+    loading();
   }
   function quiet() { // one of our short pieces can't be fetched: our bug over the still till the next item
     cur.mode = 'quiet';
     for (const s of slots) if (s.role === 'air' || s.role === 'next') release(s);
-    setStill(true);
+    setStill(true); loading();
   }
   function htmlCard(text) {
     if (cur) { cur.mode = 'card'; cur.retry = now() + 30e3; }
     for (const s of slots) if (s.role === 'air' || s.role === 'next') release(s);
-    cardEl.textContent = text; show(cardEl, true); setStill(false);
+    cardEl.textContent = text; show(cardEl, true); setStill(false); loading();
   }
 
   function tick() {
@@ -312,7 +433,7 @@
   // answer), a programme's start and our short pieces a little ahead.
   function cue(t, i) {
     const wanted = [];
-    if (cur.mode === 'play') {
+    if (cur.mode === 'play' || cur.mode === 'retry') {
       for (let j = i + 1; j < items.length && wanted.length < 3; j++) {
         const n = items[j], ahead = n.s - t;
         if (ahead > CUE_BREAK) break;
@@ -324,6 +445,7 @@
       wanted.sort((x, y) => x.ours - y.ours); // a film takes longest to answer: it gets a player first
     }
     for (const s of slots) if (s.role === 'cue' && !wanted.some(w => w.key === s.pl.key)) release(s);
+    if (cur.target && slots.some(s => s.role === 'next' && same(s, cur.target))) return; // the line goes to the copies racing for the air
     for (const w of wanted) {
       if (slots.some(s => s.pl && s.pl.key === w.key)) continue;
       const sl = slots.find(s => !s.role);
@@ -555,7 +677,7 @@
     host.classList.remove('on'); powerEl.style.display = '';
     q('[data-k=power] .lbl').textContent = 'LIGAR';
     void screen.offsetWidth; screen.classList.add('off');
-    show(cardEl, false); show(msgEl, false); show(tapEl, false); setStill(true); ui();
+    show(cardEl, false); show(msgEl, false); show(tapEl, false); setStill(true); loading(); ui();
   }
   function setMute(m) {
     muted = m; localStorage.setItem('ktv.mute', m ? '1' : '0');
