@@ -1,0 +1,27 @@
+{
+ "note": "Paid spots in the features' commercial breaks, kept by the Estúdio KÖLJA TV app. por_dia: insertions a day anywhere; por_bloco: insertions a day per block.",
+ "anuncios": [
+  {
+   "id": "novela-segredos-da-serra",
+   "criado": "2026-11-01 01:10",
+   "nome": "Novela: Segredos da Serra (prévia, cap. 1)",
+   "cliente": "KÖLJA TV",
+   "inicio": "2026-11-01",
+   "fim": "2026-11-15",
+   "por_dia": 0,
+   "por_bloco": {
+    "classicos": 1,
+    "aventura": 1,
+    "noir": 1,
+    "terror": 1
+   },
+   "valor_insercao": "",
+   "ativo": true,
+   "obs": "Chamada da novela da casa. Sai do ar sozinha depois de 15/11. No máximo 3 por dia: sessão das 19h, Noir das 22h e Terror da meia-noite.",
+   "file": "anuncios/novela-segredos-da-serra.mp4",
+   "dur": 130.9,
+   "sha": "e123cbf183814194b5e97247c229ee24c680de86",
+   "url": "https://github.com/koljatv/koljatv.github.io/releases/download/ours-v1/novela-segredos-da-serra-cap1.mp4"
+  }
+ ]
+}

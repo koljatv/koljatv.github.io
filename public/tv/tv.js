@@ -450,7 +450,7 @@
     let head = '', line = '';
     if (power && it && cur && cur.mode !== 'card') {
       const pr = progAt(t), nx = progAfter(pr ? showEnd(pr) : t);
-      if (it.brk && it.first) { head = 'VOLTAMOS COM'; line = it.first.p.title; }
+      if (it.brk && it.first) { if (!(it.o && it.o.kind === 'ad')) { head = 'VOLTAMOS COM'; line = it.first.p.title; } } // a spot keeps its own picture clear
       else if (nx && (it.o || (!toBreak(it) && pr && showEnd(pr) - t < 60e3))) { head = 'A SEGUIR'; line = hm(nx.s) + ' · ' + nx.p.title; }
     }
     nextEl.querySelector('b').textContent = head; nextEl.querySelector('span').textContent = line;

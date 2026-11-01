@@ -7,8 +7,10 @@
   at a time, "remover" takes a title (or a programme's showing) off that date. A removed title stays at the head of
   its block's tape, so it airs the next day instead.
 - catalog/anuncios.json: paid spots. An active campaign gets its insertions a day (anywhere, or so many per block)
-  in the commercial breaks of the features, spread over the day; the spot takes the place of our own pieces in that
-  break, so the break, and the rest of the day, keep their length.
+  in the commercial breaks of the features, spread over the day, between its "inicio" and "fim" dates (then it drops
+  out by itself). The spot takes the place of our own pieces in that break; when it is longer than they are, the
+  break grows and the rest of the slot takes the time from the station card that closes the slot, so the next slot
+  still starts on time. A spot never airs twice in one break nor in two breaks in a row.
 
 A date with none of these is laid out exactly as before (build.py's slot numbers don't move).
 """
@@ -186,6 +188,14 @@ class Own:
             else: k += 1
         if not breaks: return items
         cap = [self._room(items, b, brk) for b in breaks]
+        # A spot longer than its break's room may still go in: the break grows, and the rest of the slot moves on
+        # into the station card that closes the slot, which gets that much shorter (the next slot starts on time).
+        card, spare = [self._spare(items, b) for b in breaks], {}
+        for k in card:
+            if k is not None: spare[k] = items[k][1] - items[k][0]
+        def fits(i, p):
+            if cap[i] >= p.dur: return True
+            return card[i] is not None and spare[card[i]] - (p.dur - max(0, cap[i])) >= 0
         put = [[] for _ in breaks]
         for a, p in live:
             for blocks, n in quotas(a):
@@ -194,26 +204,54 @@ class Own:
                     want = int((q + 0.5) * len(ok) / n)
                     for step in range(len(ok)):  # the nearest break that still has room for it
                         for i in (want + step, want - step):
-                            if 0 <= i < len(ok) and p not in put[ok[i]] and cap[ok[i]] >= p.dur:
-                                put[ok[i]].append(p); cap[ok[i]] -= p.dur
+                            if not 0 <= i < len(ok): continue
+                            b = ok[i]  # never the same spot twice in a break, nor in two breaks in a row
+                            if p in put[b] or (b > 0 and p in put[b - 1]) or (b + 1 < len(put) and p in put[b + 1]): continue
+                            if fits(b, p):
+                                grow = max(0, p.dur - max(0, cap[b]))
+                                if grow: spare[card[b]] -= grow
+                                put[b].append(p); cap[b] -= p.dur
                                 break
                         else: continue
                         break
-        out, last = [], 0
-        for b, ads in zip(breaks, put):
-            out += items[last:b[0]]
-            out += self._rebuild(items[b[0]:b[1] + 1], ads, brk) if ads else items[b[0]:b[1] + 1]
+        out, last, shift = [], 0, 0
+        def moved(seg):  # pieces after a grown break, up to the slot's closing card (which absorbs the shift)
+            nonlocal shift
+            for it in seg:
+                if shift and len(it) == 4 and it[2] is self.g.card:
+                    if it[1] - (it[0] + shift) > 0: out.append([it[0] + shift] + it[1:])
+                    shift = 0
+                else: out.append([it[0] + shift, it[1] + shift] + it[2:])
+        for i, (b, ads) in enumerate(zip(breaks, put)):
+            moved(items[last:b[0]])
+            seg = [[it[0] + shift, it[1] + shift] + it[2:] for it in items[b[0]:b[1] + 1]]
+            if ads:
+                grow = max(0, -cap[i])
+                out.extend(self._rebuild(seg, ads, brk, grow)); shift += grow
+            else: out.extend(seg)
             last = b[1] + 1
-        return out + items[last:]
+        moved(items[last:])
+        assert shift == 0, shift
+        return out
+
+    def _spare(self, items, b):
+        """Index of the station card that closes the slot a break is in (its spare time), or None."""
+        block = items[b[0]][3]
+        for k in range(b[1] + 1, len(items)):
+            it = items[k]
+            if it[3] != block: return None
+            if len(it) == 4 and it[2] is self.g.card: return k
+        return None
 
     def _room(self, items, b, brk):
         pieces = items[b[0]:b[1] + 1]
         keep = sum(it[1] - it[0] for it in pieces if it[2].id in (brk.get("open"), brk.get("close")))
         return (pieces[-1][1] - pieces[0][0]) - keep
 
-    def _rebuild(self, pieces, ads, brk):
-        """A break with spots: the opening bumper, the spots, as many of our pieces as still fit, the closing bumper."""
-        t0, t1, block = pieces[0][0], pieces[-1][1], pieces[0][3]
+    def _rebuild(self, pieces, ads, brk, grow=0):
+        """A break with spots: the opening bumper, the spots, as many of our pieces as still fit, the closing bumper.
+        grow: ms the break is made longer by (taken from the slot's closing station card)."""
+        t0, t1, block = pieces[0][0], pieces[-1][1] + grow, pieces[0][3]
         head = [it[2] for it in pieces[:1] if it[2].id == brk.get("open")]
         tail = [it[2] for it in pieces[-1:] if it[2].id == brk.get("close")]
         room = (t1 - t0) - sum(p.dur for p in head + tail) - sum(p.dur for p in ads)
