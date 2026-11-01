@@ -60,6 +60,10 @@
   "kungfu": {
    "pt": "KUNG FU DE SÁBADO",
    "en": "SATURDAY KUNG FU"
+  },
+  "domingo": {
+   "pt": "DOMINGO DOCUMENTAL",
+   "en": "SUNDAY DOCUMENTARIES"
   }
  },
  "day": [
@@ -153,7 +157,7 @@
    }
   ]
  },
- "week_note": "A weekday of its own (keys mon..sun), used unless the date has a special line-up. Saturday: KUNG FU DE SÁBADO at 15:00 in the matinee, 15:00-17:00 in place of the serials, then comedy or westerns to 19:00; small shelf for now, so other blocks' shorts fill the rest of the slot.",
+ "week_note": "A weekday of its own (keys mon..sun), used unless the date has a special line-up. Saturday: KUNG FU DE SÁBADO at 15:00 in the matinee, 15:00-17:00 in place of the serials, then comedy or westerns to 19:00; small shelf for now, so other blocks' shorts fill the rest of the slot. Sunday (Niko, 1 Nov 2026): DOMINGO DOCUMENTAL from 14:00 to 19:00 in place of the matinee's serials and comedy/westerns (silent comedy keeps 13:30-14:00); cartoons, prime time and the madrugada as every day. week_from: the date a weekday's own line-up starts (earlier dates keep the everyday one, so days already aired don't change).",
  "week": {
   "sat": [
    {
@@ -192,7 +196,44 @@
     "at": "22:00",
     "block": "noir"
    }
+  ],
+  "sun": [
+   {
+    "at": "00:00",
+    "block": "terror"
+   },
+   {
+    "at": "02:00",
+    "block": "ficcao|cult|docs|ficcao|docs"
+   },
+   {
+    "at": "04:00",
+    "block": "series"
+   },
+   {
+    "at": "06:00",
+    "block": "toons"
+   },
+   {
+    "at": "13:30",
+    "block": "muda"
+   },
+   {
+    "at": "14:00",
+    "block": "domingo"
+   },
+   {
+    "at": "19:00",
+    "block": "classicos|aventura|classicos"
+   },
+   {
+    "at": "22:00",
+    "block": "noir"
+   }
   ]
+ },
+ "week_from": {
+  "sun": "2026-11-08"
  },
  "ours": [
   {
@@ -321,6 +362,14 @@
    "file": "vinheta_docs.mp4"
   },
   {
+   "id": "vinheta_domingo",
+   "kind": "vignette",
+   "block": "domingo",
+   "dur": 7.0,
+   "title": "Domingo Documental",
+   "file": "vinheta_domingo.mp4"
+  },
+  {
    "id": "cartao",
    "kind": "card",
    "dur": 30.0,
@@ -403,6 +452,11 @@
   "ficcao",
   "cult",
   "docs",
-  "series"
- ]
+  "series",
+  "domingo"
+ ],
+ "keep_home": [
+  "domingo"
+ ],
+ "keep_home_note": "Blocks whose shorts air only in their own slots, never as fillers elsewhere: DOMINGO DOCUMENTAL keeps its shorts for Sunday afternoon, so the week's other blocks don't use them up."
 }

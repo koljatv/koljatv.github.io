@@ -75,6 +75,7 @@ class Grade:
         self.slots = hm(cfg["day"])
         self.special = {k: hm(v) for k, v in cfg.get("special", {}).items()}
         self.week = {k: hm(v) for k, v in cfg.get("week", {}).items()}  # a weekday of its own ("sat": Kung Fu de Sábado)
+        self.week_from = {k: dt.date.fromisoformat(v) for k, v in cfg.get("week_from", {}).items()}  # a weekday's own line-up starts on this date
         self.vignettes, self.idents, self.presents, self.trailers = {}, [], [], []
         self.card = None
         for o in cfg["ours"]:
@@ -90,6 +91,7 @@ class Grade:
         self._slot = None  # [block, slot end, programmes aired in this slot]
         self.titles, self.shelves, self.fillers = {}, {}, []
         stay = set(cfg.get("stay_home", []))  # blocks whose shorts don't fill other blocks' slots (the cartoons stay in the morning)
+        home = set(cfg.get("keep_home", []))  # blocks whose shorts never leave their own slots (Domingo Documental keeps its shorts for Sunday)
         self.guests, self.hosts = [], set(cfg.get("stay_home_guests", []))  # ...except, last, the slots of these blocks (the matinee)
         self.commercial = bool(cfg.get("commercial_mode"))
         self.today = dt.date.today()
@@ -110,7 +112,7 @@ class Grade:
                     p.span = p.dur + sum(x.dur for l in lines for x in l)
             self.titles[p.id] = p
             self.shelves.setdefault(p.block, []).append(p)
-            if p.dur <= 25 * MIN and p.kind != "tv" and p.id not in self.splits:  # never an episode out of its order
+            if p.dur <= 25 * MIN and p.kind != "tv" and p.id not in self.splits and p.block not in home:  # never an episode out of its order
                 (self.guests if p.block in stay else self.fillers).append(p)  # a "stay_home" block's shorts only close the guests' slots
         for b, l in self.shelves.items():  # families take turns (no 4 Supermen in a row), episodes in order
             l.sort(key=lambda p: p.id)
@@ -156,7 +158,9 @@ class Grade:
         out, today = [], set()
         base, end = self.midnight(d), self.midnight(d + 1)
         date = dt.date(1970, 1, 1) + dt.timedelta(days=d)
-        slots = self.special.get(date.strftime("%m-%d")) or self.week.get(WEEK[date.weekday()], self.slots)  # a date of its own (Halloween...), then a weekday
+        wd = WEEK[date.weekday()]
+        own = self.week.get(wd) if date >= self.week_from.get(wd, dt.date.min) else None
+        slots = self.special.get(date.strftime("%m-%d")) or own or self.slots  # a date of its own (Halloween...), then a weekday
         segs = []
         for s, (m, block, pin) in enumerate(slots):
             opts = block.split("|")

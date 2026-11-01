@@ -194,6 +194,7 @@ section.band + section.band { border-top: 1px solid var(--line); }
 .art.b-faroeste::before { background: linear-gradient(160deg, #5a3414, #1c1009); }
 .art.b-ficcao::before, .art.b-cult::before { background: linear-gradient(160deg, #102a2c, #0a1213); }
 .art.b-docs::before, .art.b-kungfu::before { background: linear-gradient(160deg, #26262a, #121214); }
+.art.b-domingo::before { background: linear-gradient(170deg, #5a3a16, #2a1a0c 55%, #121210); }
 .art .tag { position: absolute; left: 10px; top: 10px; display: flex; gap: 6px; }
 
 .rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(260px, 1fr); gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px;

@@ -902,6 +902,38 @@ def a_docs(dur):
     return mix(dur, (0, noise(dur, 0.03)), *[(at, tone(N(m), 0.5, 'square', 0.08, 0.01, 0.4)) for at, m in fan], *chime(4.8, 0.16))
 
 
+def v_domingo(t):
+    """Sunday afternoon: the sun climbing over a horizon behind the newsreel globe, and a slower ticker."""
+    img = canvas((18, 22, 30))
+    d = ImageDraw.Draw(img, 'RGBA')
+    hz = H / 2 + 70
+    for k in range(10):  # the afternoon sky in bands, warmer towards the horizon
+        y0 = k * hz / 10
+        c = tuple(int(a + (b - a) * k / 9) for a, b in zip((18, 24, 38), (96, 58, 30)))
+        d.rectangle([0, y0, W, y0 + hz / 10 + 1], fill=c)
+    sy = hz + 10 - ease(t / 2.4) * 52  # the sun rises a little, below the title
+    for r, a in ((70, 40), (56, 80), (44, 255)):
+        d.ellipse([W / 2 - r, sy - r, W / 2 + r, sy + r], fill=(255, 176, 60, a))
+    cx, cy, r = W / 2, sy, 44
+    for k in range(6):  # the globe's meridians turning across the sun
+        ph = (t * 0.5 + k / 6) % 1.0
+        w = abs(math.cos(ph * math.pi)) * r
+        d.ellipse([cx - w, cy - r, cx + w, cy + r], outline=(120, 64, 20, 150), width=1)
+    d.rectangle([0, hz, W, H], fill=(14, 16, 20))
+    for k in range(7):  # the field's furrows, in perspective
+        x = W / 2 + (k - 3) * 60
+        d.line([W / 2 + (k - 3) * 8, hz, x + (k - 3) * 160, H], fill=(40, 42, 46), width=2)
+    _title(d, 'DOMINGO', 'DOCUMENTAL', t, top_font=F_FUT(64), y=H / 2 - 96)
+    tick = 'NATUREZA · VIAGENS · CIÊNCIA · ESPAÇO · CIDADES · ' * 3
+    tracked(d, (W / 2 + 300 - t * 40, H - 40), tick, F_DIN(20), CREAM + (190,), track=4)
+    return _fade(img, t, 12)
+
+
+def a_domingo(dur):
+    fan = [(0.3, 55), (0.3, 59), (0.3, 62), (1.1, 57), (1.1, 60), (1.1, 64), (1.9, 59), (1.9, 62), (1.9, 67)]
+    return mix(dur, *[(at, tone(N(m), 0.8, 'sine', 0.1, 0.05, 0.7)) for at, m in fan], *chime(4.8, 0.16))
+
+
 def tecnicos(t):
     """Technical problems: our bars dimmed behind a plate, a slow scan bar; loops every 12 s."""
     img = canvas((10, 10, 12))
@@ -1123,6 +1155,7 @@ if __name__ == '__main__':
         ('vinheta_faroeste', 7.0, v_faroeste, a_faroeste),
         ('vinheta_seriados', 7.0, v_seriados, a_seriados),
         ('vinheta_docs', 7.0, v_docs, a_docs),
+        ('vinheta_domingo', 7.0, v_domingo, a_domingo),
     ]
     jobs += BREAK_JOBS  # the commercial break: intervalo, voltamos, the sponsor slot, the Store and Retrotv promos
     for name, dur, draw, aud in jobs:
