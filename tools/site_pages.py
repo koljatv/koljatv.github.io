@@ -5,7 +5,7 @@ usage: python3 tools/site_pages.py"""
 import os
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
-V = '3'  # bump when assets/site.css, assets/site.js or tv/tv.js change
+V = '5'  # bump when assets/site.css, assets/site.js or tv/tv.js change
 SITE = 'https://tv.kolja.com.br/'
 MAIL = 'contato@kolja.com.br'
 

@@ -130,6 +130,7 @@ section.band + section.band { border-top: 1px solid var(--line); }
 .ktv-set .ktv-ctl input[type=range] { accent-color: var(--amber); }
 .ktv-set .ktv-ctl .clock { color: var(--fg3); font-family: var(--cond); font-size: 14px; }
 .ktv-set.full .ktv-cab { border-radius: 0; box-shadow: none; }
+.ktv-set.full .ktv-live, .ktv-set.full .ktv-bug, .ktv-set.full .ktv-next { font-size: min(1.4cqw, 2.4vh); }
 @media (max-width: 600px) {
   .ktv-set .ktv-ctl { padding: 0 var(--pad); flex-wrap: nowrap; }
   .ktv-set .ktv-ctl .lbl, .ktv-set .ktv-ctl input[type=range] { display: none; }
@@ -336,7 +337,8 @@ details.toons li a:hover { color: var(--amber); }
 .title-hero .wrap { width: 100%; padding-bottom: clamp(32px, 5vw, 64px); }
 .title-hero h1 { font-size: clamp(40px, 7.4vw, 96px); font-weight: 700; line-height: .95; letter-spacing: -.03em; max-width: 14ch; margin: 16px 0 18px; }
 .title-hero .meta { display: block; line-height: 1.6; font: 600 16px/1 var(--cond); letter-spacing: .12em; text-transform: uppercase; color: var(--fg2); }
-.title-hero .meta .badge { margin-left: 10px; }
+.title-hero .meta > span { display: inline-block; margin-right: 18px; white-space: nowrap; }
+.title-hero .meta .badge { vertical-align: 1px; }
 .title-hero .bg img { image-rendering: auto; }
 @media (min-width: 1200px) { .title-hero .bg { left: 22%; } .title-hero .bg::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, var(--bg), rgba(11,10,9,0) 30%); } }
 .title-hero .syn { font-size: clamp(17px, 1.6vw, 20px); color: var(--fg); max-width: 52ch; margin: 20px 0 26px; }

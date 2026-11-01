@@ -289,7 +289,7 @@
       el.dataset.id = id; el.dataset.on = !!on; el.dataset.leg = hasLeg(id);
       document.title = `${t.title}${t.year ? ' (' + t.year + ')' : ''} · KÖLJA TV`;
       const md = document.querySelector('meta[name=description]'); if (md && t.synopsis) md.content = t.synopsis;
-      const meta = [t.year, country(t.country), KIND[t.kind], dur(t.dur)].filter(Boolean).map(x => esc(String(x)).replace(/ /g, '&nbsp;')).join(' &nbsp;·&nbsp; ');
+      const meta = [t.year, country(t.country), KIND[t.kind], dur(t.dur)].filter(Boolean).map(x => `<span>${esc(String(x))}</span>`).join('');
       const sameBlock = []; const seen = new Set([id]);
       for (const p of P) if (p.e > now && p.block === t.block && p.t.kind !== 'cartoon' && !seen.has(p.id)) { seen.add(p.id); sameBlock.push(p); if (sameBlock.length >= 4) break; }
       el.innerHTML = `
