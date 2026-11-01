@@ -468,7 +468,7 @@
       const meta = [p.p.year, region(p.p.country), hm(p.s) + ' – ' + hm(end), brk ? 'INTERVALO' : pr ? '' : 'COMEÇA ÀS ' + hm(p.s)].filter(Boolean).join(' · ');
       const nn = pr ? nx : progAfter(end);
       const leg = LG && LG.titles[p.id] ? ' <span class="badge leg" title="Com legenda em português">LEG</span>' : '';
-      html = `<div class="blk${pr ? '' : ' soon'}">${esc(blockName(p.block) || 'NO AR')}</div><div class="ttl"><a href="${BASE}programa/?id=${encodeURIComponent(p.id)}">${esc(p.p.title)}</a></div>
+      html = `<div class="blk${pr ? '' : ' soon'}">${esc(pr ? 'NO AR' : 'A SEGUIR')} · ${esc(blockName(p.p.block || p.block))}</div><h1 class="ttl"><a href="${BASE}programa/?id=${encodeURIComponent(p.id)}">${esc(p.p.title)}</a></h1>
         <div class="meta">${esc(meta)}${leg}</div>${p.p.synopsis ? `<p class="syn">${esc(p.p.synopsis)}</p>` : ''}
         <div class="bar"><i style="width:${pr ? Math.min(100, (t - p.s) / (end - p.s) * 100) : 0}%"></i></div>
         ${nn ? `<div class="nx"><b>A SEGUIR</b>${hm(nn.s)} · ${esc(nn.p.title)}</div>` : ''}`; }

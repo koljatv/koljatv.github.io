@@ -5,7 +5,7 @@ usage: python3 tools/site_pages.py"""
 import os
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
-V = '2'  # bump when assets/site.css, assets/site.js or tv/tv.js change
+V = '3'  # bump when assets/site.css, assets/site.js or tv/tv.js change
 SITE = 'https://tv.kolja.com.br/'
 MAIL = 'contato@kolja.com.br'
 
@@ -40,13 +40,13 @@ def head(path, title, desc, base):
 
 def top(path, base):
     links = ''.join(f'<a href="{base}{p}"{" aria-current=page" if p == path else ""}>{n}</a>' for p, n in NAV if p != 'ao-vivo/')
-    sheet = ''.join(f'<a href="{base}{p}">{n}</a>' for p, n in NAV)
+    sheet = ''.join(f'<a href="{base}{p}"{" aria-current=page" if p == path else ""}>{n}</a>' for p, n in NAV)
     return f'''<a class="skip" href="#main">Pular para o conteúdo</a>
 <header class="top"><div class="wrap">
   <a class="logo" href="{base}" aria-label="KÖLJA TV, início"><img src="{base}img/logo.svg" alt="KÖLJA TV" width="128" height="54"></a>
   <nav aria-label="Principal">{links}</nav>
   <a class="onair" href="{base}ao-vivo/"{" aria-current=page" if path == 'ao-vivo/' else ""}><span class="dot"></span>AO VIVO</a>
-  <button class="menu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg></button>
+  <button class="menu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><svg viewBox="0 0 24 24"><path class="b" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/><path class="x" d="M5.6 4.2 12 10.6l6.4-6.4 1.4 1.4-6.4 6.4 6.4 6.4-1.4 1.4-6.4-6.4-6.4 6.4-1.4-1.4 6.4-6.4-6.4-6.4z"/></svg></button>
 </div></header>
 <div class="sheet" id="sheet">{sheet}<p>Horário de Brasília. A grade se atualiza sozinha.</p></div>'''
 
@@ -97,7 +97,11 @@ LIVE = '''<section class="live-hero%s"><div class="wrap grid">
   </div>
 </div></section>'''
 
-HOME = (LIVE % ('', '<div class="acts"><a class="btn" href="{B}programacao/">Programação de hoje</a><a class="btn ghost" href="{B}ao-vivo/">Tela grande</a></div>')) + '''
+HOME = (LIVE % ('', '<div class="acts"><a class="btn" href="{B}programacao/">Programação de hoje</a><a class="btn ghost" href="{B}ao-vivo/">Abrir o ao vivo</a></div>')) + '''
+<section class="band" id="tonightbox" hidden><div class="wrap">
+  <div class="h-sec"><h2 id="tonighth">Hoje à noite</h2><a href="{B}programacao/?faixa=3">A noite toda</a></div>
+  <div id="tonight"></div>
+</div></section>
 <section class="band"><div class="wrap">
   <div class="h-sec"><h2>Hoje na KÖLJA TV</h2><a href="{B}programacao/">Grade completa</a></div>
   <div class="parts" id="parts"></div>
@@ -111,7 +115,7 @@ HOME = (LIVE % ('', '<div class="acts"><a class="btn" href="{B}programacao/">Pro
     <div class="kicker">Novela da casa · Prévia do capítulo 1</div>
     <h2>Segredos da Serra</h2>
     <p>Noite de tempestade na mansão dos Albuquerque, no alto da serra de Petrópolis. Três da manhã, a geladeira aberta, e comendo o pudim da família está um homem que foi enterrado há cinco anos.</p>
-    <p>A prévia passa nos intervalos dos filmes da noite e da madrugada. Ou dá o play aqui.</p>
+    <p>A prévia passa nos intervalos dos filmes da noite e da madrugada. Ou assista aqui.</p>
     <div class="fine">Nos intervalos até 15 de novembro</div>
   </div>
   <div class="media"><img src="{B}img/novela-escada.jpg" alt="Segredos da Serra: Rodrigo, de roupão vinho, no alto da escada da mansão" loading="lazy"><button type="button" aria-label="Assistir à prévia de Segredos da Serra"><i></i></button></div>
@@ -122,7 +126,7 @@ HOME = (LIVE % ('', '<div class="acts"><a class="btn" href="{B}programacao/">Pro
   <div class="rail r4" id="legrail"></div>
 </div></section>
 <section class="band"><div class="wrap duo">
-  <a class="tease" href="{B}retrotv/"><div><div class="kicker">Retrotv</div><h3>A KÖLJA TV também cabe no bolso</h3><p>O nosso aplicativo de TV para Android, com a KÖLJA TV no canal 1.</p><span class="btn ghost">Conhecer</span></div><img src="{B}img/retrotv.jpg" alt="A Retrotv no celular, passando um filme com legenda" loading="lazy" width="120" height="267"></a>
+  <a class="tease" href="{B}retrotv/"><div><div class="kicker">Retrotv</div><h3>A KÖLJA TV também cabe no bolso</h3><p>O nosso aplicativo de TV para Android, com a KÖLJA TV no canal 1. Ainda não está disponível para download.</p><span class="btn ghost">Conhecer</span></div><img src="{B}img/retrotv.jpg" alt="A Retrotv no celular, passando um filme com legenda" loading="lazy" width="120" height="267"></a>
   <a class="tease" href="{B}anuncie/"><div><div class="kicker">Anuncie</div><h3>Seu comercial no intervalo dos clássicos</h3><p>Os filmes têm intervalo, como na TV aberta. Conte o que você quer anunciar e a gente combina.</p><span class="btn ghost">Como funciona</span></div></a>
 </div></section>'''
 
@@ -134,7 +138,7 @@ AOVIVO = (LIVE % (' big', '<p style="color:var(--fg3);font-size:15px;margin-top:
 
 PROG = '''<div class="wrap page-head"><div class="kicker">Horário de Brasília</div><h1>Programação</h1>
   <p>A grade da KÖLJA TV para hoje e os próximos dias. Escolha um programa para ver a sinopse e quando ele passa de novo.</p></div>
-<div class="filters"><div class="wrap"><div class="chips days" id="days" aria-label="Dia"></div><div class="chips" id="faixas" aria-label="Faixa do dia"></div></div></div>
+<div class="filters"><div class="wrap"><div class="chips days" id="days" role="group" aria-label="Dia"></div><div class="chips" id="faixas" role="group" aria-label="Faixa do dia e legenda"></div></div></div>
 <div class="wrap"><div class="grade" id="grade" aria-live="polite"><p class="empty">Carregando a grade…</p></div></div>'''
 
 TITULO = '<div id="titulo"><div class="wrap page-head"><p class="empty">Carregando…</p></div></div>'
@@ -143,7 +147,7 @@ MOSAIC = ''.join(f'<img src="{{B}}arte/{i}.jpg" alt="" loading="lazy">' for i in
                  ['nosferatu-1922', 'caligari-1920', 'phantom-opera-1925', 'jekyll-1920', 'hunchback-1923', 'the-sea-beast-1926', 'the-virginian-1929', 'notld-1968'])
 EMISSORA = f'''<section class="inst-hero"><div class="mosaic" aria-hidden="true">{MOSAIC}</div><div class="wrap">
   <div class="kicker">A emissora</div><h1>Uma TV de verdade, no ar o dia inteiro.</h1>
-  <p>A KÖLJA TV tem grade, horário e intervalo. Quem liga entra no que está passando, junto com todo mundo que está assistindo.</p>
+  <p>A KÖLJA TV tem grade, horário e intervalo. Ligou, pegou o que está no ar, na mesma hora que todo mundo.</p>
 </div></section>
 <section class="band"><div class="wrap two">
   <div class="prose"><h2>O que passa</h2>
@@ -156,12 +160,12 @@ EMISSORA = f'''<section class="inst-hero"><div class="mosaic" aria-hidden="true"
   <div class="prose"><h2>Legendas feitas aqui</h2>
     <p>Parte dos filmes tem legenda em português e em inglês, feita por nós, e estamos fazendo mais. Na programação esses filmes levam o selo <span class="badge leg">LEG</span>. No player, o botão PT troca para EN ou desliga.</p></div>
   <div class="prose"><h2>Onde assistir</h2>
-    <p>Aqui no site, no <a href="{{B}}ao-vivo/">Ao vivo</a>, em qualquer navegador, no celular ou no computador. E no canal 1 da <a href="{{B}}retrotv/">Retrotv</a>, o nosso aplicativo de TV para Android. A grade é a mesma nos dois, na mesma hora.</p></div>
+    <p>Aqui no site, no <a href="{{B}}ao-vivo/">Ao vivo</a>, em qualquer navegador, no celular ou no computador. A KÖLJA TV também é o canal 1 da <a href="{{B}}retrotv/">Retrotv</a>, o nosso aplicativo de TV para Android, que ainda não está disponível para download.</p></div>
 </div></section>
 <section class="band"><div class="wrap">
   <div class="h-sec"><h2>As vinhetas</h2></div>
   <p style="color:var(--fg2);max-width:60ch;margin:-6px 0 22px">Cada faixa tem a sua vinheta, e todas são feitas pela casa.</p>
-  <div class="idents">{''.join(f'<img src="{{B}}img/vinheta-{v}.jpg" alt="Vinheta {n}" loading="lazy">' for v, n in [('desenhos', 'Desenhos Clássicos'), ('muda', 'Comédia Muda'), ('seriados', 'Seriados de Matinê'), ('faroeste', 'Faroeste'), ('classicos', 'Grandes Clássicos'), ('noir', 'Noir'), ('terror', 'Sessão Terror'), ('ficcao', 'Ficção Científica')])}</div>
+  <div class="idents">{''.join(f'<img src="{{B}}img/vinheta-{v}.jpg" alt="Vinheta {n}" loading="lazy">' for v, n in [('classicos', 'Grandes Clássicos'), ('noir', 'Noir'), ('terror', 'Sessão Terror'), ('ficcao', 'Ficção Científica')])}</div>
 </div></section>
 <section class="band"><div class="wrap prose">
   <h2>Contato</h2><p>Sugestão de filme, problema no player, imprensa ou qualquer outro assunto:</p>
@@ -170,13 +174,13 @@ EMISSORA = f'''<section class="inst-hero"><div class="mosaic" aria-hidden="true"
 
 ANUNCIE = '''<section class="inst-hero"><div class="mosaic" aria-hidden="true"><img src="{B}arte/the-virginian-1929.jpg" alt=""><img src="{B}arte/caligari-1920.jpg" alt=""><img src="{B}arte/the-sea-beast-1926.jpg" alt=""><img src="{B}arte/phantom-opera-1925.jpg" alt=""></div><div class="wrap">
   <div class="kicker">Anuncie</div><h1>Seu comercial no intervalo dos clássicos.</h1>
-  <p>Os filmes da KÖLJA TV têm intervalo, como na TV aberta. É ali que entra o seu comercial, para quem estiver assistindo naquela hora, no site e na Retrotv.</p>
+  <p>Os filmes da KÖLJA TV têm intervalo, como na TV aberta. É ali que entra o seu comercial, para quem estiver assistindo naquela hora.</p>
 </div></section>
 <section class="band"><div class="wrap">
   <div class="h-sec"><h2>Como funciona</h2></div>
   <ol class="steps">
     <li><b>Conte o que quer anunciar</b><p>Mande um e-mail com o produto, o vídeo (ou a ideia dele) e o período em que você quer aparecer.</p></li>
-    <li><b>Escolha as faixas</b><p>Sessão das 19h, Noir, Sessão Terror, matinê: você diz em quais faixas o comercial entra e quantas vezes por dia.</p></li>
+    <li><b>Escolha as faixas</b><p>Os filmes da noite, o Noir, a Sessão Terror, a matinê: você diz em quais faixas o comercial entra e quantas vezes por dia.</p></li>
     <li><b>Vai ao ar</b><p>O comercial passa nos intervalos dos filmes, nunca em dois intervalos seguidos, e sai do ar sozinho no último dia combinado.</p></li>
   </ol>
 </div></section>
@@ -185,11 +189,11 @@ ANUNCIE = '''<section class="inst-hero"><div class="mosaic" aria-hidden="true"><
   <a class="mail" href="mailto:{MAIL}?subject=Anunciar%20na%20K%C3%96LJA%20TV">{MAIL}</a>
 </div></section>'''
 
-RETROTV = '''<section class="band"><div class="wrap two" style="align-items:center">
+RETROTV = '''<section class="band"><div class="wrap two top-align">
   <div class="prose">
     <div class="kicker" style="margin-bottom:14px">Retrotv</div>
     <h1 style="font-size:clamp(40px,6.4vw,84px);line-height:.95;letter-spacing:-.03em;margin:0 0 22px">A KÖLJA TV também cabe no bolso.</h1>
-    <p>A Retrotv é o nosso aplicativo de TV para Android. Ela tem cara de televisor: botão de liga e volume, seletor de canal, tela cheia. E a KÖLJA TV está no canal 1.</p>
+    <p>A Retrotv é o nosso aplicativo de TV para Android. Ela tem cara de televisor, com botão de ligar, volume, seletor de canal e tela cheia. E a KÖLJA TV está no canal 1.</p>
     <p>No app a grade é a mesma do site, na mesma hora. As legendas também estão lá, e o botão MENU liga e desliga.</p>
     <p><strong>A Retrotv ainda não está disponível para download.</strong> Enquanto isso, a KÖLJA TV passa inteira aqui no site.</p>
     <p style="margin-top:26px"><a class="btn" href="{B}ao-vivo/" style="text-decoration:none">Assistir ao vivo</a></p>

@@ -28,7 +28,9 @@
     const open = !sheet.classList.contains('open');
     sheet.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open);
     document.documentElement.style.overflow = open ? 'hidden' : '';
+    if (open) { const a = $('a', sheet); if (a) a.focus(); }
   });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheet && sheet.classList.contains('open')) { menuBtn.click(); menuBtn.focus(); } });
 
   // ---------- data ----------
   let S = null, P = [], LG = null, ART = {}, clock = () => Date.now();
@@ -57,9 +59,8 @@
     const t = titleOf(id) || {}, alt = '';
     const lazy = eager ? '' : ' loading="lazy"';
     if (ART[id]) return `<div class="art ${cls}"><img src="${B}arte/${encodeURIComponent(id)}.jpg" alt="${esc(alt)}"${lazy} decoding="async"></div>`;
-    const v = VIN[block || t.block];
-    if (v) return `<div class="art ${cls}"><img src="${B}img/vinheta-${v}.jpg" alt=""${lazy} decoding="async"></div>`;
-    return `<div class="art fallback b-${esc(block || t.block)} ${cls}"><span>${esc(blockName(block || t.block))}</span></div>`;
+    const b = t.block || block;
+    return `<div class="art fallback b-${esc(b)} ${cls}"><span>${esc(nice(blockName(b)))}</span><em>KÖLJA TV</em></div>`;
   }
   const link = id => B + 'programa/?id=' + encodeURIComponent(id);
   function dayLabel(d, today) {
@@ -104,20 +105,20 @@
     const nx = after(c.e, 1)[0];
     el.hidden = false;
     $('a', el).innerHTML = `<span class="lbl"><span class="dot"></span>No ar</span><span class="t">${hm(c.s)}</span>
-      <span class="n"><b>${esc(c.t.title)}</b>${nx ? ' &nbsp;·&nbsp; a seguir ' + hm(nx.s) + ' ' + esc(nx.t.title) : ''}</span><span class="go">Assistir →</span>`;
+      <span class="n"><b>${esc(c.t.title)}</b>${nx ? '<span class="nx"> &nbsp;·&nbsp; a seguir ' + hm(nx.s) + ' ' + esc(nx.t.title) + '</span>' : ''}</span><span class="go">Assistir →</span>`;
   }
 
   function upnext() {
     const el = $('#upnext'); if (!el) return;
     const c = cur(), list = after(c ? c.e : clock(), 4);
-    el.innerHTML = list.length ? '<h3>A seguir</h3>' + list.map(p => `<a href="${link(p.id)}"><time>${hm(p.s)}</time>
-      <span><span class="tt">${esc(p.t.title)}</span> ${legBadge(p.id)}<span class="sub">${esc(blockName(p.block))}${p.t.year ? ' · ' + p.t.year : ''}</span></span></a>`).join('') : '';
+    el.innerHTML = list.length ? '<h2>A seguir</h2>' + list.map(p => `<a href="${link(p.id)}"><time>${hm(p.s)}</time>
+      <span><span class="tt">${esc(p.t.title)}</span> ${legBadge(p.id)}<span class="sub">${esc([nice(blockName(p.t.block)), KIND[p.t.kind], p.t.year].filter(Boolean).join(' · '))}</span></span></a>`).join('') : '';
   }
 
   function poster() { // the programme's still on the screen until the viewer presses play
     const g = $('.ktv-glass'); if (!g) return;
     const c = cur() || after(clock(), 1)[0];
-    const url = c && ART[c.id] ? `${B}arte/${encodeURIComponent(c.id)}.jpg` : c && VIN[c.block] ? `${B}img/vinheta-${VIN[c.block]}.jpg` : '';
+    const url = c && ART[c.id] ? `${B}arte/${encodeURIComponent(c.id)}.jpg` : '';
     if (url && g.dataset.poster !== url) { g.dataset.poster = url; g.style.backgroundImage = `url("${url}")`; }
   }
 
@@ -131,10 +132,10 @@
       const end = ps[k + 1] ? ps[k + 1].hhmm : '24:00';
       const pick = list.filter(x => x.t.kind === 'film').sort((a, b) => (b.e - b.s) - (a.e - a.s))[0] || list.filter(x => ART[x.id])[0] || list[0];
       const blocks = [...new Set(list.map(x => blockName(x.block)).filter(Boolean))].map(nice).join(' · ');
-      const img = ART[pick.id] && pick.t.kind !== 'cartoon' ? `${B}arte/${encodeURIComponent(pick.id)}.jpg` : `${B}img/vinheta-${VIN[pick.block] || 'classicos'}.jpg`;
+      const img = ART[pick.id] && pick.t.kind !== 'cartoon' ? `${B}arte/${encodeURIComponent(pick.id)}.jpg` : '';
       const { name } = partName(p);
       return `<a class="part${k === nowK ? ' now' : ''}" href="${B}programacao/?faixa=${k}">
-        <img src="${img}" alt="" loading="lazy" decoding="async">${k === nowK ? '<span class="badge live nowtag">AGORA</span>' : ''}
+        ${img ? `<img src="${img}" alt="" loading="lazy" decoding="async">` : '<div class="art fallback b-toons"></div>'}${k === nowK ? '<span class="badge live nowtag">AGORA</span>' : ''}
         <div class="in"><div class="hrs">${p.hhmm} – ${end}</div><h3>${esc(name)}</h3><div class="what">${esc(blocks)}</div>
         <div class="pick">${pick.t.kind === 'cartoon' ? `${list.length} desenhos hoje` : `<b>${esc(pick.t.title)}</b> às ${hm(pick.s)}`}</div></div></a>`;
     }).join('');
@@ -144,9 +145,26 @@
     const t = clock(), on = p.s <= t && t < p.e, d = dayKey(p.s);
     const when = on ? '<span class="badge live">AO VIVO</span>' : `${d !== today ? esc(dayLabel(d, today)) + ' · ' : ''}<time>${hm(p.s)}</time>`;
     return `<a class="card" href="${link(p.id)}">${art(p.id, p.block)}
-      <div class="when">${when}<span>${esc(nice(blockName(p.block)))}</span>${legBadge(p.id)}</div>
+      <div class="when">${when}<span>${esc(nice(blockName(p.t.block)))}</span>${legBadge(p.id)}</div>
       <h3>${esc(p.t.title)}${p.t.year ? ` <span style="color:var(--fg3);font-weight:400">${p.t.year}</span>` : ''}</h3>
       ${opts.syn !== false && p.t.synopsis ? `<p>${esc(p.t.synopsis)}</p>` : ''}</a>`;
+  }
+
+  function tonight() { // the evening's big film: the longest film from 19:00 on, today (after 23:00, tomorrow's)
+    const el = $('#tonight'); if (!el) return;
+    const t = clock(), today = dayKey(t);
+    const day = mins(t) >= 23 * 60 ? dayKey(t + 3 * 3600e3) : today;
+    const list = P.filter(p => dayKey(p.s) === day && mins(p.s) >= 19 * 60 && p.e > t && p.t.kind === 'film');
+    const p = list.filter(x => ART[x.id]).sort((a, b) => (b.e - b.s) - (a.e - a.s))[0] || list[0];
+    const box = $('#tonightbox'); if (box) box.hidden = !p;
+    if (!p) return;
+    const key = p.id + p.s + hasLeg(p.id); if (el.dataset.k === key) return; el.dataset.k = key;
+    const on = p.s <= t;
+    $('#tonighth').textContent = on ? 'Agora na KÖLJA TV' : day === today ? 'Hoje à noite' : 'Amanhã à noite';
+    el.innerHTML = `<a class="tonight" href="${link(p.id)}">${art(p.id, p.block)}<div class="in">
+      <div class="when"><small>${esc(nice(blockName(p.block)))}</small>${on ? '<span class="badge live" style="font-size:16px;height:28px;padding:0 10px">AO VIVO</span>' : hm(p.s)}</div>
+      <h3>${esc(p.t.title)}</h3><div class="meta">${esc([p.t.year, country(p.t.country), dur((p.e - p.s) / 1000)].filter(Boolean).join(' · '))} ${legBadge(p.id)}</div>
+      ${p.t.synopsis ? `<p>${esc(p.t.synopsis)}</p>` : ''}<span class="btn ghost" style="align-self:start">Ver o filme</span></div></a>`;
   }
 
   function films() {
@@ -155,7 +173,8 @@
     let list = P.filter(p => p.e > t && p.t.kind === 'film' && dayKey(p.s) === today);
     if (list.length < 6) list = P.filter(p => p.e > t && p.t.kind === 'film').slice(0, 8);
     const seen = new Set(); list = list.filter(p => !seen.has(p.id) && seen.add(p.id)).slice(0, 10);
-    el.innerHTML = list.map(p => card(p, today)).join('');
+    const tn = $('#tonight .tonight'), skip = tn ? tn.getAttribute('href') : '';
+    el.innerHTML = list.filter(p => link(p.id) !== skip).map(p => card(p, today)).join('');
   }
 
   function legRail() {
@@ -213,10 +232,15 @@
       html += row(p, t);
     }
     el.innerHTML = html || `<p class="empty">${st.leg ? 'Nenhum título com legenda nesta faixa. Tire o filtro LEG para ver a grade toda.' : 'Nada na grade para este horário.'}</p>`;
+    if (!st.jumped && st.day === today && st.part < 0) { // like a TV guide: open on what's on now
+      st.jumped = true;
+      const on = $('.row.on', el);
+      if (on) { const top = on.getBoundingClientRect().top + scrollY - (innerWidth > 760 ? 200 : 76); if (top > 300) scrollTo({ top, behavior: 'auto' }); }
+    }
   }
   function row(p, t) {
     const on = p.s <= t && t < p.e, past = p.e <= t;
-    const meta = [nice(blockName(p.block)), KIND[p.t.kind], p.t.kind !== 'cartoon' ? dur((p.e - p.s) / 1000) : ''].filter(Boolean).join(' · ');
+    const meta = [nice(blockName(p.t.block)), KIND[p.t.kind], p.t.kind !== 'cartoon' ? dur((p.e - p.s) / 1000) : ''].filter(Boolean).map(x => x.replace(/ /g, '\u00a0')).join(' · ');
     return `<a class="row${on ? ' on' : past ? ' past' : ''}${p.t.kind === 'film' ? ' feat' : ''}" href="${link(p.id)}"><time datetime="${new Date(p.s).toISOString()}">${hm(p.s)}</time>${art(p.id, p.block)}
       <div class="body"><div class="blk">${on ? '<span class="badge live">AO VIVO</span>' : ''}${esc(meta)} ${legBadge(p.id)}</div>
       <span class="tt">${esc(p.t.title)}${p.t.year ? `<span class="yr">${p.t.year}</span>` : ''}</span>${p.t.synopsis ? `<p class="syn">${esc(p.t.synopsis)}</p>` : ''}</div></a>`;
@@ -225,7 +249,7 @@
     const a = run[0], z = run[run.length - 1], on = a.s <= t && t < z.e, past = z.e <= t;
     const nowT = run.find(x => x.s <= t && t < x.e);
     return `<details class="toons"${st.openToons ? ' open' : ''}><summary class="row toonrun${on ? ' on' : past ? ' past' : ''}"><time>${hm(a.s)}</time>${art(a.id, 'toons')}
-      <div class="body"><div class="blk">${on ? '<span class="badge live">AO VIVO</span>' : ''}${esc(nice(blockName(a.block)))} · ${hm(a.s)} – ${hm(z.e)}</div>
+      <div class="body"><div class="blk">${on ? '<span class="badge live">AO VIVO</span>' : ''}${esc(nice(blockName(a.block)))} · ${hm(a.s)}&nbsp;–&nbsp;${hm(z.e)}</div>
       <span class="tt">${run.length} desenhos clássicos</span>
       <p class="syn">${nowT ? 'Agora: ' + esc(nowT.t.title) + '. ' : ''}Os desenhos passam um atrás do outro, com intervalo a cada três.</p><span class="more">Ver os ${run.length} desenhos</span></div></summary>
       <ol>${run.map(x => `<li class="${x.s <= t && t < x.e ? 'on' : ''}"><time>${hm(x.s)}</time><a href="${link(x.id)}">${esc(x.t.title)}${x.t.year ? ` <span class="yr" style="color:var(--fg3)">${x.t.year}</span>` : ''}</a></li>`).join('')}</ol></details>`;
@@ -265,7 +289,7 @@
       el.dataset.id = id; el.dataset.on = !!on; el.dataset.leg = hasLeg(id);
       document.title = `${t.title}${t.year ? ' (' + t.year + ')' : ''} · KÖLJA TV`;
       const md = document.querySelector('meta[name=description]'); if (md && t.synopsis) md.content = t.synopsis;
-      const meta = [t.year, country(t.country), KIND[t.kind], dur(t.dur)].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join('<span aria-hidden="true">·</span>');
+      const meta = [t.year, country(t.country), KIND[t.kind], dur(t.dur)].filter(Boolean).map(x => esc(String(x)).replace(/ /g, '&nbsp;')).join(' &nbsp;·&nbsp; ');
       const sameBlock = []; const seen = new Set([id]);
       for (const p of P) if (p.e > now && p.block === t.block && p.t.kind !== 'cartoon' && !seen.has(p.id)) { seen.add(p.id); sameBlock.push(p); if (sameBlock.length >= 4) break; }
       el.innerHTML = `
@@ -275,7 +299,8 @@
         <div class="meta">${meta}${hasLeg(id) ? '<span class="badge leg">LEG</span>' : ''}</div>
         ${t.synopsis ? `<p class="syn">${esc(t.synopsis)}</p>` : ''}
         <div class="acts">${on ? `<a class="btn" href="${B}ao-vivo/"><svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg>Assistir ao vivo</a>` : ''}
-          <a class="btn${on ? ' ghost' : ''}" href="${B}programacao/">Programação</a></div>
+          ${ups.length && !on ? `<a class="btn" href="${B}programacao/?dia=${dayKey(ups[0].s)}&faixa=${partIndex(parts(), ups[0].s)}">Passa ${esc(dayLabel(dayKey(ups[0].s), today).toLowerCase())} às ${hm(ups[0].s)}</a>` : ''}
+          <a class="btn ghost" href="${B}programacao/">Programação</a></div>
       </div></section>
       <section class="band"><div class="wrap two">
         <div><div class="h-sec"><h2>Quando passa</h2></div>${ups.length ? `<ul class="airings">${ups.slice(0, 8).map(p => `<li><div class="d">${esc(dayLabel(dayKey(p.s), today))}, ${hm(p.s)}<small>${dayShort(dayKey(p.s))} · ${esc(blockName(p.block))} · até ${hm(p.e)}</small></div>
@@ -287,7 +312,7 @@
           ${t.country ? `<div><dt>País</dt><dd>${esc(country(t.country))}</dd></div>` : ''}<div><dt>Duração</dt><dd>${esc(dur(t.dur))}</dd></div>
           <div><dt>Faixa</dt><dd>${esc(nice(blockName(t.block)))}</dd></div><div><dt>Formato</dt><dd>${esc(KIND[t.kind] || '')}</dd></div></dl></div>
       </div></section>
-      ${sameBlock.length ? `<section class="band"><div class="wrap"><div class="h-sec"><h2>Mais na ${esc(nice(blockName(t.block)))}</h2><a href="${B}programacao/">Programação</a></div>
+      ${sameBlock.length ? `<section class="band"><div class="wrap"><div class="h-sec"><h2>Mais ${t.block === 'toons' ? 'desenhos' : 'na faixa ' + esc(nice(blockName(t.block)))}</h2><a href="${B}programacao/">Programação</a></div>
         <div class="rail r4">${sameBlock.map(p => card(p, today)).join('')}</div></div></section>` : ''}`;
     }
   }
@@ -305,7 +330,7 @@
 
   function draw() {
     if (!S) return;
-    try { ticker(); upnext(); poster(); dayparts(); films(); legRail(); novela(); guide(); todayRest(); titlePage(); dayMap(); }
+    try { ticker(); upnext(); poster(); dayparts(); tonight(); films(); legRail(); novela(); guide(); todayRest(); titlePage(); dayMap(); }
     catch (e) { console.error(e); }
   }
   ready().catch(e => { console.error(e); const g = $('#grade') || $('#titulo'); if (g) g.innerHTML = '<p class="empty wrap">A programação não carregou agora. Tente de novo em instantes.</p>'; });

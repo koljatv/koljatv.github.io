@@ -18,8 +18,8 @@
 <link rel="icon" href="img/tv.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/jost.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/barlowc-700.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="tv/tv.css?v=2">
-<link rel="stylesheet" href="assets/site.css?v=2">
+<link rel="stylesheet" href="tv/tv.css?v=3">
+<link rel="stylesheet" href="assets/site.css?v=3">
 </head>
 <body data-base="" data-page="home">
 <a class="skip" href="#main">Pular para o conteúdo</a>
@@ -27,9 +27,9 @@
   <a class="logo" href="" aria-label="KÖLJA TV, início"><img src="img/logo.svg" alt="KÖLJA TV" width="128" height="54"></a>
   <nav aria-label="Principal"><a href="" aria-current=page>Início</a><a href="programacao/">Programação</a><a href="emissora/">A emissora</a><a href="anuncie/">Anuncie</a><a href="retrotv/">Retrotv</a></nav>
   <a class="onair" href="ao-vivo/"><span class="dot"></span>AO VIVO</a>
-  <button class="menu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg></button>
+  <button class="menu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><svg viewBox="0 0 24 24"><path class="b" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/><path class="x" d="M5.6 4.2 12 10.6l6.4-6.4 1.4 1.4-6.4 6.4 6.4 6.4-1.4 1.4-6.4-6.4-6.4 6.4-1.4-1.4 6.4-6.4-6.4-6.4z"/></svg></button>
 </div></header>
-<div class="sheet" id="sheet"><a href="">Início</a><a href="programacao/">Programação</a><a href="ao-vivo/">Ao vivo</a><a href="emissora/">A emissora</a><a href="anuncie/">Anuncie</a><a href="retrotv/">Retrotv</a><p>Horário de Brasília. A grade se atualiza sozinha.</p></div>
+<div class="sheet" id="sheet"><a href="" aria-current=page>Início</a><a href="programacao/">Programação</a><a href="ao-vivo/">Ao vivo</a><a href="emissora/">A emissora</a><a href="anuncie/">Anuncie</a><a href="retrotv/">Retrotv</a><p>Horário de Brasília. A grade se atualiza sozinha.</p></div>
 
 <main id="main">
 <section class="live-hero"><div class="wrap grid">
@@ -37,8 +37,12 @@
   <div class="side">
     <section class="ktv-info" id="ktv-info" aria-live="polite"></section>
     <div class="upnext" id="upnext"></div>
-    <div class="acts"><a class="btn" href="programacao/">Programação de hoje</a><a class="btn ghost" href="ao-vivo/">Tela grande</a></div>
+    <div class="acts"><a class="btn" href="programacao/">Programação de hoje</a><a class="btn ghost" href="ao-vivo/">Abrir o ao vivo</a></div>
   </div>
+</div></section>
+<section class="band" id="tonightbox" hidden><div class="wrap">
+  <div class="h-sec"><h2 id="tonighth">Hoje à noite</h2><a href="programacao/?faixa=3">A noite toda</a></div>
+  <div id="tonight"></div>
 </div></section>
 <section class="band"><div class="wrap">
   <div class="h-sec"><h2>Hoje na KÖLJA TV</h2><a href="programacao/">Grade completa</a></div>
@@ -53,7 +57,7 @@
     <div class="kicker">Novela da casa · Prévia do capítulo 1</div>
     <h2>Segredos da Serra</h2>
     <p>Noite de tempestade na mansão dos Albuquerque, no alto da serra de Petrópolis. Três da manhã, a geladeira aberta, e comendo o pudim da família está um homem que foi enterrado há cinco anos.</p>
-    <p>A prévia passa nos intervalos dos filmes da noite e da madrugada. Ou dá o play aqui.</p>
+    <p>A prévia passa nos intervalos dos filmes da noite e da madrugada. Ou assista aqui.</p>
     <div class="fine">Nos intervalos até 15 de novembro</div>
   </div>
   <div class="media"><img src="img/novela-escada.jpg" alt="Segredos da Serra: Rodrigo, de roupão vinho, no alto da escada da mansão" loading="lazy"><button type="button" aria-label="Assistir à prévia de Segredos da Serra"><i></i></button></div>
@@ -64,7 +68,7 @@
   <div class="rail r4" id="legrail"></div>
 </div></section>
 <section class="band"><div class="wrap duo">
-  <a class="tease" href="retrotv/"><div><div class="kicker">Retrotv</div><h3>A KÖLJA TV também cabe no bolso</h3><p>O nosso aplicativo de TV para Android, com a KÖLJA TV no canal 1.</p><span class="btn ghost">Conhecer</span></div><img src="img/retrotv.jpg" alt="A Retrotv no celular, passando um filme com legenda" loading="lazy" width="120" height="267"></a>
+  <a class="tease" href="retrotv/"><div><div class="kicker">Retrotv</div><h3>A KÖLJA TV também cabe no bolso</h3><p>O nosso aplicativo de TV para Android, com a KÖLJA TV no canal 1. Ainda não está disponível para download.</p><span class="btn ghost">Conhecer</span></div><img src="img/retrotv.jpg" alt="A Retrotv no celular, passando um filme com legenda" loading="lazy" width="120" height="267"></a>
   <a class="tease" href="anuncie/"><div><div class="kicker">Anuncie</div><h3>Seu comercial no intervalo dos clássicos</h3><p>Os filmes têm intervalo, como na TV aberta. Conte o que você quer anunciar e a gente combina.</p><span class="btn ghost">Como funciona</span></div></a>
 </div></section>
 </main>
@@ -77,7 +81,7 @@
   </div>
   <div class="fine"><span>© 2026 Kölja</span><span>KÖLJA TV · Canal 1</span></div>
 </div></footer>
-<script src="tv/tv.js?v=2"></script>
-<script src="assets/site.js?v=2"></script>
+<script src="tv/tv.js?v=3"></script>
+<script src="assets/site.js?v=3"></script>
 </body>
 </html>
