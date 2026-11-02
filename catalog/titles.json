@@ -6102,35 +6102,16 @@
   "country": "US",
   "block": "domingo",
   "kind": "film",
-  "dur": 4683,
+  "dur": 4683.167,
   "synopsis_pt": "Um ano com uma família inuit no Ártico canadense: o iglu, a caça à morsa, o frio. O primeiro grande documentário.",
   "rights": {
    "us": true
   },
   "sources": [
    {
-    "url": "https://archive.org/download/NanookOfTheNorth-HD/nanook%20of%20the%20north.m4v",
-    "dur": 4683,
-    "ia": "NanookOfTheNorth-HD",
-    "h": 720
-   },
-   {
-    "url": "https://archive.org/download/NanookOfTheNorth/Nanook%20of%20the%20North.mp4",
-    "dur": 4644,
-    "ia": "NanookOfTheNorth",
-    "h": 720
-   },
-   {
-    "url": "https://archive.org/download/NanukZPolnocy1922Rez.RobertJ.Flaherty/Nanuk%20z%20Po%CC%81%C5%82nocy%20%281922%29%20-%20rez%CC%87.%20Robert%20J.%20Flaherty.mp4",
-    "dur": 4696,
-    "ia": "NanukZPolnocy1922Rez.RobertJ.Flaherty",
+    "url": "https://github.com/koljatv/koljatv.github.io/releases/download/docs_20261102/nanook-1922-mudo-v1.mp4",
+    "dur": 4683.167,
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/nanookOfTheNorth1922/NanookOfTheNorth1922.mp4",
-    "dur": 4677,
-    "ia": "nanookOfTheNorth1922",
-    "h": 240
    }
   ]
  },
@@ -6141,23 +6122,16 @@
   "country": "US",
   "block": "domingo",
   "kind": "film",
-  "dur": 4261,
+  "dur": 4261.094,
   "synopsis_pt": "Cinquenta mil nômades bakhtiari atravessam rios gelados e montanhas no Irã para achar pasto. Dos criadores de King Kong.",
   "rights": {
    "us": true
   },
   "sources": [
    {
-    "url": "https://archive.org/download/1925-grass-a-nations-battle-for-life/1925%20%20Grass%20-%20A%20Nations%20Battle%20For%20Life.mp4",
-    "dur": 4261,
-    "ia": "1925-grass-a-nations-battle-for-life",
+    "url": "https://github.com/koljatv/koljatv.github.io/releases/download/docs_20261102/grass-1925-mudo-v1.mp4",
+    "dur": 4261.094,
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/grass-1925/Grass1925.mp4",
-    "dur": 4197,
-    "ia": "grass-1925",
-    "h": 288
    }
   ]
  },
@@ -6168,7 +6142,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "film",
-  "dur": 4164,
+  "dur": 4164.127,
   "synopsis_pt": "Uma família no Sião contra tigres, leopardos e uma manada de elefantes. Cooper e Schoedsack antes de King Kong.",
   "rights": {
    "us": true
@@ -6176,14 +6150,8 @@
   "sources": [
    {
     "url": "https://archive.org/download/chang-a-drama-of-the-wilderness_1927/chang-a-drama-of-the-wilderness_1927.ia.mp4",
-    "dur": 4164,
+    "dur": 4164.127,
     "ia": "chang-a-drama-of-the-wilderness_1927",
-    "h": 480
-   },
-   {
-    "url": "https://archive.org/download/chang-a-drama-of-the-wilderness-1927_202509/Chang%20A%20Drama%20of%20the%20Wilderness%20%281927%29.mp4",
-    "dur": 4164,
-    "ia": "chang-a-drama-of-the-wilderness-1927_202509",
     "h": 480
    }
   ]
@@ -13702,7 +13670,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1526,
+  "dur": 1526.328,
   "synopsis_pt": "Como o arado e a seca transformaram as Grandes Planícies no Dust Bowl. Pare Lorentz.",
   "rights": {
    "us": true
@@ -13710,21 +13678,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/plow_that_broke_the_plains/plow_that_broke_the_plains.mp4",
-    "dur": 1526,
+    "dur": 1526.328,
     "ia": "plow_that_broke_the_plains",
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/0884_Plow_that_Broke_the_Plains_The_16_30_36_10/0884_Plow_that_Broke_the_Plains_The_16_30_36_10_3mb.mp4",
-    "dur": 1530,
-    "ia": "0884_Plow_that_Broke_the_Plains_The_16_30_36_10",
-    "h": 480
-   },
-   {
-    "url": "https://archive.org/download/gov.fdr.352.2a.1/gov.fdr.352.2a.1_512kb.mp4",
-    "dur": 1588,
-    "ia": "gov.fdr.352.2a.1",
-    "h": 240
    }
   ]
  },
@@ -13735,29 +13691,16 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1865,
+  "dur": 1865.655,
   "synopsis_pt": "O rio Mississippi, as enchentes e o vale do Tennessee. Um poema em imagens.",
   "rights": {
    "us": true
   },
   "sources": [
    {
-    "url": "https://archive.org/download/TheRiverByPareLorentz/Pare_Lorentz-The_River.mp4",
-    "dur": 1865,
-    "ia": "TheRiverByPareLorentz",
+    "url": "https://github.com/koljatv/koljatv.github.io/releases/download/docs_20261102/the-river-1938-v1.mp4",
+    "dur": 1865.655,
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/79074TheRiver_201601/79074%20The%20River.mp4",
-    "dur": 1845,
-    "ia": "79074TheRiver_201601",
-    "h": 360
-   },
-   {
-    "url": "https://archive.org/download/79074TheRiver/79074%20The%20River.mp4",
-    "dur": 1845,
-    "ia": "79074TheRiver",
-    "h": 360
    }
   ]
  },
@@ -13840,40 +13783,13 @@
   ]
  },
  {
-  "id": "moonwalk-one-1970",
-  "title": "Moonwalk One",
-  "year": 1970,
-  "country": "US",
-  "block": "domingo",
-  "kind": "film",
-  "dur": 5683,
-  "synopsis_pt": "A Apollo 11 como ninguém mostrou: a multidão, a máquina e os homens. Filmado para a NASA.",
-  "rights": {
-   "us": true
-  },
-  "sources": [
-   {
-    "url": "https://archive.org/download/youtube-70bFsUdepyA/70bFsUdepyA.mp4",
-    "dur": 5683,
-    "ia": "youtube-70bFsUdepyA",
-    "h": 480
-   },
-   {
-    "url": "https://archive.org/download/gov.archives.arc.1257628/gov.archives.arc.1257628_512kb.mp4",
-    "dur": 5683,
-    "ia": "gov.archives.arc.1257628",
-    "h": 240
-   }
-  ]
- },
- {
   "id": "nasa-apollo11-1969",
   "title": "A Águia Pousou: o Voo da Apollo 11",
   "year": 1969,
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1721,
+  "dur": 1721.375,
   "synopsis_pt": "O filme oficial da NASA sobre a primeira chegada à Lua.",
   "rights": {
    "us": true
@@ -13881,27 +13797,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/theflightofapollo11eaglehaslanded/theflightofapollo11eaglehaslanded.mp4",
-    "dur": 1721,
+    "dur": 1721.375,
     "ia": "theflightofapollo11eaglehaslanded",
     "h": 360
-   },
-   {
-    "url": "https://archive.org/download/apollo-11-nasafilms-16mm/Apollo11-NASAfilms16mm.mp4",
-    "dur": 1707,
-    "ia": "apollo-11-nasafilms-16mm",
-    "h": 480
-   },
-   {
-    "url": "https://archive.org/download/flight_of_apollo_11/flight_of_apollo_11_512kb.mp4",
-    "dur": 1703,
-    "ia": "flight_of_apollo_11",
-    "h": 240
-   },
-   {
-    "url": "https://archive.org/download/gov.archives.arc.45017/gov.archives.arc.45017_512kb.mp4",
-    "dur": 1705,
-    "ia": "gov.archives.arc.45017",
-    "h": 240
    }
   ]
  },
@@ -13912,7 +13810,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1697,
+  "dur": 1697.598,
   "synopsis_pt": "O filme da NASA sobre a missão que quase acabou em tragédia e voltou para casa.",
   "rights": {
    "us": true
@@ -13920,27 +13818,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/apollo13_houston_weve_got_a_problem/apollo_13_houston_weve_got_a_problem.mp4",
-    "dur": 1697,
+    "dur": 1697.598,
     "ia": "apollo13_houston_weve_got_a_problem",
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/apollo_13_houston_weve_got_a_problem/apollo_13_houston_weve_got_a_problem.mp4",
-    "dur": 1692,
-    "ia": "apollo_13_houston_weve_got_a_problem",
-    "h": 480
-   },
-   {
-    "url": "https://archive.org/download/HoustonWeveGotAProblem/Apollo_13_Houston_We_Have_A_Problem_512kb.mp4",
-    "dur": 1691,
-    "ia": "HoustonWeveGotAProblem",
-    "h": 240
-   },
-   {
-    "url": "https://archive.org/download/gov.archives.arc.1155023/gov.archives.arc.1155023_512kb.mp4",
-    "dur": 1700,
-    "ia": "gov.archives.arc.1155023",
-    "h": 240
    }
   ]
  },
@@ -13951,7 +13831,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1745,
+  "dur": 1745.834,
   "synopsis_pt": "O primeiro jipe lunar e três dias nas montanhas Apeninas da Lua.",
   "rights": {
    "us": true
@@ -13959,7 +13839,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/Jsc-572Apollo15-InTheMountainsOfTheMoon/Jsc-572Apollo15-InTheMountainsOfTheMoon.mp4",
-    "dur": 1745,
+    "dur": 1745.834,
     "ia": "Jsc-572Apollo15-InTheMountainsOfTheMoon",
     "h": 480
    }
@@ -13972,7 +13852,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1708,
+  "dur": 1708.76,
   "synopsis_pt": "A última viagem do homem à Lua, até hoje.",
   "rights": {
    "us": true
@@ -13980,20 +13860,8 @@
   "sources": [
    {
     "url": "https://archive.org/download/Apollo17-OnTheShouldersOfGiants/Apollo17.mp4",
-    "dur": 1708,
+    "dur": 1708.76,
     "ia": "Apollo17-OnTheShouldersOfGiants",
-    "h": 480
-   },
-   {
-    "url": "https://archive.org/download/Apollo17OnTheShouldersOfGiants/Apollo%2017%20-%20On%20the%20Shoulders%20of%20Giants.mp4",
-    "dur": 1709,
-    "ia": "Apollo17OnTheShouldersOfGiants",
-    "h": 480
-   },
-   {
-    "url": "https://archive.org/download/17694apollo17ontheshouldersofgiantsvwr/17694%20Apollo%2017%20On%20THe%20Shoulders%20Of%20Giants_vwr.mp4",
-    "dur": 1727,
-    "ia": "17694apollo17ontheshouldersofgiantsvwr",
     "h": 480
    }
   ]
@@ -27878,60 +27746,21 @@
   ]
  },
  {
-  "id": "man-movie-camera-1929",
-  "title": "Um Homem com uma Câmera",
-  "year": 1929,
-  "country": "UA",
-  "block": "domingo",
-  "kind": "film",
-  "dur": 4092,
-  "synopsis_pt": "Um dia numa cidade soviética, do amanhecer à noite, visto por um cinegrafista que aparece em todo canto. Sem atores, sem história, sem letreiros: só cinema.",
-  "rights": {
-   "us": true
-  },
-  "sources": [
-   {
-    "url": "https://archive.org/download/man-with-a-movie-camera_1929/man-with-a-movie-camera_1929.ia.mp4",
-    "dur": 4092,
-    "ia": "man-with-a-movie-camera_1929",
-    "h": 452
-   },
-   {
-    "url": "https://archive.org/download/ChelovekskinoapparatomManWithAMovieCamera/Chelovek_s_kino-apparatom_512kb.mp4",
-    "dur": 4008,
-    "ia": "ChelovekskinoapparatomManWithAMovieCamera",
-    "h": 240
-   },
-   {
-    "url": "https://archive.org/download/man-with-a-movie-camera-1929-by-dziga-vertov/Man.With.A.Movie.Camera.1929.1080p.BluRay.x264.AAC-%5BYTS.MX%5D.mp4",
-    "dur": 4027,
-    "ia": "man-with-a-movie-camera-1929-by-dziga-vertov",
-    "h": 1080
-   }
-  ]
- },
- {
   "id": "great-white-silence-1924",
   "title": "O Grande Silêncio Branco",
   "year": 1924,
   "country": "GB",
   "block": "domingo",
   "kind": "film",
-  "dur": 6459,
+  "dur": 6452.503,
   "synopsis_pt": "A expedição de Scott ao Polo Sul filmada pelo fotógrafo que foi junto: o navio no gelo, os pinguins, os pôneis, e a viagem de onde ninguém voltou.",
   "rights": {
    "us": true
   },
   "sources": [
    {
-    "url": "https://archive.org/download/WhiteSilence/The%20White%20Silence.mp4",
-    "dur": 6459,
-    "ia": "WhiteSilence",
-    "h": 480
-   },
-   {
     "url": "https://archive.org/download/silent-the-great-white-silence/The%20Great%20White%20Silence.mp4",
-    "dur": 6452,
+    "dur": 6452.503,
     "ia": "silent-the-great-white-silence",
     "h": 480
    }
@@ -27944,7 +27773,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "film",
-  "dur": 4957,
+  "dur": 4957.925,
   "synopsis_pt": "A expedição do almirante Byrd à Antártida, até o primeiro voo sobre o Polo Sul. Oscar de fotografia.",
   "rights": {
    "us": true
@@ -27952,15 +27781,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/WithByrdAtTheSouthPole19291930AntarcticExpedition/With%20Byrd%20at%20the%20South%20Pole%201929-1930%20Antarctic%20Expedition.mp4",
-    "dur": 4957,
+    "dur": 4957.925,
     "ia": "WithByrdAtTheSouthPole19291930AntarcticExpedition",
     "h": 360
-   },
-   {
-    "url": "https://archive.org/download/with-byrd-at-the-south-pole/With%20Byrd%20at%20the%20South%20Pole.mp4",
-    "dur": 4957,
-    "ia": "with-byrd-at-the-south-pole",
-    "h": 480
    }
   ]
  },
@@ -27971,7 +27794,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "film",
-  "dur": 3360,
+  "dur": 3360.827,
   "synopsis_pt": "Um povo ojíbua no norte do Canadá enfrenta o inverno e a fome, o inimigo silencioso. Filmado na floresta, com elenco indígena.",
   "rights": {
    "us": true
@@ -27979,36 +27802,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/TheSilentEnemy/SilentEnemy.mp4",
-    "dur": 3360,
+    "dur": 3360.827,
     "ia": "TheSilentEnemy",
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/the-silent-enemy_1930/the-silent-enemy_1930.ia.mp4",
-    "dur": 3364,
-    "ia": "the-silent-enemy_1930",
-    "h": 480
-   }
-  ]
- },
- {
-  "id": "head-hunters-1914",
-  "title": "Na Terra dos Caçadores de Cabeças",
-  "year": 1914,
-  "country": "US",
-  "block": "domingo",
-  "kind": "film",
-  "dur": 3994,
-  "synopsis_pt": "O fotógrafo Edward Curtis filma os kwakwaka'wakw da costa do Pacífico: canoas de guerra, máscaras e um romance inventado para a câmera.",
-  "rights": {
-   "us": true
-  },
-  "sources": [
-   {
-    "url": "https://archive.org/download/in-the-land-of-the-head-hunters-1914-tmdb199989/In%20the%20Land%20of%20the%20Head%20Hunters%20%281914%29.mp4",
-    "dur": 3994,
-    "ia": "in-the-land-of-the-head-hunters-1914-tmdb199989",
-    "h": 1080
    }
   ]
  },
@@ -28019,16 +27815,15 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 832,
+  "dur": 832.799,
   "synopsis_pt": "Uma câmera na frente de um bonde desce a rua principal de San Francisco, dias antes do terremoto de 1906. Carroças, carros, gente atravessando sem olhar.",
   "rights": {
    "us": true
   },
   "sources": [
    {
-    "url": "https://archive.org/download/TripDown1905/TripDown1905.mp4",
-    "dur": 832,
-    "ia": "TripDown1905",
+    "url": "https://github.com/koljatv/koljatv.github.io/releases/download/docs_20261102/market-street-1906-mudo-v1.mp4",
+    "dur": 832.799,
     "h": 480
    }
   ]
@@ -28040,7 +27835,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 592,
+  "dur": 592.726,
   "synopsis_pt": "Nova York vista do alto, das balsas aos arranha-céus, com versos de Walt Whitman. Um pintor e um fotógrafo inventam o filme de cidade.",
   "rights": {
    "us": true
@@ -28048,27 +27843,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/silent-manhatta/Manhatta.mp4",
-    "dur": 592,
+    "dur": 592.726,
     "ia": "silent-manhatta",
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/55254Manhatta/55254%20Manhatta.mp4",
-    "dur": 602,
-    "ia": "55254Manhatta",
-    "h": 360
-   },
-   {
-    "url": "https://archive.org/download/Manhatta_1921/Manhatta_1921_512kb.mp4",
-    "dur": 580,
-    "ia": "Manhatta_1921",
-    "h": 240
-   },
-   {
-    "url": "https://archive.org/download/Manhatta/manhatta_512kb.mp4",
-    "dur": 581,
-    "ia": "Manhatta",
-    "h": 240
    }
   ]
  },
@@ -28079,16 +27856,15 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 545,
+  "dur": 545.445,
   "synopsis_pt": "Os prédios de Manhattan filmados de baixo para cima, de lado, de ponta-cabeça. Robert Florey brinca com a geometria.",
   "rights": {
    "us": true
   },
   "sources": [
    {
-    "url": "https://archive.org/download/skyscraper-symphony_1929/skyscraper-symphony_1929.ia.mp4",
-    "dur": 545,
-    "ia": "skyscraper-symphony_1929",
+    "url": "https://github.com/koljatv/koljatv.github.io/releases/download/docs_20261102/skyscraper-symphony-1929-mudo-v1.mp4",
+    "dur": 545.445,
     "h": 438
    }
   ]
@@ -28100,16 +27876,15 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 794,
+  "dur": 794.694,
   "synopsis_pt": "Robert Flaherty, o de Nanook, filma Manhattan como uma ilha: o porto, os guindastes, os navios. O nome vem do preço que os holandeses pagaram por ela.",
   "rights": {
    "us": true
   },
   "sources": [
    {
-    "url": "https://archive.org/download/twentyfourdollar-island_1928/twentyfourdollar-island_1928.ia.mp4",
-    "dur": 794,
-    "ia": "twentyfourdollar-island_1928",
+    "url": "https://github.com/koljatv/koljatv.github.io/releases/download/docs_20261102/dollar-island-1927-mudo-v1.mp4",
+    "dur": 794.694,
     "h": 452
    }
   ]
@@ -28121,16 +27896,15 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 965,
+  "dur": 965.332,
   "synopsis_pt": "Max Fleischer, o de Betty Boop, explica a relatividade com desenhos, trens e balas de canhão. Cinema de divulgação científica de cem anos atrás.",
   "rights": {
    "us": true
   },
   "sources": [
    {
-    "url": "https://archive.org/download/EinsteinTheoryOfRelativity1923/Einstein%20Theory%20of%20Relativity%20%281923%29.mp4",
-    "dur": 965,
-    "ia": "EinsteinTheoryOfRelativity1923",
+    "url": "https://github.com/koljatv/koljatv.github.io/releases/download/docs_20261102/einstein-relativity-1923-mudo-v1.mp4",
+    "dur": 965.332,
     "h": 480
    }
   ]
@@ -28142,7 +27916,7 @@
   "country": "BR",
   "block": "domingo",
   "kind": "film",
-  "dur": 3727,
+  "dur": 3727.081,
   "synopsis_pt": "Um dia na São Paulo de 1929: os bondes, as fábricas, o Viaduto do Chá, as escolas e a garoa. A cidade que já não parava.",
   "rights": {
    "us": true
@@ -28150,7 +27924,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/SaoPauloASinfoniaDaMetropoleRudolfRexLustigEAdalbertoKemeny1929Documentario/S%C3%A3o%20Paulo%2C%20A%20Sinfonia%20da%20Metr%C3%B3pole%20%28Rudolf%20Rex%20Lustig%20e%20Adalberto%20Kemeny%2C%201929%2C%20Document%C3%A1rio%29.mp4",
-    "dur": 3727,
+    "dur": 3727.081,
     "ia": "SaoPauloASinfoniaDaMetropoleRudolfRexLustigEAdalbertoKemeny1929Documentario",
     "h": 360
    }
@@ -28163,7 +27937,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 786,
+  "dur": 786.46,
   "synopsis_pt": "Os irmãos Williamson descem uma câmera ao fundo do mar das Bahamas por um tubo de aço: tubarões, tartarugas e peixes-serra, filmados pela primeira vez debaixo d'água.",
   "rights": {
    "us": true
@@ -28171,7 +27945,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/1914.-thirty-leagues-under-the-sea/1914.%20Thirty%20Leagues%20Under%20the%20Sea.mp4",
-    "dur": 786,
+    "dur": 786.46,
     "ia": "1914.-thirty-leagues-under-the-sea",
     "h": 720
    }
@@ -28184,16 +27958,15 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 379,
+  "dur": 379.613,
   "synopsis_pt": "Orville Wright voa em Fort Myer, na Virgínia, no teste do primeiro avião comprado por um exército. A aviação tinha seis anos.",
   "rights": {
    "us": true
   },
   "sources": [
    {
-    "url": "https://archive.org/download/WrightBrothersFlight1909/Wright%20Brothers%20Flight%201909.mp4",
-    "dur": 379,
-    "ia": "WrightBrothersFlight1909",
+    "url": "https://github.com/koljatv/koljatv.github.io/releases/download/docs_20261102/wright-flight-1909-v1.mp4",
+    "dur": 379.613,
     "h": 460
    }
   ]
@@ -28205,7 +27978,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 640,
+  "dur": 640.633,
   "synopsis_pt": "O cinejornal educativo da Ford visita o porto de Norfolk, na Virgínia: estaleiros, navios e o comércio da baía de Chesapeake.",
   "rights": {
    "us": true
@@ -28213,7 +27986,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/fc-fc-2429/fc-fc-2429.ia.mp4",
-    "dur": 640,
+    "dur": 640.633,
     "ia": "fc-fc-2429",
     "h": 480
    }
@@ -28226,7 +27999,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 617,
+  "dur": 617.433,
   "synopsis_pt": "A ilha em frente a Los Angeles em 1917: barcos de fundo de vidro, peixes voadores e a vila de Avalon.",
   "rights": {
    "us": true
@@ -28234,7 +28007,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/fc-fc-2433/fc-fc-2433.ia.mp4",
-    "dur": 617,
+    "dur": 617.433,
     "ia": "fc-fc-2433",
     "h": 480
    }
@@ -28247,7 +28020,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 545,
+  "dur": 545.467,
   "synopsis_pt": "Ovelhas, gatinhos, cachorros e gansos aprontando no quintal, num curta educativo da Ford.",
   "rights": {
    "us": true
@@ -28255,7 +28028,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/fc-fc-215/fc-fc-215.ia.mp4",
-    "dur": 545,
+    "dur": 545.467,
     "ia": "fc-fc-215",
     "h": 480
    }
@@ -28267,39 +28040,18 @@
   "year": 1923,
   "country": "US",
   "block": "domingo",
-  "kind": "short",
-  "dur": 1534,
+  "kind": "film",
+  "dur": 2700.287,
   "synopsis_pt": "Do poço à bomba de gasolina em 1923: a perfuração, as refinarias e os primeiros oleodutos, num filme do governo americano.",
   "rights": {
    "us": true
   },
   "sources": [
    {
-    "url": "https://archive.org/download/the-story-of-petroleum_202305/The%20Story%20of%20Petroleum%20%5B1923%20-%20U.S.%20Bureau%20of%20Mines%5D.ia.mp4",
-    "dur": 1534,
-    "ia": "the-story-of-petroleum_202305",
-    "h": 720
-   }
-  ]
- },
- {
-  "id": "power-land-1940",
-  "title": "A Energia e a Terra",
-  "year": 1940,
-  "country": "US",
-  "block": "domingo",
-  "kind": "short",
-  "dur": 2288,
-  "synopsis_pt": "Uma família de fazendeiros de Ohio antes e depois de a luz elétrica chegar ao campo. Joris Ivens para o governo americano.",
-  "rights": {
-   "us": true
-  },
-  "sources": [
-   {
-    "url": "https://archive.org/download/gov.fdr.352.2a.3/gov.fdr.352.2a.3_512kb.mp4",
-    "dur": 2288,
-    "ia": "gov.fdr.352.2a.3",
-    "h": 240
+    "url": "https://archive.org/download/70-66/70-66.mp4",
+    "dur": 2700.287,
+    "ia": "70-66",
+    "h": 480
    }
   ]
  },
@@ -28310,7 +28062,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1020,
+  "dur": 1020.486,
   "synopsis_pt": "Como uma cidadezinha da Califórnia vota para presidente, da campanha à apuração. Uma aula de eleição de 1944.",
   "rights": {
    "us": true
@@ -28318,21 +28070,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/Tuesdayi1945/Tuesdayi1945.mp4",
-    "dur": 1020,
+    "dur": 1020.486,
     "ia": "Tuesdayi1945",
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/Tuesday_in_November/0909_Tuesday_in_November_06_42_53_00_3mb.mp4",
-    "dur": 1013,
-    "ia": "Tuesday_in_November",
-    "h": 480
-   },
-   {
-    "url": "https://archive.org/download/gov.fdr.38/gov.fdr.38_512kb.mp4",
-    "dur": 1020,
-    "ia": "gov.fdr.38",
-    "h": 240
    }
   ]
  },
@@ -28343,7 +28083,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1715,
+  "dur": 1715.448,
   "synopsis_pt": "Como as represas do vale do Tennessee domaram as enchentes e levaram luz e trabalho a uma das regiões mais pobres dos Estados Unidos.",
   "rights": {
    "us": true
@@ -28351,21 +28091,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/valley_of_the_tennessee/valley_of_the_tennessee.mp4",
-    "dur": 1715,
+    "dur": 1715.448,
     "ia": "valley_of_the_tennessee",
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/gov.ntis.ava09234vnb1/gov.ntis.ava09234vnb1_512kb.mp4",
-    "dur": 1722,
-    "ia": "gov.ntis.ava09234vnb1",
-    "h": 240
-   },
-   {
-    "url": "https://archive.org/download/gov.fdr.353.3.3/gov.fdr.353.3.3_512kb.mp4",
-    "dur": 1739,
-    "ia": "gov.fdr.353.3.3",
-    "h": 240
    }
   ]
  },
@@ -28376,7 +28104,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "film",
-  "dur": 5178,
+  "dur": 5178.212,
   "synopsis_pt": "Os mil dias de Kennedy na presidência e o enterro que parou o mundo, narrados por Gregory Peck.",
   "rights": {
    "us": true
@@ -28384,7 +28112,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/gov.ntis.ava11312vnb1/gov.ntis.ava11312vnb1_512kb.mp4",
-    "dur": 5178,
+    "dur": 5178.212,
     "ia": "gov.ntis.ava11312vnb1",
     "h": 240
    }
@@ -28397,7 +28125,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1701,
+  "dur": 1701.134,
   "synopsis_pt": "Os seis voos tripulados do Projeto Mercury, de Alan Shepard a Gordon Cooper: os primeiros americanos no espaço.",
   "rights": {
    "us": true
@@ -28405,7 +28133,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/project_mercury_summation/project_mercury_summation.mp4",
-    "dur": 1701,
+    "dur": 1701.134,
     "ia": "project_mercury_summation",
     "h": 480
    }
@@ -28418,7 +28146,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "film",
-  "dur": 3475,
+  "dur": 3475.175,
   "synopsis_pt": "John Glenn dá três voltas na Terra numa cápsula do tamanho de uma cabine telefônica, com um alarme dizendo que o escudo de calor se soltou.",
   "rights": {
    "us": true
@@ -28426,15 +28154,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/friendship7/friendship_7.mp4",
-    "dur": 3475,
+    "dur": 3475.175,
     "ia": "friendship7",
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/Friendship7-JohnGlennOrbitalFlight/VWR%202016-01357.mp4",
-    "dur": 3504,
-    "ia": "Friendship7-JohnGlennOrbitalFlight",
-    "h": 360
    }
   ]
  },
@@ -28445,7 +28167,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1692,
+  "dur": 1692.826,
   "synopsis_pt": "Alan Shepard sobe quinze minutos no espaço dentro de uma cápsula Mercury e volta como herói nacional.",
   "rights": {
    "us": true
@@ -28453,7 +28175,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/project_mercury_freedom_7/project_mercury_freedom_7.mp4",
-    "dur": 1692,
+    "dur": 1692.826,
     "ia": "project_mercury_freedom_7",
     "h": 480
    }
@@ -28466,7 +28188,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1663,
+  "dur": 1663.063,
   "synopsis_pt": "Ed White sai da cápsula e flutua no espaço, o primeiro americano a fazer isso. Quatro dias em órbita.",
   "rights": {
    "us": true
@@ -28474,7 +28196,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/four_days_of_gemini_4/four_days_of_gemini_4.mp4",
-    "dur": 1663,
+    "dur": 1663.063,
     "ia": "four_days_of_gemini_4",
     "h": 480
    }
@@ -28487,7 +28209,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1762,
+  "dur": 1762.896,
   "synopsis_pt": "Duas naves se encontram em órbita a poucos metros uma da outra, o primeiro encontro espacial da história.",
   "rights": {
    "us": true
@@ -28495,7 +28217,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/proud_conquest_gemini_vi_vii/proud_conquest_gemini_vi_vii.mp4",
-    "dur": 1762,
+    "dur": 1762.896,
     "ia": "proud_conquest_gemini_vi_vii",
     "h": 480
    }
@@ -28508,7 +28230,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 545,
+  "dur": 545.512,
   "synopsis_pt": "John Young e Michael Collins acoplam em um foguete-alvo e vão mais alto do que qualquer um tinha ido.",
   "rights": {
    "us": true
@@ -28516,7 +28238,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/gemini_x_a_quick_look/gemini_x_a_quick_look.mp4",
-    "dur": 545,
+    "dur": 545.512,
     "ia": "gemini_x_a_quick_look",
     "h": 480
    }
@@ -28529,7 +28251,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 979,
+  "dur": 979.279,
   "synopsis_pt": "Pete Conrad e Dick Gordon sobem a 1.300 quilômetros de altura e fotografam a Terra como uma bola.",
   "rights": {
    "us": true
@@ -28537,7 +28259,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/gemini_xi/gemini_xi.mp4",
-    "dur": 979,
+    "dur": 979.279,
     "ia": "gemini_xi",
     "h": 480
    }
@@ -28550,7 +28272,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1538,
+  "dur": 1538.739,
   "synopsis_pt": "Buzz Aldrin passa cinco horas fora da nave e prova que dá para trabalhar no espaço. O fim do Projeto Gemini.",
   "rights": {
    "us": true
@@ -28558,7 +28280,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/gemini_xii_mission/gemini_xii_mission.mp4",
-    "dur": 1538,
+    "dur": 1538.739,
     "ia": "gemini_xii_mission",
     "h": 480
    }
@@ -28571,7 +28293,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 864,
+  "dur": 864.031,
   "synopsis_pt": "O primeiro voo tripulado da Apollo, onze dias em órbita da Terra, e a primeira TV ao vivo do espaço.",
   "rights": {
    "us": true
@@ -28579,14 +28301,8 @@
   "sources": [
    {
     "url": "https://archive.org/download/flight_of_apollo_7/flight_of_apollo_7.mp4",
-    "dur": 864,
+    "dur": 864.031,
     "ia": "flight_of_apollo_7",
-    "h": 480
-   },
-   {
-    "url": "https://archive.org/download/FlightOfApollo7/flight_of_apollo_7.mp4",
-    "dur": 864,
-    "ia": "FlightOfApollo7",
     "h": 480
    }
   ]
@@ -28598,7 +28314,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1302,
+  "dur": 1302.067,
   "synopsis_pt": "O Natal de 1968 em órbita da Lua: os primeiros homens a ver o nascer da Terra.",
   "rights": {
    "us": true
@@ -28606,7 +28322,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/Apollo_8_-_Go_For_TLI/Apollo_8_-_Go_For_TLI_64kb_512kb.mp4",
-    "dur": 1302,
+    "dur": 1302.067,
     "ia": "Apollo_8_-_Go_For_TLI",
     "h": 240
    }
@@ -28619,7 +28335,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1024,
+  "dur": 1024.858,
   "synopsis_pt": "O módulo lunar é testado em órbita da Terra, com três astronautas e muita coisa que podia dar errado.",
   "rights": {
    "us": true
@@ -28627,7 +28343,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/Apollo_9__Three_To_Make_Ready/Apollo_9_Three_To_Make_Ready_512kb.mp4",
-    "dur": 1024,
+    "dur": 1024.858,
     "ia": "Apollo_9__Three_To_Make_Ready",
     "h": 240
    }
@@ -28640,7 +28356,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1698,
+  "dur": 1698.832,
   "synopsis_pt": "Aranha e Jujuba, os apelidos das duas naves da Apollo 9, se separam e se reencontram no espaço.",
   "rights": {
    "us": true
@@ -28648,7 +28364,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/Apollo9SpaceDuetOfSpidergumdrop/Apollo9spaceduetofspidergumdrop.mp4",
-    "dur": 1698,
+    "dur": 1698.832,
     "ia": "Apollo9SpaceDuetOfSpidergumdrop",
     "h": 480
    }
@@ -28661,7 +28377,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1539,
+  "dur": 1539.74,
   "synopsis_pt": "O ensaio geral da descida: o módulo lunar passa a 15 quilômetros da superfície e volta.",
   "rights": {
    "us": true
@@ -28669,7 +28385,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/apollo_10_to_sort_out_the_unknowns/apollo_10_to_sort_out_the_unknowns.mp4",
-    "dur": 1539,
+    "dur": 1539.74,
     "ia": "apollo_10_to_sort_out_the_unknowns",
     "h": 480
    }
@@ -28682,7 +28398,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1738,
+  "dur": 1738.41,
   "synopsis_pt": "Um raio atinge o foguete na decolagem, e mesmo assim a nave pousa a duzentos metros de uma sonda que estava na Lua havia dois anos.",
   "rights": {
    "us": true
@@ -28690,15 +28406,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/Jsc-536_apollo12PinpointForScience.wmv/Jsc-536_apollo12PinpointForScience.mp4",
-    "dur": 1738,
+    "dur": 1738.41,
     "ia": "Jsc-536_apollo12PinpointForScience.wmv",
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/apollo-12-pinpoint-for-science-1970/Apollo%2012%20-%20Pinpoint%20For%20Science%20%281970%29.mp4",
-    "dur": 1713,
-    "ia": "apollo-12-pinpoint-for-science-1970",
-    "h": 360
    }
   ]
  },
@@ -28709,7 +28419,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1708,
+  "dur": 1708.242,
   "synopsis_pt": "Alan Shepard volta ao espaço dez anos depois, pousa nas colinas de Fra Mauro e dá duas tacadas de golfe na Lua.",
   "rights": {
    "us": true
@@ -28717,7 +28427,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/apollo_14_mission_to_fra_mauro/apollo_14_mission_to_fra_mauro.mp4",
-    "dur": 1708,
+    "dur": 1708.242,
     "ia": "apollo_14_mission_to_fra_mauro",
     "h": 480
    }
@@ -28730,7 +28440,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1527,
+  "dur": 1527.261,
   "synopsis_pt": "As sondas Ranger, Surveyor e Lunar Orbiter fotografam a Lua de perto para escolher onde o homem vai pousar.",
   "rights": {
    "us": true
@@ -28738,15 +28448,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/AssignmentShoottheMoon/AssignmentShoottheMoon.mp4",
-    "dur": 1527,
+    "dur": 1527.261,
     "ia": "AssignmentShoottheMoon",
     "h": 480
-   },
-   {
-    "url": "https://archive.org/download/gov.archives.arc.45011/gov.archives.arc.45011_512kb.mp4",
-    "dur": 1525,
-    "ia": "gov.archives.arc.45011",
-    "h": 240
    }
   ]
  },
@@ -28757,7 +28461,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1748,
+  "dur": 1748.96,
   "synopsis_pt": "Americanos e soviéticos apertam as mãos em órbita, em plena Guerra Fria. O último voo de uma Apollo.",
   "rights": {
    "us": true
@@ -28765,7 +28469,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/TheApollo-soyuzMission/ApolloSoyuz.mp4",
-    "dur": 1748,
+    "dur": 1748.96,
     "ia": "TheApollo-soyuzMission",
     "h": 480
    }
@@ -28778,7 +28482,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1706,
+  "dur": 1706.709,
   "synopsis_pt": "As três tripulações do Skylab, quase seis meses morando em órbita: experiências, consertos e o Sol visto de perto.",
   "rights": {
    "us": true
@@ -28786,7 +28490,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/Skylab-SpaceStationI/Jsc651Skylab_spaceStationI.mp4",
-    "dur": 1706,
+    "dur": 1706.709,
     "ia": "Skylab-SpaceStationI",
     "h": 480
    }
@@ -28799,7 +28503,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1852,
+  "dur": 1852.667,
   "synopsis_pt": "O primeiro voo do Columbia, em 1981: a nave que decola como foguete e pousa como avião.",
   "rights": {
    "us": true
@@ -28807,15 +28511,9 @@
   "sources": [
    {
     "url": "https://archive.org/download/spaceshuttlearemarkableflyingmachine/spaceshuttlearemarkableflyingmachine.mp4",
-    "dur": 1852,
+    "dur": 1852.667,
     "ia": "spaceshuttlearemarkableflyingmachine",
     "h": 360
-   },
-   {
-    "url": "https://archive.org/download/gov.archives.arc.1157922/gov.archives.arc.1157922_512kb.mp4",
-    "dur": 1830,
-    "ia": "gov.archives.arc.1157922",
-    "h": 240
    }
   ]
  },
@@ -28826,7 +28524,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1711,
+  "dur": 1711.71,
   "synopsis_pt": "Um balanço do programa Apollo, das primeiras ideias à última pegada na Lua.",
   "rights": {
    "us": true
@@ -28834,14 +28532,8 @@
   "sources": [
    {
     "url": "https://archive.org/download/TheTimeOfApollo/The%20Time%20of%20Apollo.mp4",
-    "dur": 1711,
+    "dur": 1711.71,
     "ia": "TheTimeOfApollo",
-    "h": 480
-   },
-   {
-    "url": "https://archive.org/download/time_of_apollo/time_of_apollo.mp4",
-    "dur": 1714,
-    "ia": "time_of_apollo",
     "h": 480
    }
   ]
@@ -28853,7 +28545,7 @@
   "country": "US",
   "block": "domingo",
   "kind": "short",
-  "dur": 1363,
+  "dur": 1363.76,
   "synopsis_pt": "A primeira estação espacial americana sobe avariada, e os astronautas têm de consertá-la lá em cima.",
   "rights": {
    "us": true
@@ -28861,7 +28553,7 @@
   "sources": [
    {
     "url": "https://archive.org/download/Skylab_TheFirst40Days/Skylab.mp4",
-    "dur": 1363,
+    "dur": 1363.76,
     "ia": "Skylab_TheFirst40Days",
     "h": 480
    }
@@ -33609,6 +33301,174 @@
     "url": "https://archive.org/download/flying-disc-man/12%20Volcanic%20Vengeance.mp4",
     "dur": 739,
     "ia": "flying-disc-man",
+    "h": 480
+   }
+  ]
+ },
+ {
+  "id": "nasa-apollo16-1972",
+  "title": "Apollo 16: Nada Tão Escondido",
+  "year": 1972,
+  "country": "US",
+  "block": "domingo",
+  "kind": "short",
+  "dur": 1700.0,
+  "synopsis_pt": "John Young e Charlie Duke exploram as montanhas de Descartes com o jipe lunar. As rochas que trazem de volta mudam a ideia que os cientistas tinham daquela região.",
+  "rights": {
+   "us": true
+  },
+  "sources": [
+   {
+    "url": "https://archive.org/download/Apollo16NothingSoHidden/Apollo16nothingsohidden.mp4",
+    "dur": 1700.0,
+    "ia": "Apollo16NothingSoHidden",
+    "h": 480
+   }
+  ]
+ },
+ {
+  "id": "nasa-legacy-gemini-1967",
+  "title": "O Legado da Gemini",
+  "year": 1967,
+  "country": "US",
+  "block": "domingo",
+  "kind": "short",
+  "dur": 1707.174,
+  "synopsis_pt": "Dois astronautas por nave, encontros em órbita e caminhadas espaciais: o programa Gemini ensaia as manobras que tornariam possível a viagem à Lua.",
+  "rights": {
+   "us": true
+  },
+  "sources": [
+   {
+    "url": "https://archive.org/download/history_of_space_travel_8_legacy_of_gemini/history_of_space_travel_8_legacy_of_gemini.mp4",
+    "dur": 1707.174,
+    "ia": "history_of_space_travel_8_legacy_of_gemini",
+    "h": 480
+   }
+  ]
+ },
+ {
+  "id": "nasa-debrief-apollo8-1969",
+  "title": "Apollo 8: Depois da Viagem",
+  "year": 1969,
+  "country": "US",
+  "block": "domingo",
+  "kind": "short",
+  "dur": 1714.615,
+  "synopsis_pt": "Os primeiros homens a dar a volta na Lua retornam com imagens da superfície e da Terra nascendo no horizonte. O filme reúne a viagem e as reações que ela provocou.",
+  "rights": {
+   "us": true
+  },
+  "sources": [
+   {
+    "url": "https://archive.org/download/debrief_apollo_8/debrief_apollo_8.mp4",
+    "dur": 1714.615,
+    "ia": "debrief_apollo_8",
+    "h": 486
+   }
+  ]
+ },
+ {
+  "id": "nasa-apollo45-1968",
+  "title": "Apollo 4 e 5: Antes dos Astronautas",
+  "year": 1968,
+  "country": "US",
+  "block": "domingo",
+  "kind": "short",
+  "dur": 1971.029,
+  "synopsis_pt": "O primeiro lançamento completo do Saturn V e o teste do módulo lunar em órbita. Duas missões sem tripulação põem à prova as máquinas que levariam os astronautas à Lua.",
+  "rights": {
+   "us": true
+  },
+  "sources": [
+   {
+    "url": "https://archive.org/download/Apollo4Apollo5Missions/JSC-0457.mp4",
+    "dur": 1971.029,
+    "ia": "Apollo4Apollo5Missions",
+    "h": 480
+   }
+  ]
+ },
+ {
+  "id": "nasa-first-decade-1968",
+  "title": "Dez Anos no Espaço",
+  "year": 1968,
+  "country": "US",
+  "block": "domingo",
+  "kind": "short",
+  "dur": 1712.096,
+  "synopsis_pt": "Dos primeiros satélites aos preparativos para a Lua, um balanço dos dez primeiros anos da NASA: astronautas, aviões experimentais e sondas que ampliaram o mapa do Sistema Solar.",
+  "rights": {
+   "us": true
+  },
+  "sources": [
+   {
+    "url": "https://archive.org/download/gov.archives.arc.45015/gov.archives.arc.45015.mp4",
+    "dur": 1712.096,
+    "ia": "gov.archives.arc.45015",
+    "h": 480
+   }
+  ]
+ },
+ {
+  "id": "africa-speaks-1930",
+  "title": "A África Fala",
+  "year": 1930,
+  "country": "US",
+  "block": "domingo",
+  "kind": "film",
+  "dur": 3001.68,
+  "synopsis_pt": "Paul Hoefler atravessa a África com uma câmera de cinema: animais selvagens, paisagens e encontros ao longo da expedição. Um retrato de viagem pelo olhar dos exploradores de 1930.",
+  "rights": {
+   "us": true
+  },
+  "sources": [
+   {
+    "url": "https://archive.org/download/africa_speaks/africa_speaks.mp4",
+    "dur": 3001.68,
+    "ia": "africa_speaks",
+    "h": 480
+   }
+  ]
+ },
+ {
+  "id": "story-watch-1922",
+  "title": "Como Nasce um Relógio",
+  "year": 1922,
+  "country": "US",
+  "block": "domingo",
+  "kind": "short",
+  "dur": 2089.471,
+  "synopsis_pt": "Engrenagens, molas e mãos pacientes: uma visita à fabricação de relógios de bolso, acompanhando o trabalho minucioso que transforma peças minúsculas em uma máquina de marcar o tempo.",
+  "rights": {
+   "us": true
+  },
+  "sources": [
+   {
+    "url": "https://archive.org/download/70-85/70-85.mp4",
+    "dur": 2089.471,
+    "ia": "70-85",
+    "h": 480
+   }
+  ]
+ },
+ {
+  "id": "story-iron-1928",
+  "title": "A História do Ferro",
+  "year": 1928,
+  "country": "US",
+  "block": "domingo",
+  "kind": "film",
+  "dur": 3044.394,
+  "synopsis_pt": "Da extração do minério aos altos-fornos, o caminho do ferro numa indústria em que tudo tem escala enorme: máquinas, vagões, cargas e o metal incandescente.",
+  "rights": {
+   "us": true
+  },
+  "sources": [
+   {
+    "url": "https://archive.org/download/70-132/70-132.mp4",
+    "dur": 3044.394,
+    "ia": "70-132",
     "h": 480
    }
   ]
