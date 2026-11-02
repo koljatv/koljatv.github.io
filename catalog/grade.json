@@ -241,24 +241,24 @@
    "kind": "presents",
    "dur": 3.6,
    "title": "KÖLJA TV apresenta",
-   "file": "apresenta_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "apresenta.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "ident_barras",
    "kind": "ident",
    "dur": 5.8,
    "title": "KÖLJA TV · barras",
-   "file": "ident_barras_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "ident_barras.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "ident_tubo",
    "kind": "ident",
    "dur": 5.0,
    "title": "KÖLJA TV · canal 1",
-   "file": "ident_tubo_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "ident_tubo.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_terror",
@@ -266,8 +266,8 @@
    "block": "terror",
    "dur": 7.0,
    "title": "Sessão Terror",
-   "file": "vinheta_terror_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_terror.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_muda",
@@ -275,8 +275,8 @@
    "block": "muda",
    "dur": 7.0,
    "title": "Comédia Muda",
-   "file": "vinheta_muda_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_muda.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_desenhos",
@@ -284,8 +284,8 @@
    "block": "toons",
    "dur": 6.4,
    "title": "Desenhos Clássicos",
-   "file": "vinheta_desenhos_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_desenhos.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_ficcao",
@@ -293,8 +293,8 @@
    "block": "ficcao",
    "dur": 7.0,
    "title": "Ficção Científica",
-   "file": "vinheta_ficcao_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_ficcao.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_noir",
@@ -302,8 +302,8 @@
    "block": "noir",
    "dur": 7.0,
    "title": "Noir",
-   "file": "vinheta_noir_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_noir.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_cult",
@@ -311,8 +311,8 @@
    "block": "cult",
    "dur": 7.0,
    "title": "Madrugada Cult",
-   "file": "vinheta_cult_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_cult.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_series",
@@ -320,17 +320,17 @@
    "block": "series",
    "dur": 7.0,
    "title": "Séries Clássicas",
-   "file": "vinheta_series_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_series.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_comedia",
    "kind": "vignette",
    "block": "comedia",
-   "file": "vinheta_comedia_musica_20261102.mp4",
+   "file": "vinheta_comedia.mp4",
    "dur": 7.0,
    "title": "Comédia Clássica",
-   "media_rev": "musica_20261102"
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_classicos",
@@ -338,8 +338,8 @@
    "block": "classicos",
    "dur": 7.0,
    "title": "Grandes Clássicos",
-   "file": "vinheta_classicos_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_classicos.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_aventura",
@@ -347,8 +347,8 @@
    "block": "aventura",
    "dur": 7.0,
    "title": "Aventura",
-   "file": "vinheta_aventura_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_aventura.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_faroeste",
@@ -356,8 +356,8 @@
    "block": "faroeste",
    "dur": 7.0,
    "title": "Faroeste",
-   "file": "vinheta_faroeste_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_faroeste.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_seriados",
@@ -365,8 +365,8 @@
    "block": "seriados",
    "dur": 7.0,
    "title": "Seriados de Matinê",
-   "file": "vinheta_seriados_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_seriados.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_docs",
@@ -374,8 +374,8 @@
    "block": "docs",
    "dur": 7.0,
    "title": "Documentários",
-   "file": "vinheta_docs_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_docs.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "vinheta_domingo",
@@ -383,8 +383,8 @@
    "block": "domingo",
    "dur": 7.0,
    "title": "Domingo Documental",
-   "file": "vinheta_domingo_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "vinheta_domingo.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "cartao",
@@ -399,16 +399,16 @@
    "kind": "bumper",
    "dur": 6.0,
    "title": "KÖLJA TV · intervalo",
-   "file": "intervalo_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "intervalo.mp4",
+   "media_rev": "restauro_20261102"
   },
   {
    "id": "voltamos",
    "kind": "bumper",
    "dur": 4.48,
    "title": "KÖLJA TV · voltamos",
-   "file": "voltamos_musica_20261102.mp4",
-   "media_rev": "musica_20261102"
+   "file": "voltamos.mp4",
+   "media_rev": "restauro_20261102"
   }
  ],
  "day_note": "Dayparts (Niko, 31 Oct 2026): cartoons from 06:00 to 13:30; the afternoon is the matinee (silent comedy, serials, then comedy and westerns on alternate days) until 19:00; prime time from 19:00 is the great classics and adventure, then noir at 22:00; the madrugada is horror, science fiction / cult / documentaries and classic TV. Sized to the shelves: a block's hours on the shelf / its hours a day = days before its first rerun (tools/rotation.py). 'a|b|c' alternates blocks day by day; a slot must be longer than its block's longest title, or that title never airs.",

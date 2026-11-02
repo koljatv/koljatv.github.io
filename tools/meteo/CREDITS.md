@@ -5,7 +5,7 @@ The segment (tools/tempo_video.py) and the site's Tempo page (public/tempo/).
 ## Music
 | Where | Piece | Source | Licence |
 |---|---|---|---|
-| The whole segment (72 s bed) | "Previsão", original score in five sections: call, map, development, return and close; 4/4 at 100 BPM | KÖLJA TV composition; horn and violas from VSCO 2 Community Edition (CC0), rendered with sfizz, plus original bass and pulse. Score and sample provenance: `tools/music/approved-v1/`. | Original composition: KÖLJA TV. Acoustic samples: CC0; sfizz: BSD-2-Clause. See the suite’s `CREDITS.md`. |
+| The whole segment (72 s bed) | "Tempo bom", light bossa in C (nylon guitar, vibraphone, shaker, rim), composed for KÖLJA TV | Our own: synthesised note by note by `tools/meteo/trilha.py` (numpy: Karplus-Strong strings, sine vibraphone, filtered-noise shaker). No samples, loops or recordings from anyone else. | KÖLJA TV's own |
 
 ## Data
 | What | Source | Licence | Credit on air |

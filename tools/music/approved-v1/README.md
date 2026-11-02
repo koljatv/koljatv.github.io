@@ -1,3 +1,5 @@
+> ARCHIVED REVIEW — Rejected on 2026-11-02 at 11:31. The earlier 10:17 approval does not approve this expanded suite. Source and masters are preserved; active media was restored to the previous versions. GarageBand replacement previews require fresh acceptance before expansion or publication.
+
 # Suíte musical KÖLJA TV — direção aprovada
 
 20 composições originais: previsão do tempo de 72s, 14 vinhetas de programação e 5 identificações/transições. A direção de trompa e violas amostradas com baixo/pulso eletrônicos foi aprovada em 02/11/2026.
