@@ -1,0 +1,132 @@
+{
+  "commit": "6dd651d55dde97fd4028699be9d4481f26917891",
+  "license": "CC0-1.0",
+  "samples": [
+    {
+      "file": "MOHorn_sus_D4_v1_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Brass/F%20Horn/sus/MOHorn_sus_D4_v1_1.wav",
+      "bytes": 1445100,
+      "sha256": "2866520e737f3826ee9f53693f148109a9cc2d2e54235db0b92f78b2c100b8f7"
+    },
+    {
+      "file": "MOHorn_sus_C3_v3_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Brass/F%20Horn/sus/MOHorn_sus_C3_v3_1.wav",
+      "bytes": 2114316,
+      "sha256": "75156ce041d9c60e4de0099b4c6d81cafffd34f45be7bca3e6fa7ebff0eadb80"
+    },
+    {
+      "file": "ViolaEns_susvib_B2_v1_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Strings/Viola%20Section/susvib/ViolaEns_susvib_B2_v1_1.wav",
+      "bytes": 2861510,
+      "sha256": "ad96d747c5125adec8f069c49091ee3ba937efd4a5b909d3c4938f17e3c8513d"
+    },
+    {
+      "file": "ViolaEns_susvib_D3_v1_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Strings/Viola%20Section/susvib/ViolaEns_susvib_D3_v1_1.wav",
+      "bytes": 2789648,
+      "sha256": "61ab4cfc0ea90c683433a7c50b3bb4fa86a81c9d4854589562707d54ed028349"
+    },
+    {
+      "file": "ViolaEns_susvib_G2_v1_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Strings/Viola%20Section/susvib/ViolaEns_susvib_G2_v1_1.wav",
+      "bytes": 2001644,
+      "sha256": "557c2e033951015c30765bf18266bce0dd0412e3ca646dd1a225c32422c60662"
+    },
+    {
+      "file": "ViolaEns_susvib_B2_v2_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Strings/Viola%20Section/susvib/ViolaEns_susvib_B2_v2_1.wav",
+      "bytes": 3268364,
+      "sha256": "edc77038a83f47cf49296c0009fdac23cb5ade3133a2beabd0d2d1f591ccf3cb"
+    },
+    {
+      "file": "ViolaEns_susvib_D3_v2_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Strings/Viola%20Section/susvib/ViolaEns_susvib_D3_v2_1.wav",
+      "bytes": 3596756,
+      "sha256": "f941028c5d5e854b4391669056f0f639799f80ac7c8da3939c7788b1a394d16c"
+    },
+    {
+      "file": "ViolaEns_susvib_G2_v2_1.wav",
+      "url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/6dd651d55dde97fd4028699be9d4481f26917891/Strings/Viola%20Section/susvib/ViolaEns_susvib_G2_v2_1.wav",
+      "bytes": 3637364,
+      "sha256": "e3552ebd2d1ac5d089cd2424d31ea88be8d887643311cb23abf5b416838ce2ba"
+    }
+  ],
+  "regions": {
+    "FHornSus": [
+      {
+        "sample": "MOHorn_sus_D4_v1_1.wav",
+        "lokey": "67",
+        "hikey": "75",
+        "pitch_keycenter": "74",
+        "lovel": "0",
+        "hivel": "127",
+        "volume": "1.0"
+      },
+      {
+        "sample": "MOHorn_sus_C3_v3_1.wav",
+        "lokey": "59",
+        "hikey": "66",
+        "pitch_keycenter": "60",
+        "lovel": "63",
+        "hivel": "94",
+        "volume": "8"
+      }
+    ],
+    "ViolaEnsSusVib": [
+      {
+        "sample": "ViolaEns_susvib_B2_v1_1.wav",
+        "lokey": "57",
+        "hikey": "60",
+        "pitch_keycenter": "59",
+        "lovel": "0",
+        "hivel": "62",
+        "volume": "28"
+      },
+      {
+        "sample": "ViolaEns_susvib_D3_v1_1.wav",
+        "lokey": "61",
+        "hikey": "63",
+        "pitch_keycenter": "62",
+        "lovel": "0",
+        "hivel": "62",
+        "volume": "28"
+      },
+      {
+        "sample": "ViolaEns_susvib_G2_v1_1.wav",
+        "lokey": "54",
+        "hikey": "56",
+        "pitch_keycenter": "55",
+        "lovel": "0",
+        "hivel": "62",
+        "volume": "28"
+      },
+      {
+        "sample": "ViolaEns_susvib_B2_v2_1.wav",
+        "lokey": "57",
+        "hikey": "60",
+        "pitch_keycenter": "59",
+        "lovel": "63",
+        "hivel": "127",
+        "volume": "7"
+      },
+      {
+        "sample": "ViolaEns_susvib_D3_v2_1.wav",
+        "lokey": "61",
+        "hikey": "63",
+        "pitch_keycenter": "62",
+        "lovel": "63",
+        "hivel": "127",
+        "volume": "7"
+      },
+      {
+        "sample": "ViolaEns_susvib_G2_v2_1.wav",
+        "lokey": "54",
+        "hikey": "56",
+        "pitch_keycenter": "55",
+        "lovel": "63",
+        "hivel": "127",
+        "volume": "7"
+      }
+    ]
+  }
+}

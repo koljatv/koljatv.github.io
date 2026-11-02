@@ -18,7 +18,7 @@ the card, so the next slot starts on time. An airing only goes in when a video f
 was published before it; otherwise the station card stays (no old weather on the air). This depends only on the
 date and on when forecasts were rendered, so a slot never changes once it has the forecast in it.
 """
-import datetime as dt, json, os, shutil, sys, urllib.request
+import datetime as dt, hashlib, json, os, shutil, sys, urllib.request
 from zoneinfo import ZoneInfo
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -149,11 +149,21 @@ def fetch():
     return out
 
 
+def render_revision():
+    """Invalidate a cached video when its renderer or music changes."""
+    h = hashlib.sha256()
+    for name in ("tempo_video.py", "meteo/trilha.m4a"):
+        with open(os.path.join(ROOT, "tools", name), "rb") as f:
+            for chunk in iter(lambda: f.read(65536), b""): h.update(chunk)
+    return h.hexdigest()[:16]
+
+
 def due(t=None):
     t = t or now_ms()
     p = read(os.path.join(STATE, "previsao.json"))
     v = read(os.path.join(STATE, "video.json"))
     if not p or not v or v.get("gerado") != p.get("gerado") or not os.path.exists(os.path.join(STATE, ID + ".mp4")): return True
+    if v.get("render_revision") != render_revision(): return True
     age = t - p["gerado"]
     if age >= REFRESH: return True
     return age >= FRESH and bool(airings(t, t + BEFORE))
@@ -161,7 +171,7 @@ def due(t=None):
 
 def rendered(data_ms):
     """tempo_video.py made a video from the forecast fetched at data_ms: the schedule may use it from now on."""
-    write(os.path.join(STATE, "video.json"), {"gerado": data_ms, "feito": now_ms()})
+    write(os.path.join(STATE, "video.json"), {"gerado": data_ms, "feito": now_ms(), "render_revision": render_revision()})
     h = read(os.path.join(STATE, "renders.json"), {"renders": []})
     r = sorted(set(h["renders"]) | {data_ms})
     write(os.path.join(STATE, "renders.json"), {"renders": [x for x in r if x > now_ms() - 5 * 24 * HOUR]})
@@ -194,7 +204,9 @@ class Tempo:
         self.slots = {}  # day -> [(from, to, block)] of the slots fill() laid out
 
     def ours(self):
-        return {"kind": "tempo", "dur": DUR, "title": TITLE, "url": URL}
+        video = read(os.path.join(STATE, "video.json"), {}) or {}
+        revision = str(video.get("gerado", 0)) + "-" + video.get("render_revision", "legacy")
+        return {"kind": "tempo", "dur": DUR, "title": TITLE, "url": URL + "?v=" + revision, "media_rev": revision}
 
     def times(self, d):
         base = self.g.midnight(d)

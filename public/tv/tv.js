@@ -121,9 +121,12 @@
   // ---------- what can play an item ----------
   const dead = new Map(); // copies that failed lately: tried last
   const isDead = u => Date.now() - (dead.get(u) || -1e12) < DEAD_MS;
+  function oursUrl(id, o) {
+    return BASE + 'tv/ours/' + id + '.mp4' + (o.media_rev ? '?v=' + encodeURIComponent(o.media_rev) : '');
+  }
   function copies(it) {
     if (it.p) return (it.p.sources || []).map(c => ({ url: c.url, cuts: c.cuts || [] }));
-    if (it.o) return [{ url: BASE + 'tv/ours/' + it.id + '.mp4', cuts: [] }, { url: it.o.url, cuts: [] }];
+    if (it.o) return [{ url: oursUrl(it.id, it.o), cuts: [] }, { url: it.o.url, cuts: [] }];
     return [];
   }
   // A play: one copy of one item, and where in its file the clock is.
@@ -469,7 +472,7 @@
       .filter(k => o[k]);
     if (!ids.length) return null;
     const id = ids[F.oi++ % ids.length];
-    return { id, title: o[id].title, dur: o[id].dur, url: BASE + 'tv/ours/' + id + '.mp4', alt: o[id].url, ours: true };
+    return { id, title: o[id].title, dur: o[id].dur, url: oursUrl(id, o[id]), alt: o[id].url, ours: true };
   }
   function dropF(f) {
     f.onplaying = f.onended = f.onerror = f.onwaiting = f.ontimeupdate = null; f.waitAt = 0;

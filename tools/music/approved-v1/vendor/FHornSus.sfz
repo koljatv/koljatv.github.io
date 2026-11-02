@@ -1,0 +1,5 @@
+<control> default_path=samples/
+<global> ampeg_attack=0.012 ampeg_release=0.16 ampeg_dynamic=1
+<group>
+<region> sample=MOHorn_sus_D4_v1_1.wav lokey=67 hikey=75 pitch_keycenter=74 lovel=0 hivel=127 volume=1.0
+<region> sample=MOHorn_sus_C3_v3_1.wav lokey=59 hikey=66 pitch_keycenter=60 lovel=63 hivel=94 volume=8

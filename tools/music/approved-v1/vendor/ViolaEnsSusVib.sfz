@@ -1,0 +1,9 @@
+<control> default_path=samples/
+<global> ampeg_attack=0.12 ampeg_release=0.2 ampeg_dynamic=1
+<group>
+<region> sample=ViolaEns_susvib_B2_v1_1.wav lokey=57 hikey=60 pitch_keycenter=59 lovel=0 hivel=62 volume=28
+<region> sample=ViolaEns_susvib_D3_v1_1.wav lokey=61 hikey=63 pitch_keycenter=62 lovel=0 hivel=62 volume=28
+<region> sample=ViolaEns_susvib_G2_v1_1.wav lokey=54 hikey=56 pitch_keycenter=55 lovel=0 hivel=62 volume=28
+<region> sample=ViolaEns_susvib_B2_v2_1.wav lokey=57 hikey=60 pitch_keycenter=59 lovel=63 hivel=127 volume=7
+<region> sample=ViolaEns_susvib_D3_v2_1.wav lokey=61 hikey=63 pitch_keycenter=62 lovel=63 hivel=127 volume=7
+<region> sample=ViolaEns_susvib_G2_v2_1.wav lokey=54 hikey=56 pitch_keycenter=55 lovel=63 hivel=127 volume=7

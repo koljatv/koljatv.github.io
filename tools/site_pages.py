@@ -5,7 +5,8 @@ usage: python3 tools/site_pages.py"""
 import os
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
-V = '10'  # bump when assets/site.css, assets/site.js or tv/tv.js change
+V = '10'  # bump when shared CSS or assets/site.js change
+PLAYER_V = '11'  # local media cache revisions
 SITE = 'https://tv.kolja.com.br/'
 MAIL = 'contato@kolja.com.br'
 
@@ -69,7 +70,7 @@ def foot(base):
 
 def page(path, title, desc, body, has_ticker=True, player=False, name=''):
     base = '../' * path.count('/')
-    scripts = (f'<script src="{base}tv/tv.js?v={V}"></script>\n' if player else '') + f'<script src="{base}assets/site.js?v={V}"></script>'
+    scripts = (f'<script src="{base}tv/tv.js?v={PLAYER_V}"></script>\n' if player else '') + f'<script src="{base}assets/site.js?v={V}"></script>'
     html = f'''{head(path, title, desc, base)}
 <body data-base="{base}" data-page="{name}">
 {top(path, base)}

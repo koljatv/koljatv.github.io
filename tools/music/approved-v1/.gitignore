@@ -1,0 +1,4 @@
+vendor/samples/
+vendor/sfizz-1.2.3-macos/
+vendor/*.tar.gz
+__pycache__/
