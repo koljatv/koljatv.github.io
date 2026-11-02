@@ -212,12 +212,15 @@ would pull ~3-5 MB of our pieces.
 NECO is a 12-second editorial short, credited to Kölja & Kaia. Its approved MP4 is
 an `ours-v1` Release asset, copied to `/tv/ours/neco.mp4` by the existing Pages workflow.
 `catalog/grade.json` lists it under `ours` and configures `interstitials`:
-up to one complete showing in each BRT window 06:00–14:00, 14:00–20:00 and
-20:00–24:00, at least 240 minutes between starts. A window without 12 seconds
-of eligible station-card filler is skipped. No programme, commercial break,
-weather segment, advert or block boundary moves. The rule applies to both schedule
-formats; first eligible airings begin after 2 November 2026, 18:09 BRT.
+exact daily starts at **13:29, 18:59 and 23:59 America/Sao_Paulo (BRT)**.
+Each appearance is 12 seconds, followed by 48 seconds of station card. No extra
+random appearances. Both schedule formats use these times, starting after
+2 November 2026, 18:09 BRT.
 
-`tools/interstitials.py` runs after weather and advert placement and uses only
-normal station cards outside feature breaks. Window bounds must preserve the
-minimum gap across midnight too. Test with `python3 -m unittest discover -s tests -v`.
+The builder reserves the closing minute of each existing block before selecting
+whole programmes. This can change closing fillers and their later rotation, but
+never cuts a programme or moves the 13:30, 19:00 and midnight block boundaries.
+Weather uses the preceding capacity; paid breaks cannot borrow across a fixed
+appointment. Configuration conflicts fail the build rather than moving or skipping
+NECO. The player lists NECO quietly in the guide, without a launch announcement or
+advance promo. Test with `python3 -m unittest discover -s tests -v`.

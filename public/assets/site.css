@@ -296,6 +296,7 @@ section.band + section.band { border-top: 1px solid var(--line); }
 .row:hover .tt { color: var(--amber); }
 .row time { font: 700 24px/1 var(--cond); letter-spacing: .02em; color: var(--fg); justify-self: start; padding: 8px 10px; border-radius: 6px; margin-left: -10px; }
 .row .art { border-radius: 6px; }
+.row.interstitial .body { grid-column: 2 / -1; }
 .row .blk { font: 700 13px/1 var(--cond); letter-spacing: .14em; text-transform: uppercase; color: var(--fg3); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .row .tt { font-size: 20px; font-weight: 600; line-height: 1.2; margin: 6px 0 4px; display: block; }
 .row .yr { color: var(--fg3); font-weight: 400; margin-left: 4px; }

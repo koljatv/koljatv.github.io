@@ -172,12 +172,27 @@ class Grade:
             segs.append([frm, to, block, pin, s])
         self._ban, self._pos = self.own.banned(d), pos
         self.tempo.slots[d] = []
+        fixed = interstitials.appointments(self.cfg, base, Prog)
+        placed = set()
         for frm, to, block, pin, s in self.own.plan(d, segs):  # our programmes and the date's inserts cut in
             if block is None: self.own.air(out, [frm, to, block, pin, s])
             else:
+                ending = [(at, p) for at, p in fixed if frm <= at < to]
+                boundary = to
+                if ending:
+                    if len(ending) != 1 or ending[0][0] != to - MIN:
+                        raise ValueError('Fixed appointment must occupy the final minute of an existing block')
+                    to = ending[0][0]
                 r = self.tempo.reserve(d, frm, to, block)  # the forecast's time, from tempo.FROM on
                 self.fill(out, frm, to - r, block, (d * 7 + s * 3) % 1000, pin, pos, fpos, today)
                 if r: self.tempo.pad(out, to - r, to, block)
+                if ending:
+                    at, p = ending[0]
+                    out.append([at, at + p.dur, p, block])
+                    self.tempo.pad(out, at + p.dur, boundary, block)
+                    placed.add(at)
+        if placed != {at for at, _ in fixed}:
+            raise ValueError('A fixed appointment conflicts with an own-programme slot')
         self._ban = set()
         self._at = (d + 1, pos, fpos)
         return out
@@ -274,7 +289,7 @@ class Grade:
         """Day d as it goes on the air: laid out, stand-ins for dead titles, features cut by their breaks, the spots."""
         day, sw = self.patch(self.build(d))
         items = self.own.place_ads(self.tempo.place(segments.expand(day, self.splits), d), d, self.brk)
-        return interstitials.place(items, self.cfg, self.midnight(d), Prog), sw
+        return items, sw
 
     # ---- health ----
     def bad(self, url):

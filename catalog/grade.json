@@ -491,22 +491,12 @@
   {
    "id": "neco",
    "since": "2026-11-02T18:09:00-03:00",
-   "windows": [
-    [
-     "06:00",
-     "14:00"
-    ],
-    [
-     "14:00",
-     "20:00"
-    ],
-    [
-     "20:00",
-     "24:00"
-    ]
-   ],
-   "min_gap_minutes": 240
+   "at": [
+    "13:29",
+    "18:59",
+    "23:59"
+   ]
   }
  ],
- "interstitials_note": "NECO: complete 12-second editorial short. At most one showing in each BRT window (06–14, 14–20, 20–24), at least four hours apart. Uses only existing station-card filler; skips a window without room. Never interrupts or moves a programme, weather segment, advert or block boundary."
+ "interstitials_note": "NECO: complete 12-second editorial short at exactly 13:29, 18:59 and 23:59 America/Sao_Paulo daily. Reserve the last minute of the existing blocks before filling; NECO then 48 seconds of station card. Whole programmes only, unchanged block boundaries; weather and paid breaks cannot move NECO. No extra/random appearances."
 }

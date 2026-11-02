@@ -239,7 +239,7 @@ class Own:
         block = items[b[0]][3]
         for k in range(b[1] + 1, len(items)):
             it = items[k]
-            if it[3] != block: return None
+            if it[3] != block or getattr(it[2], 'fixed', False): return None
             if len(it) == 4 and it[2] is self.g.card: return k
         return None
 

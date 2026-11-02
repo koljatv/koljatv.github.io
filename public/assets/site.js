@@ -213,14 +213,15 @@
       const q = new URLSearchParams(location.search);
       st.day = q.get('dia') || ''; st.part = q.has('faixa') ? +q.get('faixa') : -1; st.leg = q.get('leg') === '1'; st.init = true;
     }
-    const days = [...new Set(P.map(p => dayKey(p.s)))].filter(d => d >= today);
+    const guideItems = P.concat(S.items.filter(r => r[2] === 'neco').map(r => ({s:r[0], e:r[1], id:r[2], block:r[3], t:S.ours[r[2]]}))).sort((a,b) => a.s-b.s);
+    const days = [...new Set(guideItems.map(p => dayKey(p.s)))].filter(d => d >= today);
     if (!days.includes(st.day)) st.day = days[0] || today;
     const dEl = $('#days'), fEl = $('#faixas');
     put(dEl, days.map(d => `<button class="chip" type="button" data-d="${d}" aria-pressed="${d === st.day}">${esc(dayLabel(d, today))}<small>${dayShort(d)}</small></button>`).join(''));
     put(fEl, `<button class="chip" type="button" data-f="-1" aria-pressed="${st.part < 0}">Dia todo</button>` +
       ps.map((p, k) => `<button class="chip" type="button" data-f="${k}" aria-pressed="${st.part === k}">${esc(partName(p).name)}<small>${p.hhmm}</small></button>`).join('') +
       `<span class="sep"></span><button class="chip amber" type="button" data-leg aria-pressed="${st.leg}">LEG · com legenda</button>`);
-    const list = P.filter(p => dayKey(p.s) === st.day && (st.part < 0 || partIndex(ps, p.s) === st.part) && (!st.leg || hasLeg(p.id)));
+    const list = guideItems.filter(p => dayKey(p.s) === st.day && (st.part < 0 || partIndex(ps, p.s) === st.part) && (!st.leg || hasLeg(p.id)));
     let html = '', k = -1;
     for (let i = 0; i < list.length; i++) {
       const p = list[i], pk = ps.length ? partIndex(ps, p.s) : 0;
@@ -241,6 +242,7 @@
   }
   function row(p, t) {
     const on = p.s <= t && t < p.e, past = p.e <= t;
+    if (p.id === 'neco') return `<div class="row interstitial${on ? ' on' : past ? ' past' : ''}"><time datetime="${new Date(p.s).toISOString()}">${hm(p.s)}</time><div class="body"><span class="tt">${esc(p.t.title)}</span><span class="sub">12 segundos</span></div></div>`;
     const meta = [nice(blockName(p.t.block)), KIND[p.t.kind], p.t.kind !== 'cartoon' ? dur((p.e - p.s) / 1000) : ''].filter(Boolean).map(x => x.replace(/ /g, '\u00a0')).join(' · ');
     return `<a class="row${on ? ' on' : past ? ' past' : ''}${p.t.kind === 'film' ? ' feat' : ''}" href="${link(p.id)}"><time datetime="${new Date(p.s).toISOString()}">${hm(p.s)}</time>${art(p.id, p.block)}
       <div class="body"><div class="blk">${on ? '<span class="badge live">AO VIVO</span>' : ''}${esc(meta)} ${legBadge(p.id)}</div>

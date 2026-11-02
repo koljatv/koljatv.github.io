@@ -1,53 +1,30 @@
-"""Occasional editorial shorts in existing station-card gaps, never inside programmes.
+"""Fixed editorial appointments in the final minute of existing blocks.
 
-One complete showing per configured daily window at most. No programme, weather
-segment, advert or block boundary moves: only a normal closing card gives up time.
-Window bounds must also leave min_gap_minutes between the last window of a day
-and the first of the next, so independently rebuilt dates retain the same spacing.
+The builder reserves the closing minute before selecting whole programmes. Weather
+and paid breaks can use only the capacity before the appointment, never move it.
 """
 import datetime as dt
+import re
 
 MIN = 60_000
 
 
-def minute(hm):
-    h, m = map(int, hm.split(':'))
-    return h * 60 + m
-
-
-def place(items, cfg, midnight, Prog):
+def appointments(cfg, midnight, Prog):
     by = {o['id']: o for o in cfg['ours']}
+    out = []
     for rule in cfg.get('interstitials', []):
         o = by[rule['id']]
-        p = Prog(o['id'], o['kind'], o['dur'])
-        gap = int(rule['min_gap_minutes']) * MIN
-        windows = [(minute(a), minute(b)) for a, b in rule['windows']]
-        if not windows or p.dur <= 0 or gap < 0:
-            raise ValueError('Interstitial needs positive duration and daily windows')
-        if any(not 0 <= a < b <= 1440 for a, b in windows) or any(
-                b > c for (_, b), (c, _) in zip(windows, windows[1:])):
-            raise ValueError('Interstitial windows must be ordered and disjoint')
-        if (1440 - windows[-1][1] + windows[0][0]) * MIN < gap:
-            raise ValueError('Interstitial windows must preserve the gap across midnight')
-        since = int(dt.datetime.fromisoformat(rule['since']).timestamp() * 1000)
-        last = None
-        for start, end in windows:
-            earliest = max(midnight + start * MIN, since,
-                           last + gap if last is not None else 0)
-            latest = midnight + end * MIN
-            for k, it in enumerate(items):
-                if len(it) != 4 or it[2].kind != 'card':
-                    continue  # never use a card inside a feature's commercial break
-                t = max(it[0], earliest)
-                if t + p.dur > min(it[1], latest):
-                    continue
-                replacement = []
-                if it[0] < t:
-                    replacement.append([it[0], t, *it[2:]])
-                replacement.append([t, t + p.dur, p, it[3]])
-                if t + p.dur < it[1]:
-                    replacement.append([t + p.dur, it[1], *it[2:]])
-                items = items[:k] + replacement + items[k + 1:]
-                last = t
-                break
-    return items
+        p = Prog(o['id'], o['kind'], o['dur'], fixed=True)
+        since = dt.datetime.fromisoformat(rule['since'])
+        if since.tzinfo is None or not 0 < p.dur <= MIN or not rule.get('at'):
+            raise ValueError('Fixed appointments need times, a zoned start date and a duration <= 60s')
+        for hm in rule['at']:
+            if not re.fullmatch(r'(?:[01]\d|2[0-3]):[0-5]\d', hm):
+                raise ValueError('Fixed appointment must use HH:MM local time')
+            h, m = map(int, hm.split(':'))
+            at = midnight + (h * 60 + m) * MIN
+            if at >= int(since.timestamp() * 1000): out.append((at, p))
+    out.sort(key=lambda x: x[0])
+    if any(a + p.dur > b for (a, p), (b, _) in zip(out, out[1:])):
+        raise ValueError('Fixed appointments overlap')
+    return out

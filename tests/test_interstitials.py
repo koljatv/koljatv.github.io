@@ -1,4 +1,5 @@
-"""Editorial shorts must only consume filler, preserving every programme's clock."""
+"""NECO has exact daily appointments, even with weather and growing paid breaks."""
+import copy
 import datetime as dt
 import sys
 import unittest
@@ -9,65 +10,60 @@ import build
 class InterstitialTests(unittest.TestCase):
     def setUp(self):
         self.cfg = build.load('catalog/grade.json')
-        self.cfg['ours'].append({'id': 'test_neco', 'kind': 'promo', 'dur': 12,
-                                 'title': 'NECO', 'file': 'neco.mp4'})
-        self.cfg['interstitials'] = [{'id': 'test_neco', 'since': '2026-11-02T18:09:00-03:00',
-            'windows': [['06:00', '14:00'], ['14:00', '20:00'], ['20:00', '24:00']],
-            'min_gap_minutes': 240}]
-        self.g = build.Grade(self.cfg, build.load('catalog/titles.json'), {}, build.load('catalog/breaks.json'))
-        self.day = (dt.date(2026, 11, 3) - dt.date(1970, 1, 1)).days
-        self.base = self.g.midnight(self.day)
+        self.cfg['interstitials'] = [{'id': 'neco', 'since': '2026-11-02T18:09:00-03:00',
+                                     'at': ['13:29', '18:59', '23:59']}]
+        self.titles = build.load('catalog/titles.json')
+        self.cuts = build.load('catalog/breaks.json')
+        self.day = (dt.date(2026, 11, 2) - dt.date(1970, 1, 1)).days
 
-    def place(self, items):
-        import interstitials
-        return interstitials.place(items, self.cfg, self.base, build.Prog)
+    def grade(self, cfg=None, **kw):
+        return build.Grade(cfg or self.cfg, self.titles, kw.pop('health', {}), self.cuts, **kw)
 
-    def card(self, minute, seconds=30, part=None):
-        a = self.base + minute * 60000
-        return [a, a + seconds * 1000, self.g.card, 'toons'] + ([] if part is None else [part])
+    def test_exact_daily_times_for_56_days_both_formats_weather_ads_and_health(self):
+        extra = {'anuncios': [{'id': 'qa', 'nome': 'QA', 'url': 'https://example.invalid/qa.mp4',
+                 'dur': 180, 'por_dia': 20, 'inicio': '2026-11-02', 'fim': '2026-12-31'}]}
+        health = {s['url']: {'ok': False} for t in self.titles
+                  if t['id'] in ('kansas-pacific-1953', 'the-last-man-on-earth-1964') for s in t['sources']}
+        for fmt in (1, 2):
+            for weather in (False, True):
+                cfg = copy.deepcopy(self.cfg)
+                cfg['breaks']['on'] = fmt == 2
+                g = self.grade(cfg, health=health, extra=extra)
+                g.tempo.renders = list(range(g.midnight(self.day), g.midnight(self.day+56), 6*3600000)) if weather else []
+                for day in range(self.day, self.day+56):
+                    with self.subTest(fmt=fmt, weather=weather, day=day):
+                        items, _ = g.items(day)
+                        shorts = [x for x in items if x[2].id == 'neco']
+                        expected = [809, 1139, 1439] if day > self.day else [1139, 1439]
+                        self.assertEqual([x[0]-g.midnight(day) for x in shorts], [m*60000 for m in expected])
+                        self.assertTrue(all(x[1]-x[0] == 12000 and len(x) == 4 for x in shorts))
+                        self.assertTrue(all(x[1] == y[0] for x,y in zip(items,items[1:])))
+                        self.assertEqual(items[0][0], g.midnight(day))
+                        self.assertEqual(items[-1][1], g.midnight(day+1))
+                        for x in items:
+                            self.assertGreater(x[1], x[0])
+                            if len(x) == 4 and x[2].kind != 'card':
+                                self.assertEqual(x[1]-x[0], x[2].dur)
+                        for minute in (810,1140):
+                            self.assertTrue(any(x[0] == g.midnight(day)+minute*60000 and x[2].kind == 'vignette' for x in items))
 
-    def test_preserves_programmes_and_uses_exactly_twelve_seconds(self):
-        a = self.card(800)
-        p = build.Prog('film', 'film', 60, 'toons')
-        film = [a[1], a[1] + 60000, p, 'toons']
-        result = self.place([a, film])
-        neco = [x for x in result if x[2].id == 'test_neco']
-        self.assertEqual(len(neco), 1)
-        self.assertEqual(neco[0][1] - neco[0][0], 12000)
-        self.assertEqual(result[-1], film)
-        self.assertEqual(a, self.card(800))  # do not mutate the source schedule
-        self.assertEqual(result[0][0], a[0])
-        self.assertTrue(all(x[1] == y[0] for x, y in zip(result, result[1:])))
+    def test_disabled_and_before_approval_keep_previous_layout(self):
+        plain = copy.deepcopy(self.cfg); plain.pop('interstitials')
+        serial = lambda xs: [[x[0],x[1],x[2].id,*x[3:]] for x in xs]
+        a,_ = self.grade().items(self.day-1)
+        b,_ = self.grade(plain).items(self.day-1)
+        self.assertEqual(serial(a), serial(b))
 
-    def test_does_not_truncate_or_use_feature_breaks(self):
-        items = [self.card(800, 11.9), self.card(850, 30, -1)]
-        self.assertEqual(self.place(items), items)
+    def test_paid_break_cannot_borrow_past_fixed_appointment(self):
+        g = self.grade()
+        p = build.Prog('neco', 'promo', 12, fixed=True)
+        items = [[0,1000,g.card,'noir',-1], [1000,13000,p,'noir'], [13000,61000,g.card,'noir']]
+        self.assertIsNone(g.own._spare(items, [0,0]))
 
-    def test_exact_fit_has_no_zero_length_card(self):
-        result = self.place([self.card(800, 12)])
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0][2].id, 'test_neco')
-
-    def test_at_most_three_and_four_hour_spacing(self):
-        result = self.place([self.card(m) for m in [700, 800, 850, 950, 1000, 1200, 1250, 1430]])
-        shorts = [x for x in result if x[2].id == 'test_neco']
-        self.assertEqual(len(shorts), 3)
-        self.assertTrue(all(y[0]-x[0] >= 240*60000 for x,y in zip(shorts,shorts[1:])))
-
-    def test_since_approval_and_disabled_config(self):
-        self.cfg['interstitials'][0]['since'] = '2026-11-03T18:09:00-03:00'
-        items = [self.card(800), self.card(1100)]
-        self.assertEqual([x[0] for x in self.place(items) if x[2].id == 'test_neco'], [items[1][0]])
-        self.cfg.pop('interstitials')
-        self.assertEqual(self.place(items), items)
-
-    def test_integration_preserves_non_card_items(self):
-        with_short, _ = self.g.items(self.day)
-        self.cfg.pop('interstitials')
-        plain = build.Grade(self.cfg, build.load('catalog/titles.json'), {}, build.load('catalog/breaks.json'))
-        without, _ = plain.items(self.day)
-        serial = lambda items: [[x[0],x[1],x[2].id,*x[3:]] for x in items if x[2].id not in ('cartao','test_neco')]
-        self.assertEqual(serial(with_short), serial(without))
-        self.assertTrue(any(x[2].id == 'test_neco' for x in with_short))
+    def test_invalid_or_conflicting_appointments_fail_build(self):
+        for times in (['13:29','13:29'], ['25:00'], ['13:00'], ['13:29:59']):
+            with self.subTest(times=times):
+                cfg = copy.deepcopy(self.cfg);cfg['interstitials'][0]['at'] = times
+                with self.assertRaises(ValueError): self.grade(cfg).items(self.day+1)
 
 if __name__ == '__main__': unittest.main()
