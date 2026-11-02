@@ -15,7 +15,7 @@ import argparse, datetime as dt, hashlib, json, os, sys, zlib
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import proprios, segments, tempo
+import interstitials, proprios, segments, tempo
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MIN = 60_000
@@ -84,6 +84,7 @@ class Grade:
              "presents": lambda: self.presents.append(p), "trailer": lambda: self.trailers.append(p),
              "card": lambda: setattr(self, "card", p)}.get(p.kind, lambda: None)()
         self.health = health
+        self.cfg = cfg
         by = {o["id"]: Prog(o["id"], o["kind"], o["dur"], o.get("block")) for o in cfg["ours"]}
         # a block of shorts with a short break of its own every few programmes (DESENHOS: INTERVALO + VOLTAMOS)
         self.pauses = {b: (int(v.get("every", 3)), [by[i] for i in (v.get("open"), v.get("close")) if i in by])
@@ -272,7 +273,8 @@ class Grade:
     def items(self, d):
         """Day d as it goes on the air: laid out, stand-ins for dead titles, features cut by their breaks, the spots."""
         day, sw = self.patch(self.build(d))
-        return self.own.place_ads(self.tempo.place(segments.expand(day, self.splits), d), d, self.brk), sw
+        items = self.own.place_ads(self.tempo.place(segments.expand(day, self.splits), d), d, self.brk)
+        return interstitials.place(items, self.cfg, self.midnight(d), Prog), sw
 
     # ---- health ----
     def bad(self, url):

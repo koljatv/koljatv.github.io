@@ -409,6 +409,15 @@
    "title": "KÖLJA TV · voltamos",
    "file": "voltamos_local_20261102.mp4",
    "media_rev": "local_20261102"
+  },
+  {
+   "id": "neco",
+   "kind": "promo",
+   "dur": 12.0,
+   "title": "NECO",
+   "file": "neco_12s_20261102.mp4",
+   "media_rev": "neco_12s_20261102",
+   "credits": "Kölja & Kaia"
   }
  ],
  "day_note": "Dayparts (Niko, 31 Oct 2026): cartoons from 06:00 to 13:30; the afternoon is the matinee (silent comedy, serials, then comedy and westerns on alternate days) until 19:00; prime time from 19:00 is the great classics and adventure, then noir at 22:00; the madrugada is horror, science fiction / cult / documentaries and classic TV. Sized to the shelves: a block's hours on the shelf / its hours a day = days before its first rerun (tools/rotation.py). 'a|b|c' alternates blocks day by day; a slot must be longer than its block's longest title, or that title never airs.",
@@ -477,5 +486,27 @@
  "keep_home": [
   "domingo"
  ],
- "keep_home_note": "Blocks whose shorts air only in their own slots, never as fillers elsewhere: DOMINGO DOCUMENTAL keeps its shorts for Sunday afternoon, so the week's other blocks don't use them up."
+ "keep_home_note": "Blocks whose shorts air only in their own slots, never as fillers elsewhere: DOMINGO DOCUMENTAL keeps its shorts for Sunday afternoon, so the week's other blocks don't use them up.",
+ "interstitials": [
+  {
+   "id": "neco",
+   "since": "2026-11-02T18:09:00-03:00",
+   "windows": [
+    [
+     "06:00",
+     "14:00"
+    ],
+    [
+     "14:00",
+     "20:00"
+    ],
+    [
+     "20:00",
+     "24:00"
+    ]
+   ],
+   "min_gap_minutes": 240
+  }
+ ],
+ "interstitials_note": "NECO: complete 12-second editorial short. At most one showing in each BRT window (06–14, 14–20, 20–24), at least four hours apart. Uses only existing station-card filler; skips a window without room. Never interrupts or moves a programme, weather segment, advert or block boundary."
 }

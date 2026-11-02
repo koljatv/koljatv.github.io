@@ -206,3 +206,18 @@ would pull ~3-5 MB of our pieces.
 | **GitHub Releases assets** (chosen, 03:50 decision) | ≤ 2 GiB per file, no published bandwidth cap; served by redirect to objects.githubusercontent.com; outside git history | Nothing heavy in git, room to grow into long KÖLJA shows. |
 | Pages, in the repo | site ≤ 1 GB, ~100 GB/month bandwidth (soft, ~20,000 viewer-hours of our pieces); git warns at 50 MB and blocks 100 MB files | Would fit today, but every new trailer stays in git history forever. |
 | Git LFS | free plan: small storage and bandwidth quota, paid beyond | No: the bandwidth quota is the thing we'd hit. |
+
+## NECO in the intervals
+
+NECO is a 12-second editorial short, credited to Kölja & Kaia. Its approved MP4 is
+an `ours-v1` Release asset, copied to `/tv/ours/neco.mp4` by the existing Pages workflow.
+`catalog/grade.json` lists it under `ours` and configures `interstitials`:
+up to one complete showing in each BRT window 06:00–14:00, 14:00–20:00 and
+20:00–24:00, at least 240 minutes between starts. A window without 12 seconds
+of eligible station-card filler is skipped. No programme, commercial break,
+weather segment, advert or block boundary moves. The rule applies to both schedule
+formats; first eligible airings begin after 2 November 2026, 18:09 BRT.
+
+`tools/interstitials.py` runs after weather and advert placement and uses only
+normal station cards outside feature breaks. Window bounds must preserve the
+minimum gap across midnight too. Test with `python3 -m unittest discover -s tests -v`.
