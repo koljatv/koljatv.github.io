@@ -5,11 +5,11 @@ usage: python3 tools/site_pages.py"""
 import os
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
-V = '9'  # bump when assets/site.css, assets/site.js or tv/tv.js change
+V = '10'  # bump when assets/site.css, assets/site.js or tv/tv.js change
 SITE = 'https://tv.kolja.com.br/'
 MAIL = 'contato@kolja.com.br'
 
-NAV = [('', 'Início'), ('programacao/', 'Programação'), ('ao-vivo/', 'Ao vivo'), ('emissora/', 'Sobre'), ('anuncie/', 'Anuncie'), ('retrotv/', 'Retrotv')]
+NAV = [('', 'Início'), ('programacao/', 'Programação'), ('ao-vivo/', 'Ao vivo'), ('emissora/', 'Sobre'), ('anuncie/', 'Anuncie'), ('retrotv/', 'Retrotv'), ('tempo/', 'Tempo')]
 
 
 def head(path, title, desc, base):
@@ -197,6 +197,20 @@ RETROTV = '''<section class="band"><div class="wrap two top-align">
   <div style="display:grid;place-items:center"><img class="phone-shot" src="{B}img/retrotv.jpg" alt="A Retrotv no celular: o televisor desenhado no app, sintonizado no canal 1, KÖLJA TV, passando um filme com legenda em português" width="540" height="1200"></div>
 </div></section>'''
 
+TEMPO = '''<div class="wrap page-head"><div class="kicker">Tempo</div><h1>Previsão do tempo</h1>
+  <p>As capitais de todo o Brasil: máxima, mínima e chance de chuva, hoje e nos próximos dias.</p>
+  <p class="tp-stamp" id="tp-stamp"></p></div>
+<div class="filters"><div class="wrap"><div class="chips days" id="tp-days" role="group" aria-label="Dia"></div></div></div>
+<section class="band tp"><div class="wrap tp-grid">
+  <figure class="tp-map" id="tp-map" aria-label="Mapa do Brasil"></figure>
+  <div class="tp-regions" id="tp-regions" aria-live="polite"><p class="empty">Carregando a previsão…</p></div>
+</div></section>
+<section class="band"><div class="wrap prose tp-note">
+  <h2>Na KÖLJA TV</h2><p>A previsão do tempo passa no canal de manhã, na hora do almoço, antes dos filmes das 19h e perto da meia-noite, no <a href="{B}ao-vivo/">Ao vivo</a> e na <a href="{B}retrotv/">Retrotv</a>.</p>
+  <p class="small">Previsão: <a href="https://open-meteo.com/">Open-Meteo.com</a> (CC BY 4.0). Mapa: IBGE.</p>
+</div></section>
+<script src="{B}tempo/tempo.js?v=''' + V + '''" defer></script>'''
+
 NOTFOUND = '''<div class="wrap page-head" style="padding-bottom:96px"><div class="kicker">Fora do ar</div><h1>Esta página saiu da grade.</h1>
   <p><a href="/">Volte para o início</a>, veja a <a href="/programacao/">programação</a> ou vá para o <a href="/ao-vivo/">ao vivo</a>.</p></div>'''
 
@@ -207,6 +221,7 @@ page('programacao/', 'Programação · KÖLJA TV', 'A grade da KÖLJA TV para ho
 page('programa/', 'Programa · KÖLJA TV', 'Sinopse, ficha e horários deste programa na KÖLJA TV.', TITULO, name='programa')
 page('emissora/', 'Sobre · KÖLJA TV', 'A KÖLJA TV passa 24 horas por dia: desenhos de manhã, matinê à tarde, os grandes filmes à noite e terror de madrugada.', EMISSORA, name='emissora')
 page('anuncie/', 'Anuncie · KÖLJA TV', 'Coloque o seu comercial nos intervalos dos filmes da KÖLJA TV. Fale com a gente por e-mail.', ANUNCIE, name='anuncie')
+page('tempo/', 'Previsão do tempo · KÖLJA TV', 'A previsão do tempo para as capitais do Brasil: máxima, mínima e chance de chuva, hoje e nos próximos dias.', TEMPO, name='tempo')
 page('retrotv/', 'Retrotv · KÖLJA TV', 'A Retrotv é o aplicativo de TV da Kölja para Android, com a KÖLJA TV no canal 1.', RETROTV, name='retrotv')
 # GitHub Pages serves /404.html for any missing page: absolute links there
 html = None

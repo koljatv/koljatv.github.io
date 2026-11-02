@@ -108,6 +108,7 @@
   const showEnd = it => it.first ? it.first.whole : it.whole || it.e;
   const toBreak = it => !!it.p && it.part >= 0 && it.e < showEnd(it);
   const keyOf = it => it.s + '|' + it.id;
+  const isTempo = it => !!(it && it.o && it.o.kind === 'tempo'); // PREVISÃO DO TEMPO: our segment, on the clock like a programme
   function find(t) {
     let lo = 0, hi = items.length - 1;
     while (lo <= hi) { const m = (lo + hi) >> 1; if (items[m].e <= t) lo = m + 1; else if (items[m].s > t) hi = m - 1; else return m; }
@@ -273,7 +274,7 @@
     sl.role = 'air'; sl.v.classList.add('air'); sl.waiting = false;
     if (cur && !sl.pl.trouble) { cur.lost = 0; cur.bad = 0; cur.cycle = 0; cur.again = 0; }
     setStill(false); show(cardEl, false); show(msgEl, false);
-    if (Math.abs(sl.v.currentTime - want(sl)) > 1.5 && !sl.pl.ours) try { sl.v.currentTime = want(sl); } catch (e) {}
+    if (Math.abs(sl.v.currentTime - want(sl)) > 1.5 && (!sl.pl.ours || isTempo(sl.pl.it))) try { sl.v.currentTime = want(sl); } catch (e) {}
     levels(); ui(); loading();
   }
   function back(sl) { // a copy that stopped to load plays again: the ones racing to replace it stop
@@ -727,7 +728,7 @@
     } else if (power && it && cur && cur.mode !== 'card') {
       const pr = progAt(t), nx = progAfter(pr ? showEnd(pr) : t);
       if (it.brk && it.first) { if (!(it.o && it.o.kind === 'ad')) { head = 'VOLTAMOS COM'; line = it.first.p.title; } } // a spot keeps its own picture clear
-      else if (nx && (it.o || (!toBreak(it) && pr && showEnd(pr) - t < 60e3))) { head = 'A SEGUIR'; line = hm(nx.s) + ' · ' + nx.p.title; }
+      else if (nx && ((it.o && !isTempo(it)) || (!toBreak(it) && pr && showEnd(pr) - t < 60e3))) { head = 'A SEGUIR'; line = hm(nx.s) + ' · ' + nx.p.title; } // not over the weather forecast: it has its own picture
     }
     nextEl.querySelector('b').textContent = head; nextEl.querySelector('span').textContent = line;
     show(nextEl, !!head); host.classList.toggle('ktv-nx', !!head);

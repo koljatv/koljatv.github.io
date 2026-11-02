@@ -408,3 +408,33 @@ details.toons li a:hover { color: var(--amber); }
 @media (max-width: 760px) { .foot .cols { grid-template-columns: 1fr 1fr; } .foot .brand { grid-column: 1 / -1; } }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* Tempo: the weather page (tempo/tempo.js) */
+.tp-stamp { color: var(--fg3) !important; font-size: 15px !important; margin-top: 10px !important; }
+.tp-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+.tp-map { margin: 0; position: sticky; top: 140px; }
+.tp-map svg { display: block; width: 100%; height: auto; }
+.tp-map .uf path { fill: var(--s3); stroke: rgba(255, 176, 0, .35); stroke-width: 1.2; stroke-linejoin: round; }
+.tp-map .pin circle { fill: var(--amber); stroke: var(--bg); stroke-width: 3; }
+.tp-map .pin text { paint-order: stroke; stroke: var(--bg); stroke-width: 6px; stroke-linejoin: round; }
+.tp-map .pin .t { font: 700 30px/1 var(--cond); fill: var(--amber); }
+.tp-map .pin .t .m { font-weight: 600; fill: var(--fg3); font-size: 24px; }
+.tp-map .pin .n { font: 500 17px/1 var(--sans); fill: var(--fg2); }
+.tp-regions { display: grid; gap: 28px; }
+.tp-reg h2 { font: 700 15px/1 var(--cond); letter-spacing: .16em; text-transform: uppercase; color: var(--amber); margin: 0 0 8px; }
+.tp-reg ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.tp-reg li { display: grid; grid-template-columns: minmax(0, 1fr) 40px 52px 40px 52px; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.tp-reg .c b { display: block; font-weight: 600; font-size: 17px; line-height: 1.2; }
+.tp-reg .c small { font: 600 12px/1 var(--cond); letter-spacing: .14em; color: var(--fg3); }
+.tp-reg img { width: 40px; height: 40px; }
+.tp-reg .mx { font: 700 26px/1 var(--cond); color: var(--amber); text-align: right; }
+.tp-reg .mn { font: 600 21px/1 var(--cond); color: var(--fg3); }
+.tp-reg .ch { font: 600 17px/1 var(--cond); color: var(--fg3); text-align: right; }
+.tp-reg .ch.wet { color: #78baff; }
+.tp-note .small { color: var(--fg3); font-size: 14px; }
+@media (max-width: 860px) {
+  .tp-grid { grid-template-columns: 1fr; }
+  .tp-map { position: static; }
+  .tp-reg li { grid-template-columns: minmax(0, 1fr) 36px 44px 34px 46px; gap: 8px; }
+  .tp-reg img { width: 36px; height: 36px; }
+}

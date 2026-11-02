@@ -15,6 +15,8 @@ only, never secrets, keys or personal data.
 | `/grade/schedule.json` | the same shelves laid out without breaks, format 1 (`[start, end, id, block]`), for Retrotv 0.3.0 sets. |
 | `/legendas/` | our own subtitles: `<id>.pt-BR.vtt` and `<id>.en.vtt` (WebVTT), and `index.json`, which lists the subtitled titles, their languages, a revision tag and, per copy (a hash of its address), how that copy's clock lines up with the subtitles. See "Subtitles" below. |
 | `/tv/reserva.json` | the site player's *programação alternativa*: shorts whose copies answer fast and are faststart (index at the front), by block. When a programme's picture is missing for 12 s the player puts one on (this block's, else cartoons; our own pieces from `tv/ours/` as the last resort) while it keeps trying the programme, and goes back to the clock once it plays (at once if the short has just begun or has over 4 min left, else at its end). Rebuilt by hand: `python3 tools/reserva.py`. |
+| `/tempo/` | the weather page: `tempo.js` draws `previsao.json` (the forecast, made in the workflow, not in git) on `mapa.svg` with the icons in `icones/`. |
+| `/tv/ours/previsao-tempo.mp4` | the PREVISÃO DO TEMPO segment, made in the workflow from the latest forecast (not in git). See "The weather forecast" below. |
 | `/grade/now.json` | what's on now (with the offset into it), the next 8 items, the stand-ins in force, and the current `rev`. Rebuilt every run, not kept in git. |
 
 Our own vignettes, idents, "apresenta", station card and break bumpers are **Release assets** (tag
@@ -103,6 +105,20 @@ return (0.3.2: about a minute before the break, since a ten-second break is too 
 
 `catalog/grade.json`: `breaks.on: false` puts every feature back in one piece. `commercial_mode` (off; for when
 the breaks carry paid ads) puts on the air only the titles cleared for that use (`rights`).
+
+## The weather forecast (PREVISÃO DO TEMPO)
+
+Since 2 November 2026 (Niko): a 72-second forecast for the 27 capitals airs four times a day, near 07:00 and 12:55
+(in the cartoons), 18:55 (just before prime time) and 23:55. `tools/tempo.py` fetches the forecast from Open-Meteo
+(free, no key) every few hours and shortly before each airing, `tools/tempo_video.py` draws the video from it
+(PIL + ffmpeg; music, fonts, map and credits in `tools/meteo/`), and both go out with the site (`tools/tempo.py
+publish`); they live in `state/tempo/` (the Actions cache), not in git. In the schedule, each slot with an airing
+time is laid out 72 s shorter and its closing station card covers the rest; the forecast then goes in at the nearest
+point between two programmes (or in a cartoon INTERVALO, or in the card), so the next slot still starts on time.
+An airing goes in only if a video from a forecast at most 12 hours old was published before it: if the forecast
+stops updating, the station card airs instead of old weather. It's an ordinary piece of ours (`kind: "tempo"`) with
+its address on the site, so every Retrotv version plays it (the name has a hyphen, so the app streams it fresh
+instead of keeping a copy). Change the times or the first date in `tools/tempo.py` (`AT`, `FROM`).
 
 ## Subtitles (legendas)
 

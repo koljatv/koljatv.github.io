@@ -2,7 +2,8 @@ name: grade
 
 # Every 20 minutes: check the copies of what airs soon, route round dead links, rebuild the schedule,
 # commit grade/schedule2.json (with commercial breaks) and grade/schedule.json (without, for Retrotv 0.3.0) when they changed, and publish public/ (the site + grade/schedule.json + grade/now.json)
-# on GitHub Pages. Our idents and trailers are Release assets (tag ours-v1), not part of the site.
+# on GitHub Pages. Our idents and trailers are Release assets (tag ours-v1), not part of the site. The weather forecast
+# (public/tempo/previsao.json and its segment's video) is made in this job and published with the site, not committed.
 on:
   schedule:
     - cron: "7,27,47 * * * *"
@@ -41,6 +42,19 @@ jobs:
           key: health-${{ github.run_id }}
           restore-keys: health-
 
+      # PREVISÃO DO TEMPO: the forecast (Open-Meteo, no key) every few hours and shortly before each airing, and the
+      # segment's video made from it (tools/tempo.py, tools/tempo_video.py). Kept in state/ (the cache), not in git.
+      # If this fails, the schedule leaves the forecast out once it is 12 h old (the station card airs instead).
+      - name: Weather forecast
+        continue-on-error: true
+        run: |
+          if [ "$(python3 tools/tempo.py due)" = yes ]; then
+            python3 tools/tempo.py fetch
+            command -v ffmpeg >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends ffmpeg >/dev/null; }
+            python3 -m pip install -q pillow
+            python3 tools/tempo_video.py
+          fi
+
       - name: Check links and build
         run: |
           python3 tools/build.py          # make sure the schedule reaches today before checking it
@@ -72,11 +86,13 @@ jobs:
           import json, urllib.request
           ours = json.load(open("public/grade/schedule2.json"))["ours"]
           for k, o in ours.items():
+              if o.get("kind") == "tempo": continue  # the weather forecast is made here (tools/tempo.py publish)
               try:
                   open(f"public/tv/ours/{k}.mp4", "wb").write(urllib.request.urlopen(o["url"], timeout=60).read())
               except Exception as e:
                   print("skip", k, e)
           PY
+          python3 tools/tempo.py publish
           du -sh public/tv/ours
 
       - uses: actions/configure-pages@v5

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Previsão do tempo · KÖLJA TV</title>
+<meta name="description" content="A previsão do tempo para as capitais do Brasil: máxima, mínima e chance de chuva, hoje e nos próximos dias.">
+<link rel="canonical" href="https://tv.kolja.com.br/tempo/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KÖLJA TV">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://tv.kolja.com.br/tempo/">
+<meta property="og:title" content="Previsão do tempo · KÖLJA TV">
+<meta property="og:description" content="A previsão do tempo para as capitais do Brasil: máxima, mínima e chance de chuva, hoje e nos próximos dias.">
+<meta property="og:image" content="https://tv.kolja.com.br/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b0a09">
+<link rel="icon" href="../img/tv.svg" type="image/svg+xml">
+<link rel="preload" href="../fonts/jost.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/barlowc-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../tv/tv.css?v=10">
+<link rel="stylesheet" href="../assets/site.css?v=10">
+</head>
+<body data-base="../" data-page="tempo">
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<header class="top"><div class="wrap">
+  <a class="logo" href="../" aria-label="KÖLJA TV, início"><img src="../img/logo.svg" alt="KÖLJA TV" width="128" height="54"></a>
+  <nav aria-label="Principal"><a href="../">Início</a><a href="../programacao/">Programação</a><a href="../emissora/">Sobre</a><a href="../anuncie/">Anuncie</a><a href="../retrotv/">Retrotv</a><a href="../tempo/" aria-current=page>Tempo</a></nav>
+  <a class="onair" href="../ao-vivo/"><span class="dot"></span>AO VIVO</a>
+  <button class="menu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><svg viewBox="0 0 24 24"><path class="b" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/><path class="x" d="M5.6 4.2 12 10.6l6.4-6.4 1.4 1.4-6.4 6.4 6.4 6.4-1.4 1.4-6.4-6.4-6.4 6.4-1.4-1.4 6.4-6.4-6.4-6.4z"/></svg></button>
+</div></header>
+<div class="sheet" id="sheet"><a href="../">Início</a><a href="../programacao/">Programação</a><a href="../ao-vivo/">Ao vivo</a><a href="../emissora/">Sobre</a><a href="../anuncie/">Anuncie</a><a href="../retrotv/">Retrotv</a><a href="../tempo/" aria-current=page>Tempo</a><p>Horário de Brasília.</p></div>
+<div class="ticker" id="ticker" hidden><div class="wrap"><a href="../ao-vivo/"></a></div></div>
+<main id="main">
+<div class="wrap page-head"><div class="kicker">Tempo</div><h1>Previsão do tempo</h1>
+  <p>As capitais de todo o Brasil: máxima, mínima e chance de chuva, hoje e nos próximos dias.</p>
+  <p class="tp-stamp" id="tp-stamp"></p></div>
+<div class="filters"><div class="wrap"><div class="chips days" id="tp-days" role="group" aria-label="Dia"></div></div></div>
+<section class="band tp"><div class="wrap tp-grid">
+  <figure class="tp-map" id="tp-map" aria-label="Mapa do Brasil"></figure>
+  <div class="tp-regions" id="tp-regions" aria-live="polite"><p class="empty">Carregando a previsão…</p></div>
+</div></section>
+<section class="band"><div class="wrap prose tp-note">
+  <h2>Na KÖLJA TV</h2><p>A previsão do tempo passa no canal de manhã, na hora do almoço, antes dos filmes das 19h e perto da meia-noite, no <a href="../ao-vivo/">Ao vivo</a> e na <a href="../retrotv/">Retrotv</a>.</p>
+  <p class="small">Previsão: <a href="https://open-meteo.com/">Open-Meteo.com</a> (CC BY 4.0). Mapa: IBGE.</p>
+</div></section>
+<script src="../tempo/tempo.js?v=10" defer></script>
+</main>
+<footer class="foot"><div class="wrap">
+  <div class="cols">
+    <div class="brand"><img src="../img/logo.svg" alt="KÖLJA TV" width="142" height="60"><p>Clássicos do cinema, desenhos, seriados e madrugada de terror. No ar 24 horas, no horário de Brasília.</p></div>
+    <div><h2>Assistir</h2><ul><li><a href="../ao-vivo/">Ao vivo</a></li><li><a href="../programacao/">Programação</a></li><li><a href="../retrotv/">Retrotv</a></li></ul></div>
+    <div><h2>Sobre</h2><ul><li><a href="../emissora/">A KÖLJA TV</a></li><li><a href="../anuncie/">Anuncie</a></li><li><a href="mailto:contato@kolja.com.br">Contato</a></li></ul></div>
+    <div><h2>Kölja</h2><ul><li><a href="https://kolja.com.br/">kolja.com.br</a></li><li><a href="https://kolja.com.br/store/">Loja</a></li></ul></div>
+  </div>
+  <div class="fine"><span>© 2026 Kölja</span><span>KÖLJA TV · Canal 1</span></div>
+</div></footer>
+<script src="../assets/site.js?v=10"></script>
+</body>
+</html>

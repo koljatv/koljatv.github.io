@@ -15,7 +15,7 @@ import argparse, datetime as dt, hashlib, json, os, sys, zlib
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import proprios, segments
+import proprios, segments, tempo
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MIN = 60_000
@@ -122,6 +122,7 @@ class Grade:
         self.raw = {t["id"]: t for t in titles}
         self.brk = brk
         self.own = proprios.Own(self, extra, Prog, local)  # our programmes, a date's edits, the ads (Estúdio KÖLJA TV)
+        self.tempo = tempo.Tempo(self, Prog, [] if local else None)  # the weather forecast's airings (tools/tempo.py)
         self.raw.update(self.own.raw())
         self._ban, self._pos = set(), {}
         # Each block plays its shelf like a tape, and the fillers have a tape of their own. The tapes are wound
@@ -169,9 +170,13 @@ class Grade:
             to = base + slots[s + 1][0] * MIN if s + 1 < len(slots) else end
             segs.append([frm, to, block, pin, s])
         self._ban, self._pos = self.own.banned(d), pos
+        self.tempo.slots[d] = []
         for frm, to, block, pin, s in self.own.plan(d, segs):  # our programmes and the date's inserts cut in
             if block is None: self.own.air(out, [frm, to, block, pin, s])
-            else: self.fill(out, frm, to, block, (d * 7 + s * 3) % 1000, pin, pos, fpos, today)
+            else:
+                r = self.tempo.reserve(d, frm, to, block)  # the forecast's time, from tempo.FROM on
+                self.fill(out, frm, to - r, block, (d * 7 + s * 3) % 1000, pin, pos, fpos, today)
+                if r: self.tempo.pad(out, to - r, to, block)
         self._ban = set()
         self._at = (d + 1, pos, fpos)
         return out
@@ -267,7 +272,7 @@ class Grade:
     def items(self, d):
         """Day d as it goes on the air: laid out, stand-ins for dead titles, features cut by their breaks, the spots."""
         day, sw = self.patch(self.build(d))
-        return self.own.place_ads(segments.expand(day, self.splits), d, self.brk), sw
+        return self.own.place_ads(self.tempo.place(segments.expand(day, self.splits), d), d, self.brk), sw
 
     # ---- health ----
     def bad(self, url):
@@ -332,6 +337,7 @@ def schedule(g, items, cfg, titles, base, fmt):
             ours[o["id"]] = {k: v for k, v in o.items() if k not in ("id", "file")} | {"url": base + o["file"]}
     for o in g.own.ours:  # our programmes' vignettes and the spots: each carries its own address
         if o["id"] in used: ours[o["id"]] = {k: v for k, v in o.items() if k != "id"}
+    if g.tempo.prog.id in used: ours[g.tempo.prog.id] = g.tempo.ours()  # the weather forecast: a video on the site itself
     tl = {}
     for t in titles:
         if t.get("off") or t["id"] not in g.titles: continue  # every title on air, so the app can find stand-ins too

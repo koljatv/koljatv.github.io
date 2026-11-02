@@ -7,3 +7,4 @@ __pycache__/
 DECISION-*.md
 catalog/found_episodes.json
 public/tv/ours/
+public/tempo/previsao.json
