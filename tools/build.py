@@ -221,6 +221,18 @@ class Grade:
                 for x in pcs: out.append([t, t + x.dur, x, block]); t += x.dur
         return t
 
+    def spacing_ok(self, p, start):
+        """Keep a whole title clear of fixed appointments, including across midnight."""
+        rule = self.cfg.get("title_spacing", {}).get(p.id)
+        if not rule: return True
+        gap = rule["minutes"] * MIN
+        day = self.day_of(start)
+        for d in (day - 1, day, day + 1):
+            for at, fixed in interstitials.appointments(self.cfg, self.midnight(d), Prog):
+                if fixed.id == rule["from"] and max(at - (start + p.span), start - (at + fixed.dur)) < gap:
+                    return False
+        return True
+
     LOOK = 8  # how far down its tape a block may look for a title that fits the end of a slot
 
     def fill(self, out, frm, to, block, gaps, pin, pos, fpos, today):
@@ -235,7 +247,7 @@ class Grade:
         room = to - t
         pinned = [self.titles[i] for i in pin if i in self.titles and i not in self._ban]  # a special night's own line-up, in order
         for p in pinned:
-            if t + self.intro(gaps).dur + p.span + self.outro(gaps) <= to:
+            if t + self.intro(gaps).dur + p.span + self.outro(gaps) <= to and self.spacing_ok(p, t + self.intro(gaps).dur):
                 t = self.air(out, t, p, block, gaps); gaps += 1; today.add(p.id)
         shelf = self.shelves.get(block, [])
         n = len(shelf)
@@ -250,7 +262,7 @@ class Grade:
                 if p.id in ahead or p in pinned or need(p) > room:  # aired ahead, aired tonight, or longer than the slot
                     ahead.discard(p.id); i = (i + 1) % n
                     continue
-                if t + need(p) <= to and p.id not in self._ban:  # a title taken off this date keeps its turn for the next
+                if t + need(p) <= to and p.id not in self._ban and self.spacing_ok(p, t + self.intro(gaps).dur):  # a title taken off this date keeps its turn for the next
                     t = self.air(out, t, p, block, gaps); gaps += 1; today.add(p.id); here.add(p.id)
                     i = (i + 1) % n
                     continue
@@ -259,7 +271,7 @@ class Grade:
                     q = shelf[(i + m) % n]
                     if q.id in ahead or q in pinned or q.id in here or q.id in self._ban: continue
                     if q.kind == "tv" and family(q) in waiting: continue
-                    if t + need(q) <= to: fits.append(q)
+                    if t + need(q) <= to and self.spacing_ok(q, t + self.intro(gaps).dur): fits.append(q)
                     if q.kind == "tv": waiting.add(family(q))  # only a series' next episode may be picked
                 if not fits: break
                 q = max(fits, key=lambda q: q.span)
@@ -271,7 +283,7 @@ class Grade:
         for k in range(nf):
             if to - t < 4 * MIN: break
             p = self.fillers[(j + k) % nf]
-            if p.block == block or p.id in today or p.id in self._ban or t + self.intro(gaps).dur + p.span + self.outro(gaps) > to: continue
+            if p.block == block or p.id in today or p.id in self._ban or t + self.intro(gaps).dur + p.span + self.outro(gaps) > to or not self.spacing_ok(p, t + self.intro(gaps).dur): continue
             t = self.air(out, t, p, block, gaps); gaps += 1; today.add(p.id)
             fpos[0] = (j + k + 1) % nf
         ng = len(self.guests) if block in self.hosts else 0  # then the morning's cartoons, on their own tape, for the matinee
@@ -279,7 +291,7 @@ class Grade:
         for k in range(ng):
             if to - t < 4 * MIN: break
             p = self.guests[(j + k) % ng]
-            if p.block == block or p.id in today or p.id in self._ban or t + self.intro(gaps).dur + p.span + self.outro(gaps) > to: continue
+            if p.block == block or p.id in today or p.id in self._ban or t + self.intro(gaps).dur + p.span + self.outro(gaps) > to or not self.spacing_ok(p, t + self.intro(gaps).dur): continue
             t = self.air(out, t, p, block, gaps); gaps += 1; today.add(p.id)
             fpos[1] = (j + k + 1) % ng
         if t < to and self.card: out.append([t, to, self.card, block])
@@ -289,6 +301,9 @@ class Grade:
         """Day d as it goes on the air: laid out, stand-ins for dead titles, features cut by their breaks, the spots."""
         day, sw = self.patch(self.build(d))
         items = self.own.place_ads(self.tempo.place(segments.expand(day, self.splits), d), d, self.brk)
+        for it in items:
+            if not self.spacing_ok(it[2], it[0]):
+                raise ValueError('Title spacing conflicts with a fixed appointment: ' + it[2].id)
         return items, sw
 
     # ---- health ----
@@ -300,14 +315,14 @@ class Grade:
         t = self.raw.get(pid)
         return bool(t) and any(not self.bad(s["url"]) for s in t["sources"])
 
-    def substitute(self, block, room, skip):
+    def substitute(self, block, room, skip, start):
         best = None
         for p in self.shelves.get(block, []):
-            if p.span <= room and p.id not in skip and self.playable(p.id) and (best is None or p.span > best.span): best = p
+            if p.span <= room and p.id not in skip and self.playable(p.id) and self.spacing_ok(p, start) and (best is None or p.span > best.span): best = p
         if best and best.span > room / 2: return best
         short = None
         for p in self.fillers:
-            if p.span > room or p.id in skip or not self.playable(p.id): continue
+            if p.span > room or p.id in skip or not self.playable(p.id) or not self.spacing_ok(p, start): continue
             r = (DAY if p.block == block else 0) + p.span
             if short is None or r > (DAY if short.block == block else 0) + short.span: short = p
         return best or short
@@ -321,7 +336,7 @@ class Grade:
                 out.append(it); continue
             t, end, skip = it[0], it[1], {p.id}
             while end - t > 2 * MIN:
-                s = self.substitute(it[3], end - t, skip)
+                s = self.substitute(it[3], end - t, skip, t)
                 if not s: break
                 out.append([t, t + s.span, s, it[3]]); t += s.span; skip.add(s.id)
                 swaps.append((p.id, s.id, it[0]))

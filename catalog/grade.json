@@ -498,5 +498,11 @@
    ]
   }
  ],
- "interstitials_note": "NECO: complete 12-second editorial short at exactly 13:29, 18:59 and 23:59 America/Sao_Paulo daily. Reserve the last minute of the existing blocks before filling; NECO then 48 seconds of station card. Whole programmes only, unchanged block boundaries; weather and paid breaks cannot move NECO. No extra/random appearances."
+ "interstitials_note": "NECO: complete 12-second editorial short at exactly 13:29, 18:59 and 23:59 America/Sao_Paulo daily. Reserve the last minute of the existing blocks before filling; NECO then 48 seconds of station card. Whole programmes only, unchanged block boundaries; weather and paid breaks cannot move NECO. No extra/random appearances.",
+ "title_spacing": {
+  "sadim-cha-mosca-2026": {
+   "from": "neco",
+   "minutes": 60
+  }
+ }
 }
