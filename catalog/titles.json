@@ -33496,5 +33496,29 @@
     "h": 720
    }
   ]
+ },
+ {
+  "id": "sadim-el-moscon-2026",
+  "title": "As Aventuras de Sadim, o Mago — EP02: El Moscón",
+  "year": 2026,
+  "country": "BR",
+  "block": "toons",
+  "kind": "short",
+  "dur": 124.375,
+  "synopsis_pt": "Sadim enfrenta El Moscón em um duelo de magia e combate. Episódio 02 de As Aventuras de Sadim, o Mago. Produção: Kölja Arts. Kölja — arte, direção e instrumental. Kaia — animação, montagem e efeitos sonoros (SFX).",
+  "site_file": "sadim-el-moscon-2026.mp4",
+  "sha256": "8cf0bc19eaf4f14f124cce967032b935c2b469704aaf13e251a2b34c6eeff015",
+  "sources": [
+   {
+    "url": "https://tv.kolja.com.br/tv/ours/sadim-el-moscon-2026.mp4",
+    "dur": 124.375,
+    "h": 720
+   },
+   {
+    "url": "https://github.com/koljatv/koljatv.github.io/releases/download/ours-v1/sadim-ep02-el-moscon-720p24-20261103.mp4",
+    "dur": 124.375,
+    "h": 720
+   }
+  ]
  }
 ]
