@@ -731,7 +731,7 @@
     } else if (power && it && cur && cur.mode !== 'card') {
       const pr = progAt(t), nx = progAfter(pr ? showEnd(pr) : t);
       if (it.brk && it.first) { if (!(it.o && it.o.kind === 'ad')) { head = 'VOLTAMOS COM'; line = it.first.p.title; } } // a spot keeps its own picture clear
-      else if (nx && ((it.o && !isTempo(it) && it.id !== 'neco') || (!toBreak(it) && pr && showEnd(pr) - t < 60e3))) { head = 'A SEGUIR'; line = hm(nx.s) + ' · ' + nx.p.title; } // not over the weather forecast: it has its own picture
+      else if (nx && ((it.o && !isTempo(it) && it.id !== 'neco' && it.o.series !== 'neco') || (!toBreak(it) && pr && showEnd(pr) - t < 60e3))) { head = 'A SEGUIR'; line = hm(nx.s) + ' · ' + nx.p.title; } // not over the weather forecast: it has its own picture
     }
     nextEl.querySelector('b').textContent = head; nextEl.querySelector('span').textContent = line;
     show(nextEl, !!head); host.classList.toggle('ktv-nx', !!head);
@@ -757,7 +757,7 @@
   let day = '';
   function drawGuide() {
     if (!guideEl || !S) return;
-    const guideItems = progs.concat(items.filter(p => p.id === 'neco')).sort((a, b) => a.s - b.s);
+    const guideItems = progs.concat(items.filter(p => p.id === 'neco' || p.o?.series === 'neco')).sort((a, b) => a.s - b.s);
     const t = now(), today = dayKey(t), list = guideItems.filter(p => (dayKey(p.s) >= today && showEnd(p) > t - 3600e3) || showEnd(p) > t); // today from an hour ago
     const days = [...new Set(list.map(p => dayKey(p.s)))].filter(d => d >= today);
     if (!days.includes(day)) day = days[0] || today;
