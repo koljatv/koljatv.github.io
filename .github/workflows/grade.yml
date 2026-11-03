@@ -88,9 +88,13 @@ jobs:
           for k, o in ours.items():
               if o.get("kind") == "tempo": continue  # the weather forecast is made here (tools/tempo.py publish)
               try:
-                  open(f"public/tv/ours/{k}.mp4", "wb").write(urllib.request.urlopen(o["url"], timeout=60).read())
+                  data = urllib.request.urlopen(o["url"], timeout=60).read()
               except Exception as e:
                   print("skip", k, e)
+                  continue
+              if o.get("sha256") and hashlib.sha256(data).hexdigest() != o["sha256"]:
+                  raise ValueError("Own piece media hash mismatch: " + k)
+              pathlib.Path(f"public/tv/ours/{k}.mp4").write_bytes(data)
           # Own shorts remain ordinary catalogue titles, with a Pages copy and Release fallback.
           for t in json.load(open("catalog/titles.json")):
               if not t.get("site_file"): continue

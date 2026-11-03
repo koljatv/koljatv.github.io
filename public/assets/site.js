@@ -18,8 +18,8 @@
   let regions = null;
   try { regions = new Intl.DisplayNames(['pt-BR'], { type: 'region' }); } catch (e) {}
   const country = c => { if (!c) return ''; try { return regions ? regions.of(c) : c; } catch (e) { return c; } };
-  const KIND = { film: 'Filme', short: 'Curta', tv: 'Série', cartoon: 'Desenho' };
-  const dur = s => { if (!s) return ''; const m = Math.round(s / 60); return m < 60 ? m + ' min' : Math.floor(m / 60) + 'h' + (m % 60 ? String(m % 60).padStart(2, '0') : ''); };
+  const KIND = { film: 'Filme', short: 'Curta', tv: 'Série', cartoon: 'Desenho', promo: 'Curta' };
+  const dur = s => { if (!s) return ''; if (s < 60) return s + ' segundos'; const m = Math.round(s / 60); return m < 60 ? m + ' min' : Math.floor(m / 60) + 'h' + (m % 60 ? String(m % 60).padStart(2, '0') : ''); };
   const VIN = { toons: 'desenhos', terror: 'terror', muda: 'muda', ficcao: 'ficcao', noir: 'noir', cult: 'cult', comedia: 'comedia', series: 'series',
     classicos: 'classicos', aventura: 'aventura', faroeste: 'faroeste', seriados: 'seriados', docs: 'docs' };
 
@@ -35,7 +35,7 @@
 
   // ---------- data ----------
   let S = null, P = [], LG = null, ART = {}, clock = () => Date.now();
-  const titleOf = id => S && S.titles[id];
+  const titleOf = id => S && (S.titles[id] || (S.ours[id]?.series ? S.ours[id] : null));
   const blockName = b => (S && S.blocks[b] || {}).pt || '';
   const hasLeg = id => !!(LG && LG.titles && LG.titles[id]);
   const legBadge = id => hasLeg(id) ? '<span class="badge leg" title="Com legenda em português">LEG</span>' : '';
@@ -213,7 +213,7 @@
       const q = new URLSearchParams(location.search);
       st.day = q.get('dia') || ''; st.part = q.has('faixa') ? +q.get('faixa') : -1; st.leg = q.get('leg') === '1'; st.init = true;
     }
-    const guideItems = P.concat(S.items.filter(r => r[2] === 'neco').map(r => ({s:r[0], e:r[1], id:r[2], block:r[3], t:S.ours[r[2]]}))).sort((a,b) => a.s-b.s);
+    const guideItems = P.concat(S.items.filter(r => S.ours[r[2]]?.series === 'neco').map(r => ({s:r[0], e:r[1], id:r[2], block:r[3], t:S.ours[r[2]]}))).sort((a,b) => a.s-b.s);
     const days = [...new Set(guideItems.map(p => dayKey(p.s)))].filter(d => d >= today);
     if (!days.includes(st.day)) st.day = days[0] || today;
     const dEl = $('#days'), fEl = $('#faixas');
@@ -242,7 +242,7 @@
   }
   function row(p, t) {
     const on = p.s <= t && t < p.e, past = p.e <= t;
-    if (p.id === 'neco') return `<div class="row interstitial${on ? ' on' : past ? ' past' : ''}"><time datetime="${new Date(p.s).toISOString()}">${hm(p.s)}</time><div class="body"><span class="tt">${esc(p.t.title)}</span><span class="sub">12 segundos</span></div></div>`;
+    if (p.t.series === 'neco') return `<a href="${link(p.id)}" class="row interstitial${on ? ' on' : past ? ' past' : ''}"><time datetime="${new Date(p.s).toISOString()}">${hm(p.s)}</time><div class="body"><span class="tt">${esc(p.t.title)}</span><span class="sub">${esc(dur(p.t.dur))}</span></div></a>`;
     const meta = [nice(blockName(p.t.block)), KIND[p.t.kind], p.t.kind !== 'cartoon' ? dur((p.e - p.s) / 1000) : ''].filter(Boolean).map(x => x.replace(/ /g, '\u00a0')).join(' · ');
     return `<a class="row${on ? ' on' : past ? ' past' : ''}${p.t.kind === 'film' ? ' feat' : ''}" href="${link(p.id)}"><time datetime="${new Date(p.s).toISOString()}">${hm(p.s)}</time>${art(p.id, p.block)}
       <div class="body"><div class="blk">${on ? '<span class="badge live">AO VIVO</span>' : ''}${esc(meta)} ${legBadge(p.id)}</div>
@@ -287,7 +287,7 @@
     const el = $('#titulo'); if (!el) return;
     const id = new URLSearchParams(location.search).get('id') || '', t = titleOf(id);
     if (!t) { el.innerHTML = `<div class="wrap page-head"><div class="kicker">Programa</div><h1>Não achamos este programa</h1><p>Ele pode ter saído da grade. Veja o que passa hoje na <a href="${B}programacao/">programação</a>.</p></div>`; return; }
-    const now = clock(), today = dayKey(now), ups = P.filter(p => p.id === id && p.e > now), on = ups.find(p => p.s <= now);
+    const now = clock(), today = dayKey(now), ups = (t.series ? S.items.filter(r => r[2] === id).map(r => ({s:r[0], e:r[1], id, block:r[3], t})) : P).filter(p => p.id === id && p.e > now), on = ups.find(p => p.s <= now);
     if (!el.dataset.id || el.dataset.id !== id || el.dataset.on !== String(!!on) || el.dataset.leg !== String(hasLeg(id))) {
       el.dataset.id = id; el.dataset.on = !!on; el.dataset.leg = hasLeg(id);
       document.title = `${t.title}${t.year ? ' (' + t.year + ')' : ''} · KÖLJA TV`;

@@ -417,7 +417,28 @@
    "title": "NECO",
    "file": "neco_12s_20261102.mp4",
    "media_rev": "neco_12s_20261102",
-   "credits": "Kölja & Kaia"
+   "credits": "Kölja & Kaia",
+   "series": "neco",
+   "year": 2026,
+   "country": "BR",
+   "block": "toons",
+   "synopsis": "Neco em sua primeira aventura. Kölja & Kaia. Produção: Kölja Arts.",
+   "sha256": "ec30119674530f01e9f1f549b8e44fde028fd382c13a99cee407a17911fe7c56"
+  },
+  {
+   "id": "neco-ep02-tentaculo-2026",
+   "kind": "promo",
+   "dur": 10.0,
+   "title": "Neco — EP02: Tentáculo",
+   "file": "neco-ep02-tentaculo-barriga-v02-10s-20261103.mp4",
+   "media_rev": "barriga-v02-20261103",
+   "credits": "Kölja & Kaia · Produção: Kölja Arts",
+   "series": "neco",
+   "year": 2026,
+   "country": "BR",
+   "block": "toons",
+   "synopsis": "Neco encontra uma maneira inesperada de alcançar uma frutinha. Kölja & Kaia. Produção: Kölja Arts.",
+   "sha256": "626302539c078263ed4c4998ba82f9607aa721523111cdb19cbd131a97f3613e"
   }
  ],
  "day_note": "Dayparts (Niko, 31 Oct 2026): cartoons from 06:00 to 13:30; the afternoon is the matinee (silent comedy, serials, then comedy and westerns on alternate days) until 19:00; prime time from 19:00 is the great classics and adventure, then noir at 22:00; the madrugada is horror, science fiction / cult / documentaries and classic TV. Sized to the shelves: a block's hours on the shelf / its hours a day = days before its first rerun (tools/rotation.py). 'a|b|c' alternates blocks day by day; a slot must be longer than its block's longest title, or that title never airs.",
@@ -495,10 +516,17 @@
     "13:29",
     "18:59",
     "23:59"
-   ]
+   ],
+   "rotation": {
+    "since": "2026-11-03T13:00:00-03:00",
+    "ids": [
+     "neco-ep02-tentaculo-2026",
+     "neco"
+    ]
+   }
   }
  ],
- "interstitials_note": "NECO: complete 12-second editorial short at exactly 13:29, 18:59 and 23:59 America/Sao_Paulo daily. Reserve the last minute of the existing blocks before filling; NECO then 48 seconds of station card. Whole programmes only, unchanged block boundaries; weather and paid breaks cannot move NECO. No extra/random appearances.",
+ "interstitials_note": "NECO: alternate complete EP02 (10s) and EP01 (12s), starting 2026-11-03 13:29 BRT, at exactly 13:29, 18:59 and 23:59 daily. Existing last-minute reservation and station card (50s/48s) preserve all block boundaries. No extra/random appearances. Both episodes retain the NECO series identity for 60-minute Sadim spacing.",
  "title_spacing": {
   "sadim-cha-mosca-2026": {
    "from": "neco",

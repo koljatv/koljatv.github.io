@@ -229,7 +229,7 @@ class Grade:
         day = self.day_of(start)
         for d in (day - 1, day, day + 1):
             for at, fixed in interstitials.appointments(self.cfg, self.midnight(d), Prog):
-                if fixed.id == rule["from"] and max(at - (start + p.span), start - (at + fixed.dur)) < gap:
+                if getattr(fixed, "series", fixed.id) == rule["from"] and max(at - (start + p.span), start - (at + fixed.dur)) < gap:
                     return False
         return True
 

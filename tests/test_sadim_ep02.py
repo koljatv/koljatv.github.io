@@ -31,7 +31,7 @@ class SadimEpisodeTwoTests(unittest.TestCase):
                         self.assertEqual(x[1]-x[0], 124375)
                         for nd in (d-1,d,d+1):
                             for at,p in build.interstitials.appointments(cfg,g.midnight(nd),build.Prog):
-                                if p.id == 'neco':
+                                if getattr(p,'series',p.id) == 'neco':
                                     self.assertGreaterEqual(max(at-x[1],x[0]-(at+p.dur)),3600000)
                     count += len(eps)
                 self.assertGreaterEqual(count, 2)

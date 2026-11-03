@@ -44,7 +44,7 @@ class SadimTests(unittest.TestCase):
         slot = next(x for x in items if x[0] == start)
         self.assertEqual((slot[2].kind, slot[1] - slot[0]), ('card', 78000))
         self.assertTrue(all(a[1] == b[0] for a, b in zip(items, items[1:])))
-        self.assertTrue(any(x[0] == g.midnight(d) + 809 * 60000 and x[2].id == 'neco' for x in items))
+        self.assertTrue(any(x[0] == g.midnight(d) + 809 * 60000 and getattr(x[2],'series',x[2].id) == 'neco' for x in items))
 
     def test_spacing_across_midnight_and_health_substitutes(self):
         g = build.Grade(self.cfg, self.titles, {}, self.cuts, self.extra)
@@ -101,13 +101,13 @@ class SadimTests(unittest.TestCase):
                         self.assertTrue(all(x[1]-x[0]==78000 and len(x)==4 for x in sadim))
                         if d in (self.day+1,self.day+2):
                             self.assertEqual([x[0]-g.midnight(d) for x in sadim],[720*60000+3600])
-                        neco=[x for x in items if x[2].id=='neco']
+                        neco=[x for x in items if getattr(x[2],'series',x[2].id)=='neco']
                         self.assertEqual([x[0]-g.midnight(d) for x in neco], [m*60000 for m in ([1139,1439] if d==self.day else [809,1139,1439])])
-                        self.assertTrue(all(x[1]-x[0]==12000 for x in neco))
+                        self.assertTrue(all(x[1]-x[0]==x[2].dur for x in neco))
                         for x in sadim:
                             for nd in (d-1, d, d+1):
                                 for at, p in build.interstitials.appointments(cfg, g.midnight(nd), build.Prog):
-                                    if p.id == 'neco':
+                                    if getattr(p,'series',p.id) == 'neco':
                                         self.assertGreaterEqual(max(at-x[1], x[0]-(at+p.dur)), 60*60000)
                         airings.extend(sadim)
                 expected={t['id'] for t in self.titles if t['block']=='docs' and not t.get('off')}
