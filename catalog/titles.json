@@ -33472,5 +33472,29 @@
     "h": 480
    }
   ]
+ },
+ {
+  "id": "sadim-cha-mosca-2026",
+  "title": "As Aventuras de Sadim, o Mago",
+  "year": 2026,
+  "country": "BR",
+  "block": "toons",
+  "kind": "short",
+  "dur": 78,
+  "synopsis_pt": "Um chá, uma mosca e a magia de Sadim em um curta de animação de 1min18s. Produção: Kölja Arts. Kölja — arte conceitual, direção artística e revisões. Kaia — animação, efeitos sonoros (SFX) e música (BGM).",
+  "site_file": "sadim-cha-mosca-2026.mp4",
+  "sha256": "2c43d174e6db0df1e3e717fa38a55ea2d13dde57979c3910c7c14d1015178641",
+  "sources": [
+   {
+    "url": "https://tv.kolja.com.br/tv/ours/sadim-cha-mosca-2026.mp4",
+    "dur": 78,
+    "h": 720
+   },
+   {
+    "url": "https://github.com/koljatv/koljatv.github.io/releases/download/ours-v1/sadim-final-78s-720p-20261102.mp4",
+    "dur": 78,
+    "h": 720
+   }
+  ]
  }
 ]
