@@ -9,7 +9,7 @@ on:
     - cron: "7,27,47 * * * *"
   push:
     branches: [main]
-    paths: ["catalog/**", "tools/**", "public/index.html", "public/ao-vivo/**", "public/tv/**", "public/legendas/**", ".github/workflows/grade.yml"]
+    paths: ["catalog/**", "tools/**", "public/index.html", "public/ao-vivo/**", "public/tv/**", "public/legendas/**", ".github/workflows/**"]
   workflow_dispatch: {}
 
 permissions:
@@ -30,6 +30,8 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-python@v5
         with:
@@ -61,6 +63,24 @@ jobs:
           python3 tools/check.py --hours 8 --extra 60
           python3 tools/build.py
 
+      - name: Refresh verified reserve (bounded; keep previous on failure)
+        timeout-minutes: 4
+        continue-on-error: true
+        run: python3 tools/reserva.py --daily --limit 60
+
+      - name: Validate schedule and regressions
+        run: |
+          python3 -m unittest discover -s tests -v
+          node --test tests/health_action.test.cjs
+          python3 - <<'PY'
+          import json, time
+          from tools.monitor import validate
+          s=json.load(open('public/grade/schedule2.json'))
+          n=json.load(open('public/grade/now.json'))
+          errors=validate(s,n,int(time.time()*1000))
+          if errors: raise SystemExit(str(errors))
+          PY
+
       - uses: actions/cache/save@v4
         if: always()
         with:
@@ -71,7 +91,7 @@ jobs:
         run: |
           git config user.name "koljatv-grade bot"
           git config user.email "koljatv-grade@users.noreply.github.com"
-          git add public/grade/schedule.json public/grade/schedule2.json
+          git add public/grade/schedule.json public/grade/schedule2.json public/tv/reserva.json
           if ! git diff --cached --quiet; then
             git commit -m "grade: $(python3 -c 'import json;print(json.load(open("public/grade/schedule2.json"))["rev"])')"
             git push

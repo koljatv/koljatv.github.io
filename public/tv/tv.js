@@ -13,6 +13,10 @@
   const host = document.getElementById('ktv');
   if (!host) return;
   const BASE = host.dataset.base || '';
+  const memoryStore = {
+    getItem(k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
+    setItem(k, v) { try { localStorage.setItem(k, v); } catch (_) {} }
+  };
   const TZ = 'America/Sao_Paulo', MIN = 60e3;
   const CUE_PROG = 45e3, CUE_RETURN = 75e3, CUE_BREAK = 3 * MIN, CUE_OURS = 15e3, // how far ahead each kind is loaded
         OURS_START_MS = 8000, DEAD_MS = 10 * MIN,
@@ -66,11 +70,14 @@
   const offs = [];
   const now = () => Date.now() + skew;
   async function getJSON(url) {
-    const t0 = Date.now(), r = await fetch(url, { cache: 'no-store' }), t1 = Date.now();
-    if (!r.ok) throw new Error(url + ' ' + r.status);
-    const d = Date.parse(r.headers.get('date') || '');
-    if (d) { offs.push(d + 500 - (t0 + t1) / 2); if (offs.length > 7) offs.shift(); } // the CDN stamps Date when it answers
-    return r.json();
+    const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 12000);
+    try {
+      const t0 = Date.now(), r = await fetch(url, { cache: 'no-store', signal: controller.signal }), t1 = Date.now();
+      if (!r.ok) throw new Error(url + ' ' + r.status);
+      const d = Date.parse(r.headers.get('date') || '');
+      if (d) { offs.push(d + 500 - (t0 + t1) / 2); if (offs.length > 7) offs.shift(); }
+      return await r.json();
+    } finally { clearTimeout(timeout); }
   }
   function setClock() {
     const o = offs.slice().sort((a, b) => a - b)[offs.length >> 1] || 0;
@@ -79,15 +86,46 @@
   }
 
   // ---------- the grade ----------
-  let S = null, rev = '', items = [], progs = [];
-  async function load() {
-    const n = await getJSON(BASE + 'grade/now.json?m=' + Math.floor(Date.now() / MIN));
-    gen = n.generated || 0;
-    const r = n.rev2 || n.rev, file = n.schedule2 || n.schedule; // schedule2: with the commercial breaks
-    let fresh = false;
-    if (!S || r !== rev) { S = await getJSON(BASE + 'grade/' + file + '?r=' + r); rev = r; parse(); drawGuide(); fresh = true; }
-    setClock();
-    if (fresh) window.dispatchEvent(new CustomEvent('ktv:grade')); // the site's own pages (now/next, highlights) read it from window.KTV
+  let S = null, rev = '', items = [], progs = [], gradeRequest = null;
+  const CACHE_KEY = 'ktv.schedule.v1:' + BASE;
+  function emergencySchedule() { return { emergency: true, blocks: {}, titles: {}, ours: {}, items: [], from: 0, to: 0 }; }
+  function validSchedule(j) {
+    if (!j || ![1, 2].includes(j.format) || typeof j.rev !== 'string' || !j.titles || !j.ours || !j.blocks ||
+        !Array.isArray(j.items) || !j.items.length || j.items.length > 50000 || !Number.isFinite(j.from) || !Number.isFinite(j.to) || j.to <= j.from) return false;
+    let end = j.from;
+    for (const row of j.items) {
+      if (!Array.isArray(row) || row.length < 4 || !Number.isFinite(row[0]) || !Number.isFinite(row[1]) ||
+          row[0] !== end || row[1] <= row[0] || !(j.titles[row[2]] || j.ours[row[2]])) return false;
+      end = row[1];
+    }
+    return end === j.to;
+  }
+  function adoptSchedule(j, persist = true) {
+    if (!validSchedule(j)) throw new Error('Invalid programme schedule');
+    S = j; rev = j.rev; parse(); setClock(); drawGuide();
+    if (persist) memoryStore.setItem(CACHE_KEY, JSON.stringify(j));
+    window.dispatchEvent(new CustomEvent('ktv:grade'));
+  }
+  function load() {
+    if (gradeRequest) return gradeRequest;
+    if (!S || S.emergency) {
+      try { const cached = JSON.parse(memoryStore.getItem(CACHE_KEY)); if (validSchedule(cached)) adoptSchedule(cached, false); } catch (_) {}
+    }
+    gradeRequest = (async () => {
+      try {
+        const n = await getJSON(BASE + 'grade/now.json?m=' + Math.floor(Date.now() / MIN));
+        gen = Number.isFinite(n.generated) ? n.generated : 0;
+        const r = n.rev2 || n.rev, file = n.schedule2 || n.schedule;
+        if (!['schedule.json', 'schedule2.json'].includes(file)) throw new Error('Invalid schedule pointer');
+        if (!S || S.emergency || r !== rev || S.to <= now()) adoptSchedule(await getJSON(BASE + 'grade/' + file + '?r=' + encodeURIComponent(r)));
+        setClock();
+      } catch (_) {
+        // The pointer is an optimisation, never a single point of failure.
+        try { adoptSchedule(await getJSON(BASE + 'grade/schedule2.json?m=' + Math.floor(Date.now() / MIN))); }
+        catch (_) { if (!S) S = emergencySchedule(); }
+      }
+    })().finally(() => { gradeRequest = null; });
+    return gradeRequest;
   }
 
   // items: [start, end, id, block(, part)]. part 0, 1... is a feature's part; -1 is a piece of its break.
@@ -180,7 +218,7 @@
   const air = () => slots.find(s => s.role === 'air');
   const same = (s, it) => !!(s.pl && it && !s.pl.trouble && keyOf(s.pl.it) === keyOf(it)); // a copy of this item (not our card)
   const racing = it => slots.filter(s => s.role === 'next' && same(s, it));
-  let sound = false, muted = localStorage.getItem('ktv.mute') === '1', vol = +(localStorage.getItem('ktv.vol') || 0.8);
+  let sound = false, muted = memoryStore.getItem('ktv.mute') === '1', vol = +(memoryStore.getItem('ktv.vol') || 0.8);
 
   function release(sl) {
     clearTimeout(sl.timer); clearTimeout(sl.stall);
@@ -369,13 +407,14 @@
   }
   window.addEventListener('online', () => { // back on the internet: the next round now
     F.gaveUp = 0; F.tries = 0;
+    load().then(() => power && tick()).catch(() => {});
     if (power && cur && cur.mode === 'retry') { clearTimeout(cur.rt); cur.tried = new Set(); cur.mode = 'play'; advance(); }
   });
   // Our card: only once a copy really failed and the picture has been gone for half a minute; till then the
   // programme's still with "Reconectando…". The copies keep trying behind it.
   function trouble() {
-    if (!power || !cur || !cur.target || !cur.bad || !cur.lost || Date.now() - cur.lost < CARD_AFTER) return;
-    if (cur.mode !== 'play' && cur.mode !== 'retry') return;
+    if (!power || !cur || !cur.target || !cur.lost || Date.now() - cur.lost < CARD_AFTER) return;
+    if (!cur.emergency && (!cur.bad || (cur.mode !== 'play' && cur.mode !== 'retry'))) return;
     if (F.on || F.v.some(f => f.pk) || (cur.target.p && !F.gaveUp)) return; // the alternative plays, is on its way or hasn't had its go
     const a = air();
     if (a && (a.pl.trouble || (same(a, cur.target) && !a.waiting))) return;
@@ -439,9 +478,26 @@
   }
 
   // ---------- programação alternativa ----------
-  fetch(BASE + 'tv/reserva.json').then(r => r.ok ? r.json() : null).then(j => { if (j && j.items && j.items.length) F.list = j.items; }).catch(() => {});
+  const RESERVE_KEY = 'ktv.reserve.v1:' + BASE;
+  function adoptReserve(j) {
+    if (!j || !Array.isArray(j.items)) return false;
+    const good = j.items.filter(x => x && typeof x.id === 'string' && typeof x.title === 'string' &&
+      Number.isFinite(x.dur) && x.dur > 0 && Array.isArray(x.copies) && x.copies.some(u => typeof u === 'string' && /^https?:\/\//.test(u)));
+    if (!good.length) return false;
+    F.list = good.map(x => ({ ...x, copies: x.copies.filter(u => typeof u === 'string' && /^https?:\/\//.test(u)) }));
+    if (!S) S = emergencySchedule();
+    if (power) tick();
+    return true;
+  }
+  try { adoptReserve(JSON.parse(memoryStore.getItem(RESERVE_KEY))); } catch (_) {}
+  async function loadReserve() {
+    try { const j = await getJSON(BASE + 'tv/reserva.json'); if (adoptReserve(j)) memoryStore.setItem(RESERVE_KEY, JSON.stringify(j)); } catch (_) {}
+  }
+  loadReserve();
+  setInterval(loadReserve, 30 * MIN);
   const onTarget = () => { const a = air(); return !!a && !a.waiting && !a.pl.trouble && same(a, cur.target); };
   function fillWanted(after = FILL_AFTER) { // a programme is due and its picture has been missing for a while
+    if (power && S && cur && cur.emergency) return true;
     if (!power || !S || !cur || !cur.target || !cur.target.p || (cur.mode !== 'play' && cur.mode !== 'retry')) return false;
     return !onTarget() && !!cur.lost && Date.now() - cur.lost >= after;
   }
@@ -549,7 +605,15 @@
   function tick() {
     if (!power || !S) return;
     const t = now(), i = find(t);
-    if (i < 0) { if (!cur || cur.key !== 'standby') { cur = { key: 'standby', it: null }; htmlCard('JÁ VOLTAMOS'); } ui(); return; }
+    if (i < 0) {
+      if (!cur || !cur.emergency) {
+        if (cur) clearTimeout(cur.rt);
+        for (const s of slots) release(s);
+        cur = { key: 'standby', emergency: true, it: { block: '' }, target: { id: '' }, mode: 'emergency', lost: Date.now() };
+        show(cardEl, false); show(msgEl, false);
+      }
+      fillTick(); ui(); return;
+    }
     const it = items[i], a = air();
     if (a && a.pl.stop >= 0 && !a.v.paused && a.v.currentTime * 1000 >= a.pl.stop - 20) a.v.pause(); // also with the tab in the background
     if (!cur || cur.key !== keyOf(it)) tune(it);
@@ -634,7 +698,7 @@
   // with the copy we subtitled: ref = (t - offset) / s, the offset stepping at the copy times listed. A copy that isn't
   // listed plays without subtitles rather than out of sync.
   const SUBS = ['pt-BR', 'en', ''], SUB_NAME = { 'pt-BR': 'PT', en: 'EN', '': 'OFF' };
-  let subLang = localStorage.getItem('ktv.sub'); if (subLang === null || !SUBS.includes(subLang)) subLang = 'pt-BR';
+  let subLang = memoryStore.getItem('ktv.sub'); if (subLang === null || !SUBS.includes(subLang)) subLang = 'pt-BR';
   let LG = null, subShown = null;
   const vtts = new Map();
   const fnv = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return ('0000000' + h.toString(16)).slice(-8); };
@@ -678,7 +742,7 @@
     if (html !== subShown) { subShown = html; subEl.innerHTML = html; show(subEl, !!html); }
   }
   function setSub(l) {
-    subLang = l; localStorage.setItem('ktv.sub', l);
+    subLang = l; memoryStore.setItem('ktv.sub', l);
     ccEl.querySelector('.cc').textContent = SUB_NAME[l];
     ccEl.classList.toggle('off', !l);
     ccEl.setAttribute('aria-label', 'Legendas: ' + (l ? SUB_NAME[l] : 'desligadas'));
@@ -738,7 +802,7 @@
     if (info) {
       let html;
       const pr = progAt(t), nx = progAfter(pr ? showEnd(pr) : t), p = pr || nx;
-      if (!p) html = '<div class="ttl">Já voltamos</div>'; else {
+      if (!p) html = F.on ? '<div class="blk">PROGRAMAÇÃO ALTERNATIVA</div><h1 class="ttl">' + esc(F.on.pk.title) + '</h1>' : '<div class="ttl">Sintonizando…</div>'; else {
       const end = showEnd(p), brk = it && it.brk && pr;
       const meta = [p.p.year, region(p.p.country), hm(p.s) + ' – ' + hm(end), brk ? 'INTERVALO' : pr ? '' : 'COMEÇA ÀS ' + hm(p.s)].filter(Boolean).join(' · ');
       const nn = pr ? nx : progAfter(end);
@@ -803,7 +867,7 @@
     }
     screen.classList.remove('off');
     setStill(true);
-    if (!S) { msgEl.textContent = 'SINTONIZANDO…'; show(msgEl, true); load().then(tick).catch(() => htmlCard('JÁ VOLTAMOS')); }
+    if (!S || S.emergency) { msgEl.textContent = 'SINTONIZANDO…'; show(msgEl, true); load().then(tick).catch(() => { if (!F.on) htmlCard('JÁ VOLTAMOS'); }); }
     else tick();
   }
   function powerOff() {
@@ -817,7 +881,7 @@
     show(cardEl, false); show(msgEl, false); show(tapEl, false); setStill(true); loading(); ui();
   }
   function setMute(m) {
-    muted = m; localStorage.setItem('ktv.mute', m ? '1' : '0');
+    muted = m; memoryStore.setItem('ktv.mute', m ? '1' : '0');
     q('[data-k=mute] .w').style.display = m ? 'none' : ''; q('[data-k=mute] .x').style.display = m ? '' : 'none';
     levels();
   }
@@ -846,7 +910,7 @@
   q('[data-k=full]').onclick = full;
   ccEl.onclick = () => setSub(SUBS[(SUBS.indexOf(subLang) + 1) % SUBS.length]);
   volEl.value = vol;
-  volEl.oninput = () => { vol = +volEl.value; localStorage.setItem('ktv.vol', vol); if (muted && vol > 0) setMute(false); else levels(); };
+  volEl.oninput = () => { vol = +volEl.value; memoryStore.setItem('ktv.vol', vol); if (muted && vol > 0) setMute(false); else levels(); };
   document.addEventListener('keydown', e => {
     if (e.target.closest && e.target.closest('input,textarea')) return;
     const k = e.key.toLowerCase();

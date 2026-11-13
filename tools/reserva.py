@@ -18,9 +18,9 @@ OUT = os.path.join(ROOT, "public", "tv", "reserva.json")
 
 def head(url):
     t0 = time.time()
-    r = subprocess.run(["curl", "-sL", "-r", "0-65535", "-m", "20", "--connect-timeout", "8", "-A", UA, url],
+    r = subprocess.run(["curl", "-fsL", "--max-filesize", "1048576", "-r", "0-65535", "-m", "20", "--connect-timeout", "8", "-A", UA, url],
                        capture_output=True)
-    return r.stdout, time.time() - t0
+    return (r.stdout if r.returncode == 0 else b""), time.time() - t0
 
 
 def faststart(b):
@@ -36,11 +36,30 @@ def faststart(b):
     return None
 
 
+def save_reserve(items, path=OUT):
+    if not items:
+        print("No verified copies: keeping the last good reserve")
+        return False
+    temp=path+".tmp"
+    with open(temp,"w",encoding="utf-8") as f:
+        json.dump({"format":1,"at":int(time.time()*1000),"items":items},f,ensure_ascii=False,separators=(",",":"))
+    os.replace(temp,path)
+    return True
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--max", type=int, default=900, help="longest short, seconds")
     ap.add_argument("--toons", type=int, default=120, help="cartoons to check (there are hundreds)")
+    ap.add_argument("--daily",action="store_true",help="skip if last verified reserve is under 24 hours old")
+    ap.add_argument("--limit",type=int,default=0,help="bound network probes; 0 checks all candidates")
     a = ap.parse_args()
+    if a.daily:
+        try:
+            old=json.load(open(OUT,encoding="utf-8"))
+            if old.get("items") and 0 <= time.time()*1000-old.get("at",0) < 86400000:
+                print("Last good reserve is under 24 hours old");return
+        except (OSError,ValueError,TypeError):pass
     S = json.load(open(os.path.join(ROOT, "public", "grade", "schedule2.json"), encoding="utf-8"))
     shorts = {k: p for k, p in S["titles"].items() if 60 <= (p.get("dur") or 0) <= a.max
               and not re.search(r"-s\d+e\d+$", k)}  # a serial's chapter out of the blue says nothing: shorts that stand alone
@@ -48,6 +67,10 @@ def main():
     random.seed(7)
     keep = set(random.sample(toons, min(a.toons, len(toons)))) | {k for k, p in shorts.items() if p["block"] != "toons"}
     todo = [(k, s["url"], s.get("dur") or shorts[k]["dur"]) for k in sorted(keep) for s in shorts[k]["sources"]]
+
+    if a.limit > 0:
+        random.Random(int(time.time()//86400)).shuffle(todo)
+        todo=todo[:a.limit]
 
     def one(x):
         k, u, d = x
@@ -62,8 +85,7 @@ def main():
                 e = out.setdefault(k, {"id": k, "title": p["title"], "block": p["block"], "dur": round(d), "copies": []})
                 e["copies"].append(u)
     items = sorted(out.values(), key=lambda e: (e["block"], e["id"]))
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump({"format": 1, "at": int(time.time() * 1000), "items": items}, f, ensure_ascii=False, separators=(",", ":"))
+    save_reserve(items)
     by = {}
     for e in items: by[e["block"]] = by.get(e["block"], 0) + 1
     print("checked %d copies of %d shorts: %d fast titles %s" % (len(todo), len(keep), len(items), by))

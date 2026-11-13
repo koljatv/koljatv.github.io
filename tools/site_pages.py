@@ -6,7 +6,7 @@ import os
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
 V = '10'  # bump when shared CSS or assets/site.js change
-PLAYER_V = '11'  # local media cache revisions
+PLAYER_V = '14'  # local media cache revisions
 SITE = 'https://tv.kolja.com.br/'
 MAIL = 'contato@kolja.com.br'
 

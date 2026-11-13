@@ -3,7 +3,7 @@
  "site": "https://tv.kolja.com.br/",
  "ours_base": "https://github.com/koljatv/koljatv.github.io/releases/download/ours-v1/",
  "tz": "America/Sao_Paulo",
- "days": 3,
+ "days": 7,
  "blocks": {
   "terror": {
    "pt": "SESSÃO TERROR",

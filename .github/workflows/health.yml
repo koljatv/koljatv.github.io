@@ -1,0 +1,67 @@
+name: health
+on:
+  workflow_run:
+    workflows: [grade]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '13 * * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: read
+  actions: write
+  issues: write
+concurrency:
+  group: tv-health
+  cancel-in-progress: false
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      # Never check out the triggering run's branch or execute its artifacts.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Retry a failed publication once
+        if: github.event_name == 'workflow_run'
+        uses: actions/github-script@v8
+        with:
+          script: await require('./tools/health_action.cjs').recover({github,context});
+      - name: Check public delivery (allow CDN propagation)
+        id: public
+        continue-on-error: true
+        run: python3 tools/monitor.py --attempts 4 --delay 30 --out health.json
+      - name: Refresh unhealthy publication when no recent build is active
+        if: github.event_name != 'workflow_run' && steps.public.outcome == 'failure'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const result=JSON.parse(require('fs').readFileSync('health.json','utf8'));
+            await require('./tools/health_action.cjs').recover({github,context,result});
+      - name: Maintain one incident
+        if: always()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs=require('fs');
+            const result=fs.existsSync('health.json')?JSON.parse(fs.readFileSync('health.json','utf8')):{ok:false,errors:['Health check could not produce a result; inspect this workflow run.']};
+            // A healthy old site does not hide a failed deployment that exhausted its retry.
+            const run=context.payload.workflow_run;
+            if(run && ['failure','timed_out'].includes(run.conclusion) && run.run_attempt>=2){
+              result.ok=false;result.errors.push('Publication failed after its automatic retry.');
+            }
+            await require('./tools/health_action.cjs').report({github,context,result});
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-health
+          path: health.json
+          retention-days: 14
+      - name: Surface failed verification
+        if: steps.public.outcome == 'failure'
+        run: exit 1

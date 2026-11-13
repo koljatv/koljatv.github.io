@@ -11,10 +11,10 @@ only, never secrets, keys or personal data.
 | path | what it is |
 |---|---|
 | `/` | `public/index.html`: what's on now, the next 24 hours, about. Reads the two files below. |
-| `/grade/schedule2.json` | the next 3 days, item by item: `[start, end, id, block(, part)]` (ms since 1970, UTC), every title on the air with its copies in order (and, for features, where each copy breaks), our pieces, the blocks' names. `rev` names this build. Format 2, with the commercial breaks: what Retrotv 0.3.1+ plays. |
+| `/grade/schedule2.json` | seven calendar days (today plus six), item by item: `[start, end, id, block(, part)]` (ms since 1970, UTC), every title on the air with its copies in order (and, for features, where each copy breaks), our pieces, the blocks' names. `rev` names this build. Format 2, with the commercial breaks: what Retrotv 0.3.1+ plays. |
 | `/grade/schedule.json` | the same shelves laid out without breaks, format 1 (`[start, end, id, block]`), for Retrotv 0.3.0 sets. |
 | `/legendas/` | our own subtitles: `<id>.pt-BR.vtt` and `<id>.en.vtt` (WebVTT), and `index.json`, which lists the subtitled titles, their languages, a revision tag and, per copy (a hash of its address), how that copy's clock lines up with the subtitles. See "Subtitles" below. |
-| `/tv/reserva.json` | the site player's *programação alternativa*: shorts whose copies answer fast and are faststart (index at the front), by block. When a programme's picture is missing for 12 s the player puts one on (this block's, else cartoons; our own pieces from `tv/ours/` as the last resort) while it keeps trying the programme, and goes back to the clock once it plays (at once if the short has just begun or has over 4 min left, else at its end). Rebuilt by hand: `python3 tools/reserva.py`. |
+| `/tv/reserva.json` | the site player's *programação alternativa*: shorts whose copies answer fast and are faststart (index at the front), by block. When a programme's picture is missing for 12 s the player puts one on (this block's, else cartoons; our own pieces from `tv/ours/` as the last resort) while it keeps trying the programme, and goes back to the clock once it plays (at once if the short has just begun or has over 4 min left, else at its end). Refreshed automatically at most once a day, with at most 60 copy probes; an empty or failed refresh keeps the previous list. Manual refresh: `python3 tools/reserva.py`. |
 | `/tempo/` | the weather page: `tempo.js` draws `previsao.json` (the forecast, made in the workflow, not in git) on `mapa.svg` with the icons in `icones/`. |
 | `/tv/ours/previsao-tempo.mp4` | the PREVISÃO DO TEMPO segment, made in the workflow from the latest forecast (not in git). See "The weather forecast" below. |
 | `/grade/now.json` | what's on now (with the offset into it), the next 8 items, the stand-ins in force, and the current `rev`. Rebuilt every run, not kept in git. |
@@ -25,12 +25,12 @@ Our own vignettes, idents, "apresenta", station card and break bumpers are **Rel
 
 The app reads `now.json` when the channel comes on and every 10 minutes, and fetches `schedule2.json` (0.3.0:
 `schedule.json`) only when its `rev` changed (`rev2` / `rev`). It keeps the last good copy, so it still plays if GitHub is unreachable for a while (the file
-covers 3 days). Our pieces are fetched once and kept on the phone. When a film fails mid-play it shows
+covers seven calendar days). Our pieces are fetched once and kept on the phone. When a film fails mid-play it shows
 "PROBLEMAS TÉCNICOS · JÁ VOLTAMOS", re-reads `now.json` and goes where the schedule says.
 
 ## How it runs
 
-`.github/workflows/grade.yml`, every 20 minutes (and on every push to `catalog/` or `tools/`):
+`.github/workflows/grade.yml`, scheduled every 20 minutes (GitHub may delay or skip runs; this is not a timing guarantee), and on relevant pushes:
 
 1. `tools/check.py` sends a 64 KB ranged GET to every copy of every title airing in the next 8 hours, plus 60
    more titles a run (the ones checked longest ago), so the whole shelf is seen about four times a day. A copy
@@ -224,3 +224,20 @@ Weather uses the preceding capacity; paid breaks cannot borrow across a fixed
 appointment. Configuration conflicts fail the build rather than moving or skipping
 NECO. The player lists NECO quietly in the guide, without a launch announcement or
 advance promo. Test with `python3 -m unittest discover -s tests -v`.
+
+## Automatic recovery (November 2026)
+
+The website runs on Pages; generation, source checks and monitoring run in GitHub Actions. Routine operation needs neither this Mac nor an AI model or API subscription.
+
+- The published grade spans **seven calendar days**, including today. It remains deterministic in both existing formats; approved Neco/Sadim files, appointments and credits are unchanged.
+- The site player validates a new grade before adopting it and stores the last valid grade when browser storage is available. If `now.json` fails, it tries `schedule2.json` directly. Requests time out after 12 seconds and concurrent refreshes share one request. Blocked storage is optional, not fatal.
+- With no current grade, the player uses its independently loaded/cached reserve shorts. It retries the grade every 30 seconds while watching and returns to current programming when available. It does **not** recycle an expired day, including old weather forecasts. A complete network outage still prevents downloading uncached video.
+- Reserve refresh uses bounded ranged probes, writes atomically and keeps the previous nonempty list if no source passes. Player retries remain necessary: a successful media header check cannot guarantee that an entire remote video will play later.
+- `.github/workflows/health.yml` checks public JSON continuity, revision, remaining coverage, freshness and the local fallback MP4 after publication and on an hourly schedule. It allows CDN propagation. A failed grade run gets at most one retry of failed jobs. Periodic checks may request a fresh grade if unhealthy, unless a build is active or was started within the last hour.
+- Persistent failures open one GitHub issue named **Kölja TV: falha de operação automática**; unchanged failures do not add repeated comments. Recovery closes it. Notifications follow the repository's normal GitHub notification settings, not WhatsApp. Each check retains a `public-health` artifact for 14 days.
+
+A GitHub-wide outage can affect the publisher and monitor together. Seven-day coverage and browser reserve playback reduce that dependency's effect; they do not guarantee uninterrupted service. A suspended account, removed media or disabled Actions can still need a person.
+
+Manual recovery: run `grade` from Actions → Run workflow; then run `health`. Read the incident and the `public-health` artifact before changing catalogues or media. Local verification: `python3 tools/monitor.py`. Regression checks: `python3 -m unittest discover -s tests -v`, `node --test tests/health_action.test.cjs`; optional browser coverage (Python Playwright, ffmpeg and Brave): `python3 tests/player_recovery.py`.
+
+GitHub references: [scheduled workflow delays](https://docs.github.com/en/actions/how-tos/troubleshoot-workflows), [workflow_run](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_run).
