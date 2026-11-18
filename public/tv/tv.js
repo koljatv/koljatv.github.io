@@ -513,9 +513,12 @@
     let best = [], score = 1e9;
     for (const e of pool) {
       if (F.used.has(e.id) || busy.has(e.id) || e.id === cur.target.id) continue;
-      const u = e.copies.find(c => !isDead(c));
+      const stationCopy = u => /^https:\/\/github\.com\/koljatv\/koljatv\.github\.io\/releases\/download\//.test(u);
+      const available = e.copies.filter(c => !isDead(c));
+      const u = available.find(stationCopy) || available[0];
       if (!u) continue;
-      const k = pref.indexOf(e.block), sc = k < 0 ? 99 : k;
+      // Keep a complete reserve programme on air before resorting to station idents.
+      const k = pref.indexOf(e.block), sc = (stationCopy(u) ? 0 : 100) + (k < 0 ? 99 : k);
       if (sc < score) { score = sc; best = []; }
       if (sc === score) best.push({ id: e.id, title: e.title, dur: e.dur, url: u });
     }
