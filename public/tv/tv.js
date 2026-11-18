@@ -205,9 +205,8 @@
   });
   // Programação alternativa: two more players above the still, for the shorts that cover a programme that won't start.
   // FILL_PREP without its picture and a short gets ready on its first frame (another joins after FILL_TRY, then our
-  // own pieces); it goes on at FILL_AFTER. Back to the clock at once if the short has only just begun or has long to
-  // go, else at its end.
-  const FILL_PREP = 5000, FILL_AFTER = 12000, FILL_STALL = 8000, FILL_TRY = 6000, FILL_CUT = 20e3, FILL_HOLD = 4 * MIN, FILL_REST = 30e3, FILL_LABEL = 10e3;
+  // own pieces); it goes on at FILL_AFTER. A healthy reserve finishes before returning to the clock.
+  const FILL_PREP = 5000, FILL_AFTER = 12000, FILL_STALL = 8000, FILL_TRY = 6000, FILL_REST = 30e3, FILL_LABEL = 10e3;
   const F = { on: null, list: null, used: new Set(), tries: 0, gaveUp: 0, oi: 0, back: false,
     v: [0, 1].map(() => {
       const v = document.createElement('video');
@@ -513,7 +512,7 @@
     let best = [], score = 1e9;
     for (const e of pool) {
       if (F.used.has(e.id) || busy.has(e.id) || e.id === cur.target.id) continue;
-      const stationCopy = u => /^https:\/\/github\.com\/koljatv\/koljatv\.github\.io\/releases\/download\//.test(u);
+      const stationCopy = u => /^https:\/\/tv\.kolja\.com\.br\/tv\/ours\//.test(u) || /^https:\/\/github\.com\/koljatv\/koljatv\.github\.io\/releases\/download\//.test(u);
       const available = e.copies.filter(c => !isDead(c));
       const u = available.find(stationCopy) || available[0];
       if (!u) continue;
@@ -585,9 +584,9 @@
         dropF(f); F.tries = 2; fillGone(); return;
       }
       if (fillWanted()) { F.back = false; return; }
-      const left = (f.duration || f.pk.dur) - f.currentTime, ready = !cur || !cur.target || !cur.target.p || onTarget();
-      if (ready && (t - f.liveAt < FILL_CUT || left > FILL_HOLD / 1000)) { dropF(f); fillGone(); } // straight back
-      else F.back = ready; // the programme is ready: back at the short's end (one still loading gets its few seconds)
+      // A programme that started on the reserve must finish before returning to the clock.
+      // The normal players can recover behind it without interrupting its opening.
+      F.back = !cur || !cur.target || !cur.target.p || onTarget();
       return;
     }
     const trying = F.v.filter(g => g.pk);

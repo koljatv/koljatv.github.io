@@ -47,6 +47,17 @@ def save_reserve(items, path=OUT):
     return True
 
 
+def select_probes(todo, limit, seed):
+    if limit <= 0:
+        return todo
+    prefixes = ("https://tv.kolja.com.br/tv/ours/",
+                "https://github.com/koljatv/koljatv.github.io/releases/download/")
+    station = [x for x in todo if x[1].startswith(prefixes)]
+    rest = [x for x in todo if not x[1].startswith(prefixes)]
+    random.Random(seed).shuffle(rest)
+    return (station + rest)[:limit]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--max", type=int, default=900, help="longest short, seconds")
@@ -68,9 +79,7 @@ def main():
     keep = set(random.sample(toons, min(a.toons, len(toons)))) | {k for k, p in shorts.items() if p["block"] != "toons"}
     todo = [(k, s["url"], s.get("dur") or shorts[k]["dur"]) for k in sorted(keep) for s in shorts[k]["sources"]]
 
-    if a.limit > 0:
-        random.Random(int(time.time()//86400)).shuffle(todo)
-        todo=todo[:a.limit]
+    todo = select_probes(todo, a.limit, int(time.time()//86400))
 
     def one(x):
         k, u, d = x

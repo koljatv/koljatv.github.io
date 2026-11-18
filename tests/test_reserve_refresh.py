@@ -13,3 +13,8 @@ class ReserveRefreshTests(unittest.TestCase):
    self.assertTrue(r.save_reserve(items,str(p)))
    self.assertEqual(json.loads(p.read_text())['items'],items)
    self.assertFalse(pathlib.Path(str(p)+'.tmp').exists())
+
+ def test_bounded_refresh_checks_station_mirrors_first(self):
+  todo=[('external','https://example.com/a',40),('station','https://tv.kolja.com.br/tv/ours/a.mp4',40),('station','https://github.com/koljatv/koljatv.github.io/releases/download/reserve-v1/a.mp4',40)]
+  # Generated schedules intentionally do not carry catalogue site_file metadata.
+  self.assertEqual(r.select_probes(todo,2,7),todo[1:])

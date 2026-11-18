@@ -59,6 +59,8 @@ async def main():
       if name in ['expired','no-grade','malformed','no-reserve','dead-reserve']:
        mode['value']='healthy';await page.evaluate("window.dispatchEvent(new Event('online'))")
        await page.wait_for_function('window.KTV?.S?.rev === "good" && window.KTV.S.to>Date.now()',timeout=12000)
+       # Finish a healthy reserve naturally instead of cutting its opening for the recovered grade.
+       await page.evaluate("{const v=[...document.querySelectorAll('video.air')].find(v=>v.currentSrc.endsWith('/clip.mp4'));if(v&&document.querySelector('#ktv').classList.contains('ktv-alt'))v.currentTime=v.duration-.25;}")
        await page.wait_for_function("!document.querySelector('#ktv').classList.contains('ktv-alt')",timeout=12000)
       await page.locator('[data-k=power]').click()
       await page.wait_for_timeout(500)

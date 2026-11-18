@@ -71,7 +71,7 @@ jobs:
       - name: Validate schedule and regressions
         run: |
           python3 -m unittest discover -s tests -v
-          node --test tests/health_action.test.cjs
+          node --test tests/*.test.cjs
           python3 - <<'PY'
           import json, time
           from tools.monitor import validate
